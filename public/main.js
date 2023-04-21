@@ -1,4 +1,6 @@
-var table = new Tabulator("#example-table", {
+let refreshCount = 0;
+
+let table = new Tabulator("#example-table", {
   layout: "fitColumns",
   columns: [],
   pagination: "local",
@@ -18,6 +20,13 @@ var table = new Tabulator("#example-table", {
 
 table.setData();
 
+document.getElementById("refresh-btn").addEventListener("click", function () {
+  refreshCount++;
+  console.log(`Número de clics ${refreshCount}`);
+  table.clearData();
+  table.setData();
+});
+
 function exportTable() {
-  table.download("csv", "tabla.csv");
+  table.download("csv", "registros.csv");
 }

@@ -11,7 +11,10 @@
 <body>
   <!-- <input type="text" id="search-input" placeholder="Buscar..."> -->
   <div id="example-table"></div>
-  <button onclick="exportTable()" class="tabulator-export">Exportar a CSV</button>
+  <div class="tabulator-buttons">
+    <button onclick="exportTable()" class="tabulator-export">Exportar a CSV</button>
+    <button id="refresh-btn">Refrescar tabla</button>
+  </div>
   <script type="text/javascript" src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
   <script src="main.js"></script>
 </body>
