@@ -3,13 +3,14 @@
     "cors": "^2.8.5",
     "datatables.net-dt": "^1.13.4",
     "express": "^4.18.2",
+    "nodemon": "^2.0.22",
     "pm2": "^5.3.0"
   },
   "name": "despliegue-tabulator",
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
