@@ -1,21 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <link href="https://unpkg.com/tabulator-tables@5.4.4/dist/css/tabulator.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<link rel="icon" href="img/Logo.png" type="image/x-icon">
+	<link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
+	<script src="https://kit.fontawesome.com/a81368914c.js"></script>
+  <title>Login - Reporteador</title>
 </head>
 <body>
-  <!-- <input type="text" id="search-input" placeholder="Buscar..."> -->
-  <div id="example-table"></div>
-  <div class="tabulator-buttons">
-    <button onclick="exportTable()" class="tabulator-export">Exportar a CSV</button>
-    <button id="refresh-btn">Refrescar tabla</button>
-  </div>
-  <script type="text/javascript" src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
-  <script src="main.js"></script>
+  <!-- <img class="wave" src="img/wave.png"> -->
+	<div class="container">
+		<div class="img">
+			<img src="img/Logo_Input.png">
+		</div>
+		<div class="login-content">
+			<form id="login-form" action="reports/dropDowns.html" onsubmit="validateForm(event)">
+				<!-- <img src="img/Logo.png"> -->
+				<h2 class="title">LOGIN</h2>
+           		<div class="input-div one">
+           		   <div class="i">
+           		   		<i class="fas fa-user"></i>
+           		   </div>
+           		   <div class="div">
+           		   		<h5>Usuario</h5>
+           		   		<input id="username-input" type="text" class="input">
+           		   </div>
+           		</div>
+           		<div class="input-div pass">
+           		   <div class="i"> 
+           		    	<i class="fas fa-lock"></i>
+           		   </div>
+           		   <div class="div">
+           		    	<h5>Contraseña</h5>
+           		    	<input id="password-input" type="password" class="input">
+            	   </div>
+            	</div>
+            	<input type="submit" class="btn" value="Iniciar Sesión">
+            </form>
+						<div id="status-message"></div>
+        </div>
+    </div>
+    <script type="text/javascript" src="js/index.js"></script>
 </body>
 </html>
