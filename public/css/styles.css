@@ -56,51 +56,6 @@
   margin: 50px 0 0 50px;
 }
 
-.filters {
-  display: flex;
-  justify-content: center;
-  align-items: center; 
-}
-
-.filter {
-  display: inline-block;
-  margin-right: 10px;
-  text-align: center;
-}
-
-.filter-input {
-  width: 200px;
-  margin-right: 5px;
-  margin-top: 7px;
-}
-
-/*.filter-button, .clear-filter-button {
-  margin-right: 5px;
-}*/
-
-.filter-button {
-  background-color: rgba(26, 21, 32, 1);
-  border-radius: 10px;
-  width: 100px;
-  height: 50px;
-  border-color: #fff;
-  color: #fff;
-}
-
-.clear-filter-button {
-  background-color: #F2534F;
-  color: #fff;
-  border-color: #fff;
-}
-
-.filter-button:hover {
-  background-color: rgba(90,84,104,1);
-}
-
-.clear-filter-button:hover {
-  background-color: #9D1B2C;
-}
-
 .user-bar {
   background-color: rgba(90,84,104,1);
   padding: 10px;
@@ -121,4 +76,25 @@
 span {
   color: #fff;
   font-size: 25px;
+}
+
+#id-empresa-input {
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+#id-cuenta-input {
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.parameter-inputs {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  padding: 10px;
 }

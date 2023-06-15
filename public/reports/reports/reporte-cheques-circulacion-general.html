@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reporte General - Cheques en Circulación</title>
+	<link rel="icon" href="img/Logo.png" type="image/x-icon">
+  <link href="https://unpkg.com/tabulator-tables@5.4.4/dist/css/tabulator.min.css" 
+  rel="stylesheet">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="user-bar">
+    <div class="user-info">
+      <span id="welcome-message">Bienvenido,</span>
+      <span id="username"></span>
+    </div>
+    <button id="logout-button">Cerrar sesión</button>
+  </div>
+  <!-- <input type="text" id="search-input" placeholder="Buscar..."> -->
+  <div class="parameter-inputs">
+    <label for="id-empresa-input">Id de Empresa:</label>
+    <input type="number" id="id-empresa-input" placeholder="Ingrese Id_Empresa">
+
+    <label for="id-cuenta-input">Id de Cuenta:</label>
+    <input type="number" id="id-cuenta-input" placeholder="Ingrese Id_Cuenta">
+
+    <button id="update-button">Actualizar</button>
+  </div>
+  <div id="example-table"></div>
+  <div class="tabulator-buttons mt-2 mb-3">
+    <button onclick="exportTable()" class="tabulator-export">Exportar a CSV</button>
+    <button id="refresh">Refrescar tabla</button>
+  </div>
+  <script type="text/javascript" src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
+  <script src="https://unpkg.com/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://unpkg.com/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://unpkg.com/tippy.js@6.3.3/dist/tippy-bundle.umd.js"></script>  
+  <script src="../../js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,31 +1,62 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lista de Reportes</title>
-  <link rel="stylesheet" href="/css/drop.css">
-</head>
-<body>
-  <div class="user-bar">
-    <div class="user-info">
-      <span id="welcome-message">Bienvenido,</span>
-      <span id="username"></span>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista de Reportes</title>
+    <link rel="stylesheet" href="/css/drop.css" />
+  </head>
+  <body>
+    <div class="user-bar">
+      <div class="user-info">
+        <span id="welcome-message">Bienvenido,</span>
+        <span id="username"></span>
+      </div>
+      <button id="logout-button">Cerrar sesión</button>
     </div>
-    <button id="logout-button">Cerrar sesión</button>
-  </div>
-  <div class="dropdowns">
-    <select id="empresa-select" class="select-large"></select>
-    <button id="clear-button">X</button>
-    
-    <select id="departamento-select" class="select-large"></select>
-    <button id="clear-button-d">X</button>
-    
-    <select id="equipo-select" class="select-large"></select>
-    <button id="clear-button-e">X</button>
-  </div>
-  <a href="reporte.html">Reporte</a>
-  <script src="app.js"></script>
-</body>
+    <div class="dropdowns">
+      <select id="empresa-select" class="select-large"></select>
+      <button id="clear-button">X</button>
+
+      <select id="departamento-select" class="select-large"></select>
+      <button id="clear-button-d">X</button>
+
+      <select id="equipo-select" class="select-large"></select>
+      <button id="clear-button-e">X</button>
+    </div>
+    <div class="buttons-reports">
+      <button id="show-page-report1">
+        <a href="reports/reporte-cheques-circulacion-general.html"
+          >Reporte Cheques en Circulación General</a
+        >
+      </button>
+      <button id="show-page-report2">
+        <a href="reports/reporte-cheques-circulacion-especifico.html"
+          >Reporte Cheques en Circulación Especifico</a
+        >
+      </button>
+      <button id="show-page-report3">
+        <a href="reports/reporte-cheques-circulacion-especifico.html"
+          >Reporte Libro de Compras</a
+        >
+      </button>
+      <button id="show-page-report4">
+        <a href="reports/reporte-cheques-circulacion-especifico.html"
+          >Reporte Libro de Ventas</a
+        >
+      </button>
+      <button id="show-page-report5">
+        <a href="reports/reporte-cheques-circulacion-especifico.html"
+          >Reporte Cheques en Circulación General</a
+        >
+      </button>
+      <button id="show-page-report6">
+        <a href="reports/reporte-cheques-circulacion-especifico.html"
+          >Reporte Cheques en Circulación Especifico</a
+        >
+      </button>
+    </div>
+    <script src="app.js"></script>
+  </body>
 </html>

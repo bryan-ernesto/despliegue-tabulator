@@ -12,7 +12,7 @@ function initializeTable(idEmpresa, idCuenta) {
     pagination: "local",
     paginationSize: 25,
     paginationSizeSelector: [10, 25, 50, 100],
-    ajaxURL: "http://192.168.0.8:3000/api/delta/Get_Reporte_ABO_CXP_1",
+    ajaxURL: "http://192.168.0.8:3000/api/delta/Get_Reporte_ABO_CXP_2",
     ajaxParams: function (params) {
       return {
         Id_Empresa: idEmpresa,
