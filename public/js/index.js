@@ -22,7 +22,7 @@ inputs.forEach((input) => {
 });
 
 function validateForm(event) {
-  event.preventDefault(); // Evita el envío del formulario por defecto
+  event.preventDefault(); 
 
   const username = usernameInput.value;
   const password = passwordInput.value;

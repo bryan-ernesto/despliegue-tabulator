@@ -12,7 +12,7 @@ function initializeTable(idEmpresa, idCuenta) {
     pagination: "local",
     paginationSize: 25,
     paginationSizeSelector: [10, 25, 50, 100],
-    ajaxURL: "http://192.168.0.8:3000/api/delta/Get_Reporte_ABO_CXP_2",
+    ajaxURL: "http://192.168.0.8:3000/api/delta/Get_Reporte_ABO_CXP_2_1",
     ajaxParams: function (params) {
       return {
         Id_Empresa: idEmpresa,
@@ -112,4 +112,14 @@ logoutButton.addEventListener("click", () => {
   localStorage.removeItem("username");
   window.location.href = "/index.html";
   document.body.innerHTML = "<h1>Error: Acceso no autorizado</h1>";
+});
+
+const sidebarButtons = document.querySelectorAll(".sidebar-button");
+
+sidebarButtons.forEach((button) => {
+  button.addEventListener("click", function () {
+    const targetPage = this.getAttribute("data-target");
+
+    window.location.href = targetPage;
+  });
 });

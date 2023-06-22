@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Recuperar el nombre de usuario del almacenamiento local
   const username = localStorage.getItem("username");
 
   const usernameElement = document.getElementById("username");
@@ -17,26 +16,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const showPageButton4 = document.getElementById("show-page-report4");
   const showPageButton5 = document.getElementById("show-page-report5");
   const showPageButton6 = document.getElementById("show-page-report6");
-  showPageButton1.style.display = "none"; 
-  showPageButton2.style.display = "none"; 
-  showPageButton3.style.display = "none"; 
-  showPageButton4.style.display = "none"; 
-  showPageButton5.style.display = "none"; 
-  showPageButton6.style.display = "none"; 
+
+  showPageButton1.style.display = "none";
+  showPageButton2.style.display = "none";
+  showPageButton3.style.display = "none";
+  showPageButton4.style.display = "none";
+  showPageButton5.style.display = "none";
+  showPageButton6.style.display = "none";
 
   let empresasData;
 
-  fetch("http://192.168.0.8:3000/api/reporteador/Get_empresas", {
+  fetch("http://192.168.0.8:3000/api/reporteador/Get_Usuarios_Reporteador", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      str_empresa_nombre: "",
-      int_id_delta: 0,
-      str_nombre_delta: "",
-      int_creado_por: 0,
-      int_actualizado_por: 0,
+      str_usuario_nombre: "",
+      str_username: username,
+      int_empresa: 0,
+      int_departamento: 0,
+      int_equipo: 0,
     }),
   })
     .then((response) => response.json())
@@ -44,13 +44,13 @@ document.addEventListener("DOMContentLoaded", () => {
       empresasData = data;
       const initialOption = document.createElement("option");
       initialOption.value = "";
-      initialOption.text = "Seleccione empresa";
+      initialOption.text = "Seleccione Empresa";
       companySelect.appendChild(initialOption);
 
       empresasData.forEach((empresa) => {
         const option = document.createElement("option");
-        option.value = empresa.empresa_id_cat_empresa;
-        option.text = empresa.empresa_nombre;
+        option.value = empresa.id_cat_empresa;
+        option.text = empresa.nombre_empresa;
         option.classList.add("empresa-option");
         companySelect.appendChild(option);
       });
@@ -68,22 +68,24 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton2.style.display = "none";
     showPageButton3.style.display = "none";
     showPageButton4.style.display = "none";
+    showPageButton5.style.display = "none";
+    showPageButton6.style.display = "none";
   });
 
   function checkSelections() {
     const selectedCompany = companySelect.value;
     const selectedDepartment = departmentSelect.value;
     const selectedEquipment = equipmentSelect.value;
-  
+
     const selectedEmpresa = empresasData.find(
-      (empresa) => empresa.empresa_id_cat_empresa === parseInt(selectedCompany)
+      (empresa) => empresa.id_cat_empresa === parseInt(selectedCompany)
     );
-  
+
     if (
       selectedEmpresa &&
-      parseInt(selectedCompany) === 1 &&
-      parseInt(selectedDepartment) === 9 &&
-      parseInt(selectedEquipment) === 18
+      parseInt(selectedCompany) === 4 &&
+      parseInt(selectedDepartment) === 2 &&
+      parseInt(selectedEquipment) === 25
     ) {
       showPageButton1.style.display = "block";
     } else {
@@ -146,10 +148,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (selectedCompany !== "") {
       const selectedEmpresa = empresasData.find(
-        (empresa) => empresa.empresa_id_cat_empresa === parseInt(selectedCompany)
+        (empresa) => empresa.id_cat_empresa === parseInt(selectedCompany)
       );
 
-      const companyId = selectedEmpresa.empresa_id_cat_empresa;
+      const companyId = selectedEmpresa.id_cat_empresa;
+      const nameDept = selectedEmpresa.nombre_departamento;
 
       fetch("http://192.168.0.8:3000/api/usuarios/Get_departamentos", {
         method: "POST",
@@ -157,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          str_departamento_nombre: "",
+          str_departamento_nombre: nameDept,
           int_creado_por: 0,
           int_actualizado_por: 0,
           int_id_cat_empresa: companyId,
@@ -169,13 +172,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
           const initialOption = document.createElement("option");
           initialOption.value = "";
-          initialOption.text = "Seleccione departamento";
+          initialOption.text = "Seleccione Departamento";
           departmentSelect.appendChild(initialOption);
 
           data.forEach((departamento) => {
             const option = document.createElement("option");
             option.value = departamento.departamento_id_cat_departamento;
-            option.text = departamento.departamento_nombre;
+            option.text = capitalizarCadena(departamento.departamento_nombre);
             departmentSelect.appendChild(option);
           });
         })
@@ -189,6 +192,8 @@ document.addEventListener("DOMContentLoaded", () => {
       showPageButton2.style.display = "none";
       showPageButton3.style.display = "none";
       showPageButton4.style.display = "none";
+      showPageButton5.style.display = "none";
+      showPageButton6.style.display = "none";
     }
   });
 
@@ -196,44 +201,55 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectedDepartment = departmentSelect.value;
 
     if (selectedDepartment !== "") {
-      fetch("http://192.168.0.8:3000/api/usuarios/Get_Equipos", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          str_equipo_nombre: "",
-          int_id_cat_departamento: parseInt(selectedDepartment),
-          int_id_cat_empresa: parseInt(companySelect.value),
-          int_creado_por: 0,
-          int_actualizado_por: 0,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          equipmentSelect.innerHTML = "";
+      const selectedCompany = companySelect.value;
+      const selectedEmpresa = empresasData.find(
+        (empresa) => empresa.id_cat_empresa === parseInt(selectedCompany)
+      );
+      if (selectedEmpresa) {
+        const idCatEquipo = selectedEmpresa.id_cat_equipo;
 
-          const initialOption = document.createElement("option");
-          initialOption.value = "";
-          initialOption.text = "Seleccione equipo";
-          equipmentSelect.appendChild(initialOption);
-
-          data.forEach((equipo) => {
-            const option = document.createElement("option");
-            option.value = equipo.equipo_id_cat_equipo;
-            option.text = equipo.equipo_nombre;
-            equipmentSelect.appendChild(option);
-          });
+        fetch("http://192.168.0.8:3000/api/usuarios/Get_Equipos", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            int_id_cat_equipo: idCatEquipo,
+            str_equipo_nombre: "",
+            int_id_cat_departamento: parseInt(selectedDepartment),
+            int_id_cat_empresa: parseInt(companySelect.value),
+            int_creado_por: 0,
+            int_actualizado_por: 0,
+          }),
         })
-        .catch((error) => {
-          console.error("Error al obtener los equipos:", error);
-        });
-    } else {
-      equipmentSelect.innerHTML = "";
-      showPageButton1.style.display = "none";
-      showPageButton2.style.display = "none";
-      showPageButton3.style.display = "none";
-      showPageButton4.style.display = "none";
+          .then((response) => response.json())
+          .then((data) => {
+            equipmentSelect.innerHTML = "";
+
+            const initialOption = document.createElement("option");
+            initialOption.value = "";
+            initialOption.text = "Seleccione Equipo";
+            equipmentSelect.appendChild(initialOption);
+
+            data.forEach((equipo) => {
+              const option = document.createElement("option");
+              option.value = equipo.equipo_id_cat_equipo;
+              option.text = capitalizarCadena(equipo.equipo_nombre);
+              equipmentSelect.appendChild(option);
+            });
+          })
+          .catch((error) => {
+            console.error("Error al obtener los equipos:", error);
+          });
+      } else {
+        equipmentSelect.innerHTML = "";
+        showPageButton1.style.display = "none";
+        showPageButton2.style.display = "none";
+        showPageButton3.style.display = "none";
+        showPageButton4.style.display = "none";
+        showPageButton5.style.display = "none";
+        showPageButton6.style.display = "none";
+      }
     }
   });
 
@@ -244,6 +260,8 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton2.style.display = "none";
     showPageButton3.style.display = "none";
     showPageButton4.style.display = "none";
+    showPageButton5.style.display = "none";
+    showPageButton6.style.display = "none";
   });
 
   clearButtonE.addEventListener("click", () => {
@@ -252,6 +270,8 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton2.style.display = "none";
     showPageButton3.style.display = "none";
     showPageButton4.style.display = "none";
+    showPageButton5.style.display = "none";
+    showPageButton6.style.display = "none";
   });
 
   companySelect.addEventListener("change", checkSelections);
@@ -261,7 +281,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const logoutButton = document.getElementById("logout-button");
   logoutButton.addEventListener("click", () => {
     localStorage.removeItem("username");
-
+    window.location.href = "/index.html";
     document.body.innerHTML = "<h1>Error: Acceso no autorizado</h1>";
   });
 
@@ -269,19 +289,16 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("popstate", () => {
     history.pushState(null, null, location.href);
   });
-
-  companySelect.addEventListener("change", () => {
-    const selectedCompanyId = companySelect.value;
-    console.log("ID del departamento seleccionado:", selectedCompanyId);
-  });
-
-  departmentSelect.addEventListener("change", () => {
-    const selectedDepartmentId = departmentSelect.value;
-    console.log("ID del departamento seleccionado:", selectedDepartmentId);
-  });
-
-  equipmentSelect.addEventListener("change", () => {
-    const selectedEquipmentId = equipmentSelect.value;
-    console.log("ID del equipo seleccionado:", selectedEquipmentId);
-  });
 });
+
+function capitalizarCadena(cadena) {
+  if (cadena.length <= 4) {
+    return cadena.toUpperCase();
+  } else {
+    const palabras = cadena.split(" ");
+    const palabrasCapitalizadas = palabras.map((palabra) => {
+      return palabra.charAt(0).toUpperCase() + palabra.slice(1).toLowerCase();
+    });
+    return palabrasCapitalizadas.join(" ");
+  }
+}

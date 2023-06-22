@@ -12,11 +12,11 @@ function initializeTable(idEmpresa, idCuenta) {
     pagination: "local",
     paginationSize: 25,
     paginationSizeSelector: [10, 25, 50, 100],
-    ajaxURL: "http://192.168.0.8:3000/api/delta/Get_Reporte_ABO_CXP_1",
+    ajaxURL: "http://192.168.0.8:3000/api/delta/Get_Reporte_ABO_CXP_1_1",
     ajaxParams: function (params) {
       return {
         Id_Empresa: idEmpresa,
-        Id_Cuenta: idCuenta
+        Id_Cuenta: idCuenta,
       };
     },
     ajaxContentType: "json",
@@ -39,7 +39,6 @@ function updateTable() {
   const idCuenta = document.getElementById("id-cuenta-input").value;
 
   if (idEmpresa && idCuenta) {
-    // Validar que se hayan ingresado los parámetros
     if (table) {
       table.clearData();
       initializeTable(idEmpresa, idCuenta);
@@ -54,15 +53,15 @@ function updateTable() {
 document.getElementById("update-button").addEventListener("click", updateTable);
 
 function applyFilter(event) {
-  var filterInput = event.target.parentNode.querySelector('.filter-input');
-  var column = filterInput.getAttribute('data-column');
+  var filterInput = event.target.parentNode.querySelector(".filter-input");
+  var column = filterInput.getAttribute("data-column");
   var filterValue = filterInput.value;
   table.setFilter(column, "like", filterValue);
 }
 
 function clearFilter(event) {
-  var filterInput = event.target.parentNode.querySelector('.filter-input');
-  var column = filterInput.getAttribute('data-column');
+  var filterInput = event.target.parentNode.querySelector(".filter-input");
+  var column = filterInput.getAttribute("data-column");
   var filters = table.getFilters();
   filters = filters.filter(function (filter) {
     return filter.field !== column;
@@ -112,4 +111,14 @@ logoutButton.addEventListener("click", () => {
   localStorage.removeItem("username");
   window.location.href = "/index.html";
   document.body.innerHTML = "<h1>Error: Acceso no autorizado</h1>";
+});
+
+const sidebarButtons = document.querySelectorAll(".sidebar-button");
+
+sidebarButtons.forEach((button) => {
+  button.addEventListener("click", function () {
+    const targetPage = this.getAttribute("data-target");
+
+    window.location.href = targetPage;
+  });
 });
