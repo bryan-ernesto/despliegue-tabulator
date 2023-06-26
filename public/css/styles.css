@@ -1,8 +1,26 @@
+body {
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("../img/Logo_Input.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: blur(5px);
+  z-index: -1;
+}
+
 .tabulator .tabulator-header .tabulator-col .tabulator-col-content {
   box-sizing: border-box;
   position: relative;
   padding: 4px;
-  background-color: rgba(26, 21, 32,1);
+  background-color: rgba(26, 21, 32, 1);
   color: #fff;
 }
 
@@ -11,7 +29,7 @@
 }
 
 .tabulator-export {
-  background-color: rgba(26, 21, 32,1);
+  background-color: rgba(26, 21, 32, 1);
   color: #fff;
   border-color: #fff;
   margin-top: 10px;
@@ -32,7 +50,7 @@
 }
 
 #refresh {
-  background-color: rgba(26, 21, 32,1);
+  background-color: rgba(26, 21, 32, 1);
   color: #fff;
   border-color: #fff;
   margin-top: 10px;
@@ -44,11 +62,11 @@
 }
 
 .tabulator-export:hover {
-  background-color: rgba(90,84,104,1);
+  background-color: rgba(90, 84, 104, 1);
 }
 
 #refresh:hover {
-  background-color: rgba(90,84,104,1);
+  background-color: rgba(90, 84, 104, 1);
 }
 
 .tabulator {
@@ -56,7 +74,7 @@
 }
 
 .user-bar {
-  background-color: rgba(90,84,104,1);
+  background-color: rgba(90, 84, 104, 1);
   padding: 10px;
   display: flex;
   justify-content: space-between;
@@ -94,12 +112,12 @@ span {
 .parameter-inputs {
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   padding: 10px;
 }
 
 button {
-  background-color: rgba(90,84,104,1);
+  background-color: rgba(90, 84, 104, 1);
   color: white;
   border: none;
   padding: 8px 16px;
@@ -109,8 +127,8 @@ button {
 }
 
 button:hover {
-  background-color: rgba(26, 21, 32,1);
-  transition: .3s;
+  background-color: rgba(26, 21, 32, 1);
+  transition: 0.3s;
   border-radius: 20%;
 }
 
@@ -160,12 +178,12 @@ button:hover {
 
 .sidebar-button:hover {
   background-color: rgba(26, 21, 32, 1);
-  transition: .3s;
+  transition: 0.3s;
   border-radius: 20%;
 }
 
 .tabulator .tabulator-footer .tabulator-page.active {
-  color: rgba(90,84,104,1);
+  color: rgba(90, 84, 104, 1);
   color: #fff;
 }
 
@@ -181,4 +199,18 @@ button:hover {
   border: 1px solid #aaa;
   border-radius: 3px;
   background: rgba(26, 21, 32, 1);
+}
+
+.dropdowns {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.select-large {
+  margin-top: 30px;
+  margin-left: 30px;
+  width: 300px;
+  height: 100px;
 }

@@ -1,17 +1,29 @@
-*{
-	padding: 0;
-	margin: 0;
-	box-sizing: border-box;
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
-body{
-  font-family: 'Poppins', sans-serif;
-  overflow: hidden;
-  background-color: #fff;
+body {
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("../img/Logo_Input.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: blur(5px);
+  z-index: -1;
 }
 
 button {
-  background-color: rgba(90,84,104,1);
+  background-color: rgba(90, 84, 104, 1);
   color: white;
   border: none;
   padding: 8px 16px;
@@ -21,13 +33,13 @@ button {
 }
 
 button:hover {
-  background-color: rgba(26, 21, 32,1);
-  transition: .3s;
+  background-color: rgba(26, 21, 32, 1);
+  transition: 0.3s;
   border-radius: 20%;
 }
 
 .user-bar {
-  background-color: rgba(90,84,104,1);
+  background-color: rgba(90, 84, 104, 1);
   padding: 10px;
   display: flex;
   justify-content: space-between;
@@ -58,23 +70,33 @@ span {
 }
 
 .empresa-option {
-  color: rgba(90,84,104,1);
+  color: rgba(90, 84, 104, 1);
 }
 
 .dropdowns {
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   padding-right: 10px;
 }
 
-#show-page-report1, #show-page-report2, #show-page-report3, #show-page-report4, #show-page-report5, #show-page-report6{
+#show-page-report1,
+#show-page-report2,
+#show-page-report3,
+#show-page-report4,
+#show-page-report5,
+#show-page-report6 {
   margin-top: 20px;
   display: block;
   text-align: center;
 }
 
-#show-page-report1 a, #show-page-report2 a, #show-page-report3 a, #show-page-report4 a, #show-page-report5 a, #show-page-report6 a {
+#show-page-report1 a,
+#show-page-report2 a,
+#show-page-report3 a,
+#show-page-report4 a,
+#show-page-report5 a,
+#show-page-report6 a {
   display: block;
   padding: 10px 20px;
   background-color: rgba(90, 84, 104, 1);
@@ -83,7 +105,12 @@ span {
   text-decoration: none;
 }
 
-#show-page-report1 a:hover, #show-page-report2 a:hover, #show-page-report3 a:hover, #show-page-report4 a:hover, #show-page-report5 a:hover, #show-page-report6 a:hover {
+#show-page-report1 a:hover,
+#show-page-report2 a:hover,
+#show-page-report3 a:hover,
+#show-page-report4 a:hover,
+#show-page-report5 a:hover,
+#show-page-report6 a:hover {
   background-color: rgba(26, 21, 32, 1);
   transition: 0.3s;
   border-radius: 20%;
@@ -101,7 +128,7 @@ span {
 #show-page-report3 button,
 #show-page-report4 button,
 #show-page-report5 button,
-#show-page-report6 button{
+#show-page-report6 button {
   display: block;
   padding: 10px 20px;
   background-color: rgba(90, 84, 104, 1);
@@ -126,4 +153,5 @@ span {
 #clear-button-d,
 #clear-button-e {
   margin-bottom: 25px;
+  background-color: #aa4655;
 }

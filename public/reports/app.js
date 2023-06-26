@@ -45,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const initialOption = document.createElement("option");
       initialOption.value = "";
       initialOption.text = "Seleccione Empresa";
+      initialOption.hidden = true;
       companySelect.appendChild(initialOption);
 
       empresasData.forEach((empresa) => {
@@ -115,9 +116,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (
       selectedEmpresa &&
-      parseInt(selectedCompany) === 1 &&
-      parseInt(selectedDepartment) === 9 &&
-      parseInt(selectedEquipment) === 17
+      parseInt(selectedCompany) === 4 &&
+      parseInt(selectedDepartment) === 2 &&
+      parseInt(selectedEquipment) === 25
     ) {
       showPageButton4.style.display = "block";
     } else {
@@ -173,6 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const initialOption = document.createElement("option");
           initialOption.value = "";
           initialOption.text = "Seleccione Departamento";
+          initialOption.hidden = true;
           departmentSelect.appendChild(initialOption);
 
           data.forEach((departamento) => {
@@ -229,6 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const initialOption = document.createElement("option");
             initialOption.value = "";
             initialOption.text = "Seleccione Equipo";
+            initialOption.hidden = true;
             equipmentSelect.appendChild(initialOption);
 
             data.forEach((equipo) => {
