@@ -3,6 +3,86 @@ const username = localStorage.getItem("username");
 const usernameElement = document.getElementById("username");
 usernameElement.textContent = username;
 
+const empresaSelect = document.getElementById("empresa-select");
+const clearButton = document.getElementById("clear-button");
+const cuentaSelect = document.getElementById("cuenta-select");
+const clearButtonE = document.getElementById("clear-button-e");
+
+fetch("http://192.168.0.8:3000/api/usuarios/Get_empresas", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    str_empresa_nombre: "",
+    int_id_delta: 0,
+    str_nombre_delta: "",
+    int_creado_por: 0,
+    int_actualizado_por: 0,
+  }),
+})
+  .then((response) => response.json())
+  .then((data) => {
+    empresasData = data;
+
+    const initialOption = document.createElement("option");
+    initialOption.value = "";
+    initialOption.text = "Seleccione Empresa";
+    initialOption.hidden = true;
+    empresaSelect.appendChild(initialOption);
+
+    const selectAllOption = document.createElement("option");
+    selectAllOption.value = "null";
+    selectAllOption.text = "Seleccionar todas las empresas";
+    empresaSelect.appendChild(selectAllOption);
+
+    empresasData.forEach((empresa) => {
+      const option = document.createElement("option");
+      option.value = empresa.id_delta;
+      option.text = empresa.nombre_delta;
+      option.classList.add("empresa-option");
+      empresaSelect.appendChild(option);
+    });
+  })
+  .catch((error) => {
+    console.error("Error al obtener las empresas:", error);
+  });
+
+fetch("http://192.168.0.8:3000/api/delta/Get_Reporte_Cuenta_Bancaria", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  // body: JSON.stringify({
+  //   int_num_inte: 0,
+  // }),
+})
+  .then((response) => response.json())
+  .then((data) => {
+    const cuentaData = data;
+    const initialOption = document.createElement("option");
+    initialOption.value = "";
+    initialOption.text = "Seleccione Número de Cuenta";
+    initialOption.hidden = true;
+    cuentaSelect.appendChild(initialOption);
+
+    const selectAllOption = document.createElement("option");
+    selectAllOption.value = "null";
+    selectAllOption.text = "Seleccionar todos las cuentas";
+    cuentaSelect.appendChild(selectAllOption);
+
+    cuentaData.forEach((cuenta) => {
+      const option = document.createElement("option");
+      option.value = cuenta.NUMERO_INTERNO;
+      option.text = cuenta.CLAVE_BANCO;
+      option.classList.add("empresa-option");
+      cuentaSelect.appendChild(option);
+    });
+  })
+  .catch((error) => {
+    console.error("Error al obtener los numeros de cuenta", error);
+  });
+
 let table;
 
 function initializeTable(idEmpresa, idCuenta) {
@@ -33,24 +113,6 @@ function initializeTable(idEmpresa, idCuenta) {
 
   table.setData();
 }
-
-function updateTable() {
-  const idEmpresa = document.getElementById("id-empresa-input").value;
-  const idCuenta = document.getElementById("id-cuenta-input").value;
-
-  if (idEmpresa && idCuenta) {
-    if (table) {
-      table.clearData();
-      initializeTable(idEmpresa, idCuenta);
-    } else {
-      initializeTable(idEmpresa, idCuenta);
-    }
-  } else {
-    alert("Ingresa los parámetros Id_Empresa y Id_Cuenta");
-  }
-}
-
-document.getElementById("update-button").addEventListener("click", updateTable);
 
 function applyFilter(event) {
   var filterInput = event.target.parentNode.querySelector(".filter-input");
@@ -98,6 +160,12 @@ document.getElementById("refresh").addEventListener("click", function () {
       }
     })
     .catch((error) => console.log("Error:", error));
+});
+
+document.getElementById("actualizar-button").addEventListener("click", function () {
+  const selectedEmpresa = empresaSelect.value;
+  const selectedCuenta = cuentaSelect.value;
+  initializeTable(selectedEmpresa, selectedCuenta);
 });
 
 function exportTable() {

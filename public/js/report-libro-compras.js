@@ -5,20 +5,16 @@ usernameElement.textContent = username;
 
 const empresaSelect = document.getElementById("empresa-select");
 const clearButton = document.getElementById("clear-button");
-const estadoSelect = document.getElementById("estado-select");
-const clearButtonE = document.getElementById("clear-button-e");
+const fechaInicialInput = document.getElementById("fecha-inicial");
+const fechaFinalInput = document.getElementById("fecha-final");
 
-fetch("http://192.168.0.8:3000/api/usuarios/Get_empresas", {
+fetch("http://192.168.0.8:3000/api/reporteador/Get_Empresas_Libro_Compras", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
   },
   body: JSON.stringify({
-    str_empresa_nombre: "",
-    int_id_delta: 0,
-    str_nombre_delta: "",
-    int_creado_por: 0,
-    int_actualizado_por: 0,
+    str_clave: "",
   }),
 })
   .then((response) => response.json())
@@ -38,8 +34,8 @@ fetch("http://192.168.0.8:3000/api/usuarios/Get_empresas", {
 
     empresasData.forEach((empresa) => {
       const option = document.createElement("option");
-      option.value = empresa.empresa_id_cat_empresa;
-      option.text = empresa.nombre_delta;
+      option.value = empresa.numero;
+      option.text = empresa.clave;
       option.classList.add("empresa-option");
       empresaSelect.appendChild(option);
     });
@@ -48,52 +44,36 @@ fetch("http://192.168.0.8:3000/api/usuarios/Get_empresas", {
     console.error("Error al obtener las empresas:", error);
   });
 
-fetch("http://192.168.0.8:3000/api/recepciones_documento/Get_Documento_Estado", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    str_nombre: "",
-    str_descripcion: "",
-    int_estado_final: 2,
-  }),
-})
-  .then((response) => response.json())
-  .then((data) => {
-    const estadosData = data;
-    const initialOption = document.createElement("option");
-    initialOption.value = "";
-    initialOption.text = "Seleccione Tipo Estado";
-    initialOption.hidden = true;
-    estadoSelect.appendChild(initialOption);
-
-    estadosData.forEach((estado) => {
-      const option = document.createElement("option");
-      option.value = estado.id_documento_estado;
-      option.text = estado.nombre;
-      option.classList.add("empresa-option");
-      estadoSelect.appendChild(option);
-    });
-  })
-  .catch((error) => {
-    console.error("Error al obtener los estados de documento:", error);
-  });
-
 let table;
 
-function initializeTable(nombreEmpresa, idEstado) {
+function formatHeader(header) {
+  const headerMapping = {
+    abreviatura1: "Nombre completo 1",
+    abreviatura2: "Nombre completo 2",
+  };
+
+  if (headerMapping.hasOwnProperty(header)) {
+    return headerMapping[header];
+  }
+
+  const words = header.split("_");
+  const formattedHeader = words.map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+  return formattedHeader;
+}
+
+function initializeTable(nombreEmpresa, fechaInicial, fechaFinal) {
   table = new Tabulator("#example-table", {
     layout: "fitColumns",
     columns: [],
     pagination: "local",
     paginationSize: 25,
     paginationSizeSelector: [10, 25, 50, 100],
-    ajaxURL: "http://192.168.0.8:3000/api/reporteador/Get_Reporteador_RecepcionDocumento",
+    ajaxURL: "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Libro_Compras",
     ajaxParams: function (params) {
       return {
-        int_id_empresa: nombreEmpresa,
-        id_estado: idEstado,
+        int_numero_empresa: nombreEmpresa,
+        date_fecha_inicial: fechaInicial,
+        date_fecha_final: fechaFinal,
       };
     },
     ajaxContentType: "json",
@@ -102,7 +82,7 @@ function initializeTable(nombreEmpresa, idEstado) {
       var columns = [];
       var headers = Object.keys(response[0]);
       headers.forEach((header) => {
-        columns.push({ title: header, field: header, headerFilter: "input" });
+        columns.push({ title: formatHeader(header), field: header, headerFilter: "input" });
       });
       table.setColumns(columns);
       return response;
@@ -144,18 +124,32 @@ document.getElementById("refresh").addEventListener("click", function () {
 
 document.getElementById("actualizar-button").addEventListener("click", function () {
   const selectedEmpresa = empresaSelect.value;
-  const selectedEstado = estadoSelect.value;
-  initializeTable(selectedEmpresa, selectedEstado);
+  const fechaInicial = fechaInicialInput.value;
+  const fechaFinal = fechaFinalInput.value;
+
+  if (selectedEmpresa) {
+    if (fechaInicial && fechaFinal) {
+      initializeTable(selectedEmpresa, fechaInicial, fechaFinal);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Debes seleccionar una fecha inicial y una fecha final.",
+      });
+    }
+  } else {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Debes seleccionar una empresa.",
+    });
+  }
 });
 
 clearButton.addEventListener("click", () => {
   empresaSelect.value = "";
-  estadoSelect.value = "";
-  table.clearData();
-});
-
-clearButtonE.addEventListener("click", () => {
-  estadoSelect.value = "";
+  fechaInicialInput.value = "";
+  fechaFinalInput.value = "";
   table.clearData();
 });
 
@@ -170,14 +164,4 @@ logoutButton.addEventListener("click", () => {
   localStorage.removeItem("username");
   window.location.href = "/index.html";
   document.body.innerHTML = "<h1>Error: Acceso no autorizado</h1>";
-});
-
-const sidebarButtons = document.querySelectorAll(".sidebar-button");
-
-sidebarButtons.forEach((button) => {
-  button.addEventListener("click", function () {
-    const targetPage = this.getAttribute("data-target");
-
-    window.location.href = targetPage;
-  });
 });

@@ -8,17 +8,18 @@ const clearButton = document.getElementById("clear-button");
 const estadoSelect = document.getElementById("estado-select");
 const clearButtonE = document.getElementById("clear-button-e");
 
-fetch("http://192.168.0.8:3000/api/usuarios/Get_empresas", {
+fetch("http://192.168.0.8:3000/api/reporteador/Get_empresas", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
   },
   body: JSON.stringify({
-    str_empresa_nombre: "",
+    str_empresa_nombre : "",
     int_id_delta: 0,
     str_nombre_delta: "",
-    int_creado_por: 0,
-    int_actualizado_por: 0,
+    str_tipo: "",
+    int_creado_por : 0,
+    int_actualizado_por : 0
   }),
 })
   .then((response) => response.json())
@@ -39,7 +40,7 @@ fetch("http://192.168.0.8:3000/api/usuarios/Get_empresas", {
     empresasData.forEach((empresa) => {
       const option = document.createElement("option");
       option.value = empresa.empresa_id_cat_empresa;
-      option.text = empresa.nombre_delta;
+      option.text = empresa.empresa_nombre;
       option.classList.add("empresa-option");
       empresaSelect.appendChild(option);
     });

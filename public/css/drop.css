@@ -5,6 +5,8 @@
 }
 
 body {
+  font-family: 'Poppins', sans-serif;
+  overflow: hidden;
   position: relative;
 }
 
@@ -17,8 +19,9 @@ body::before {
   height: 100%;
   background-image: url("../img/Logo_Input.png");
   background-repeat: no-repeat;
-  background-size: cover;
-  filter: blur(5px);
+  background-size: 60%; 
+  background-position: bottom; 
+  filter: blur(7px);
   z-index: -1;
 }
 
