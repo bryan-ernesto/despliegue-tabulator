@@ -8,7 +8,7 @@ const clearButton = document.getElementById("clear-button");
 const estadoSelect = document.getElementById("estado-select");
 const clearButtonE = document.getElementById("clear-button-e");
 
-fetch("http://192.168.0.8:3000/api/usuarios/Get_empresas", {
+fetch("http://192.168.0.8:3000/api/reporteador/Get_empresas", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -48,17 +48,20 @@ fetch("http://192.168.0.8:3000/api/usuarios/Get_empresas", {
     console.error("Error al obtener las empresas:", error);
   });
 
-fetch("http://192.168.0.8:3000/api/recepciones_documento/Get_Documento_Estado", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    str_nombre: "",
-    str_descripcion: "",
-    int_estado_final: 2,
-  }),
-})
+fetch(
+  "http://192.168.0.8:3000/api/recepciones_documento/Get_Documento_Estado",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      str_nombre: "",
+      str_descripcion: "",
+      int_estado_final: 2,
+    }),
+  }
+)
   .then((response) => response.json())
   .then((data) => {
     const estadosData = data;
@@ -67,6 +70,11 @@ fetch("http://192.168.0.8:3000/api/recepciones_documento/Get_Documento_Estado", 
     initialOption.text = "Seleccione Tipo Estado";
     initialOption.hidden = true;
     estadoSelect.appendChild(initialOption);
+
+    const selectAllOption = document.createElement("option");
+    selectAllOption.value = "0";
+    selectAllOption.text = "Seleccionar todos los estados";
+    estadoSelect.appendChild(selectAllOption);
 
     estadosData.forEach((estado) => {
       const option = document.createElement("option");
@@ -81,15 +89,17 @@ fetch("http://192.168.0.8:3000/api/recepciones_documento/Get_Documento_Estado", 
   });
 
 let table;
+let noDataPopup;
 
 function initializeTable(nombreEmpresa, idEstado) {
   table = new Tabulator("#example-table", {
-    layout: "fitColumns",
+    layout: "fitData",
     columns: [],
     pagination: "local",
     paginationSize: 25,
     paginationSizeSelector: [10, 25, 50, 100],
-    ajaxURL: "http://192.168.0.8:3000/api/reporteador/Get_Reporteador_RecepcionDocumento",
+    ajaxURL:
+      "http://192.168.0.8:3000/api/reporteador/Get_Reporteador_RecepcionDocumento",
     ajaxParams: function (params) {
       return {
         int_id_empresa: nombreEmpresa,
@@ -104,49 +114,82 @@ function initializeTable(nombreEmpresa, idEstado) {
       headers.forEach((header) => {
         columns.push({ title: header, field: header, headerFilter: "input" });
       });
+
       table.setColumns(columns);
       return response;
-    },
-    renderComplete: function () {
-      if (table.getDataCount() === 0) {
-        // No se encontraron datos, mostrar mensaje personalizado
-        table.setEmptyMsg("No se encontraron datos acorde a los filtros");
-      }
     },
   });
 
   table.setData();
 }
 
-document.getElementById("refresh").addEventListener("click", function () {
-  if (table) {
-    table.clearData();
-    table.setData();
-  }
-  let currentDateTime = new Date().toLocaleString();
-  console.log("Botón de refrescar tabla clickeado. Fecha y hora actual:", currentDateTime);
-  fetch("http://192.168.0.8:3000/api/recepciones_documento/Get_Prueba", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ dateFecha: currentDateTime }),
-  })
-    .then((response) => {
-      if (response.ok) {
-        console.log("Fecha y hora enviadas correctamente a la API");
+document
+  .getElementById("actualizar-button")
+  .addEventListener("click", function () {
+    const selectedEmpresa = empresaSelect.value;
+    const selectedEstado = estadoSelect.value;
+    if (selectedEmpresa) {
+      if (selectedEstado) {
+        Swal.fire({
+          title: "Validando que exista información",
+          text: "Esto puede durar varios minutos",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
+        fetch(
+          "http://192.168.0.8:3000/api/reporteador/Get_Reporteador_RecepcionDocumento_1",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              int_id_empresa: selectedEmpresa,
+              id_estado: selectedEstado,
+            }),
+          }
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            if (data && data.length > 0) {
+              Swal.update({
+                title: "Enviando parámetros...",
+                text: "Esto puede durar varios minutos",
+              });
+              initializeTable(selectedEmpresa, selectedEstado);
+            } else {
+              Swal.fire({
+                icon: "warning",
+                title: "Advertencia",
+                text: "No se encontró información acorde a los filtros seleccionados.",
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Error al obtener los datos:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+            });
+          });
       } else {
-        console.log("Hubo un error al enviar la fecha y hora a la API");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Debes seleccionar un estado.",
+        });
       }
-    })
-    .catch((error) => console.log("Error:", error));
-});
-
-document.getElementById("actualizar-button").addEventListener("click", function () {
-  const selectedEmpresa = empresaSelect.value;
-  const selectedEstado = estadoSelect.value;
-  initializeTable(selectedEmpresa, selectedEstado);
-});
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Debes seleccionar una empresa.",
+      });
+    }
+  });
 
 clearButton.addEventListener("click", () => {
   empresaSelect.value = "";
@@ -161,7 +204,10 @@ clearButtonE.addEventListener("click", () => {
 
 function exportTable() {
   if (table) {
-    table.download("csv", "registros.csv");
+    table.download("csv", "registros.csv", {
+      bom: true,
+      charset: "utf-8",
+    });
   }
 }
 

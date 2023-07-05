@@ -37,6 +37,7 @@ fetch("http://192.168.0.8:3000/api/reporteador/Get_Empresas_Libro_Compras", {
       option.value = empresa.numero;
       option.text = empresa.clave;
       option.classList.add("empresa-option");
+      option.setAttribute("data-razon-social", empresa.nombre_completo);
       empresaSelect.appendChild(option);
     });
   })
@@ -46,29 +47,87 @@ fetch("http://192.168.0.8:3000/api/reporteador/Get_Empresas_Libro_Compras", {
 
 let table;
 
-function formatHeader(header) {
-  const headerMapping = {
-    abreviatura1: "Nombre completo 1",
-    abreviatura2: "Nombre completo 2",
-  };
+document
+  .getElementById("actualizar-button")
+  .addEventListener("click", function () {
+    const selectedEmpresa = empresaSelect.value;
+    const fechaInicial = fechaInicialInput.value;
+    const fechaFinal = fechaFinalInput.value;
 
-  if (headerMapping.hasOwnProperty(header)) {
-    return headerMapping[header];
-  }
-
-  const words = header.split("_");
-  const formattedHeader = words.map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
-  return formattedHeader;
-}
+    if (selectedEmpresa) {
+      if (fechaInicial && fechaFinal) {
+        Swal.fire({
+          title: "Validando que exista información",
+          text: "Esto puede durar varios minutos",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
+        fetch(
+          "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Libro_Compras_1",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              int_numero_empresa: selectedEmpresa,
+              date_fecha_inicial: fechaInicial,
+              date_fecha_final: fechaFinal,
+            }),
+          }
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            if (data && data.length > 0) {
+              Swal.update({
+                title: "Enviando parámetros...",
+                text: "Esto puede durar varios minutos",
+              });
+              initializeTable(selectedEmpresa, fechaInicial, fechaFinal);
+              Swal.close();
+            } else {
+              Swal.fire({
+                icon: "warning",
+                title: "Advertencia",
+                text: "No se encontró información acorde a los filtros seleccionados.",
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Error al obtener los datos:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+            });
+          });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Debes seleccionar una fecha inicial y una fecha final.",
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Debes seleccionar una empresa.",
+      });
+    }
+  });
 
 function initializeTable(nombreEmpresa, fechaInicial, fechaFinal) {
   table = new Tabulator("#example-table", {
-    layout: "fitColumns",
+    layout: "fitData",
     columns: [],
     pagination: "local",
     paginationSize: 25,
     paginationSizeSelector: [10, 25, 50, 100],
-    ajaxURL: "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Libro_Compras",
+    ajaxURL:
+      "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Libro_Compras",
     ajaxParams: function (params) {
       return {
         int_numero_empresa: nombreEmpresa,
@@ -80,71 +139,17 @@ function initializeTable(nombreEmpresa, fechaInicial, fechaFinal) {
     ajaxResponse: function (url, params, response) {
       console.log(response);
       var columns = [];
-      var headers = Object.keys(response[0]);
+      var headers = response.length > 0 ? Object.keys(response[0]) : [];
       headers.forEach((header) => {
-        columns.push({ title: formatHeader(header), field: header, headerFilter: "input" });
+        columns.push({ title: header, field: header, headerFilter: "input" });
       });
       table.setColumns(columns);
       return response;
-    },
-    renderComplete: function () {
-      if (table.getDataCount() === 0) {
-        // No se encontraron datos, mostrar mensaje personalizado
-        table.setEmptyMsg("No se encontraron datos acorde a los filtros");
-      }
     },
   });
 
   table.setData();
 }
-
-document.getElementById("refresh").addEventListener("click", function () {
-  if (table) {
-    table.clearData();
-    table.setData();
-  }
-  let currentDateTime = new Date().toLocaleString();
-  console.log("Botón de refrescar tabla clickeado. Fecha y hora actual:", currentDateTime);
-  fetch("http://192.168.0.8:3000/api/recepciones_documento/Get_Prueba", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ dateFecha: currentDateTime }),
-  })
-    .then((response) => {
-      if (response.ok) {
-        console.log("Fecha y hora enviadas correctamente a la API");
-      } else {
-        console.log("Hubo un error al enviar la fecha y hora a la API");
-      }
-    })
-    .catch((error) => console.log("Error:", error));
-});
-
-document.getElementById("actualizar-button").addEventListener("click", function () {
-  const selectedEmpresa = empresaSelect.value;
-  const fechaInicial = fechaInicialInput.value;
-  const fechaFinal = fechaFinalInput.value;
-
-  if (selectedEmpresa) {
-    if (fechaInicial && fechaFinal) {
-      initializeTable(selectedEmpresa, fechaInicial, fechaFinal);
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Debes seleccionar una fecha inicial y una fecha final.",
-      });
-    }
-  } else {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: "Debes seleccionar una empresa.",
-    });
-  }
-});
 
 clearButton.addEventListener("click", () => {
   empresaSelect.value = "";
@@ -155,9 +160,69 @@ clearButton.addEventListener("click", () => {
 
 function exportTable() {
   if (table) {
-    table.download("csv", "registros.csv");
+    const selectedOption = empresaSelect.selectedOptions[0];
+    const razonSocial = selectedOption.getAttribute("data-razon-social");
+    const empresaId = selectedOption.value;
+
+    const fechaInicial = fechaInicialInput.value;
+    const fechaFinal = fechaFinalInput.value;
+
+    fetch("http://192.168.0.8:3000/api/delta/Get_Reporte_Empresa_Direccion", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        str_numero: empresaId,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        console.log(data[0].DIRECCION);
+        const direccion = data[0].DIRECCION;
+        const worksheet = XLSX.utils.aoa_to_sheet([]);
+
+        const customHeader = { v: "LIBRO DE COMPRAS", s: { font: { sz: 30 } } };
+        const razonSocialCell = {
+          v: "Razón Social: " + razonSocial,
+          s: { font: { sz: 12 } },
+        };
+        const direccionCell = {
+          v: "Dirección Comercial: " + direccion,
+          s: { font: { sz: 12 } },
+        };
+        const fechasCell = {
+          v: "Fechas: " + fechaInicial + " - " + fechaFinal,
+          s: { font: { sz: 12 } },
+        };
+
+        // Establecer estilo para los headers
+        const headerStyle = { fill: { fgColor: { rgb: "FFFF00" } } }; // Color de fondo amarillo
+
+        worksheet["A1"] = { ...customHeader, s: headerStyle };
+        worksheet["A3"] = { ...razonSocialCell, s: headerStyle };
+        worksheet["A4"] = { ...direccionCell, s: headerStyle };
+        worksheet["A5"] = { ...fechasCell, s: headerStyle };
+
+        const columns = table.getColumns();
+        const headers = columns.map((column) => column.getField());
+        const dataT = [headers, ...table.getData().map(row => Object.values(row))];
+        XLSX.utils.sheet_add_aoa(worksheet, dataT, { origin: "A11" });
+
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Registros");
+
+        // Guardar el archivo con extensión .xlsx y estilos aplicados
+        XLSX.writeFile(workbook, "registros.xlsx", { bookType: "xlsx", bookSST: true, type: "binary", cellStyles: true });
+      })
+      .catch((error) => {
+        console.error("Error al obtener la dirección:", error);
+      });
   }
 }
+
+
 
 const logoutButton = document.getElementById("logout-button");
 logoutButton.addEventListener("click", () => {

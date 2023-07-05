@@ -1,164 +1,47 @@
 const username = localStorage.getItem("username");
+const empresa = localStorage.getItem("selectedCompany");
+const departamento = localStorage.getItem("selectedDepartment");
+const equipo = localStorage.getItem("selectedEquipment");
 
 const usernameElement = document.getElementById("username");
 usernameElement.textContent = username;
 
-const empresaSelect = document.getElementById("empresa-select");
-const clearButton = document.getElementById("clear-button");
-const estadoSelect = document.getElementById("estado-select");
-const clearButtonE = document.getElementById("clear-button-e");
-
-fetch("http://192.168.0.8:3000/api/reporteador/Get_empresas", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    str_empresa_nombre : "",
-    int_id_delta: 0,
-    str_nombre_delta: "",
-    str_tipo: "",
-    int_creado_por : 0,
-    int_actualizado_por : 0
-  }),
-})
-  .then((response) => response.json())
-  .then((data) => {
-    const empresasData = data;
-
-    const initialOption = document.createElement("option");
-    initialOption.value = "";
-    initialOption.text = "Seleccione Empresa";
-    initialOption.hidden = true;
-    empresaSelect.appendChild(initialOption);
-
-    const selectAllOption = document.createElement("option");
-    selectAllOption.value = "0";
-    selectAllOption.text = "Seleccionar todas las empresas";
-    empresaSelect.appendChild(selectAllOption);
-
-    empresasData.forEach((empresa) => {
-      const option = document.createElement("option");
-      option.value = empresa.empresa_id_cat_empresa;
-      option.text = empresa.empresa_nombre;
-      option.classList.add("empresa-option");
-      empresaSelect.appendChild(option);
-    });
-  })
-  .catch((error) => {
-    console.error("Error al obtener las empresas:", error);
-  });
-
-fetch("http://192.168.0.8:3000/api/recepciones_documento/Get_Documento_Estado", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    str_nombre: "",
-    str_descripcion: "",
-    int_estado_final: 2,
-  }),
-})
-  .then((response) => response.json())
-  .then((data) => {
-    const estadosData = data;
-    const initialOption = document.createElement("option");
-    initialOption.value = "";
-    initialOption.text = "Seleccione Tipo Estado";
-    initialOption.hidden = true;
-    estadoSelect.appendChild(initialOption);
-
-    estadosData.forEach((estado) => {
-      const option = document.createElement("option");
-      option.value = estado.id_documento_estado;
-      option.text = estado.nombre;
-      option.classList.add("empresa-option");
-      estadoSelect.appendChild(option);
-    });
-  })
-  .catch((error) => {
-    console.error("Error al obtener los estados de documento:", error);
-  });
-
 let table;
 
-function initializeTable(nombreEmpresa, idEstado) {
+console.log(username, empresa, departamento, equipo)
+
+function initializeTable() {
   table = new Tabulator("#example-table", {
-    layout: "fitColumns",
+    layout: "fitData",
     columns: [],
     pagination: "local",
     paginationSize: 25,
     paginationSizeSelector: [10, 25, 50, 100],
-    ajaxURL: "http://192.168.0.8:3000/api/reporteador/Get_Reporteador_RecepcionDocumento",
+    ajaxURL: "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets",
     ajaxParams: function (params) {
       return {
-        int_id_empresa: nombreEmpresa,
-        id_estado: idEstado,
+        int_id_equipo: equipo,
+        int_id_departamento: departamento,
+        int_id_empresa: empresa
       };
     },
     ajaxContentType: "json",
     ajaxResponse: function (url, params, response) {
-      console.log(response);
       var columns = [];
       var headers = Object.keys(response[0]);
       headers.forEach((header) => {
         columns.push({ title: header, field: header, headerFilter: "input" });
       });
+
       table.setColumns(columns);
       return response;
-    },
-    renderComplete: function () {
-      if (table.getDataCount() === 0) {
-        // No se encontraron datos, mostrar mensaje personalizado
-        table.setEmptyMsg("No se encontraron datos acorde a los filtros");
-      }
     },
   });
 
   table.setData();
 }
 
-document.getElementById("refresh").addEventListener("click", function () {
-  if (table) {
-    table.clearData();
-    table.setData();
-  }
-  let currentDateTime = new Date().toLocaleString();
-  console.log("Botón de refrescar tabla clickeado. Fecha y hora actual:", currentDateTime);
-  fetch("http://192.168.0.8:3000/api/recepciones_documento/Get_Prueba", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ dateFecha: currentDateTime }),
-  })
-    .then((response) => {
-      if (response.ok) {
-        console.log("Fecha y hora enviadas correctamente a la API");
-      } else {
-        console.log("Hubo un error al enviar la fecha y hora a la API");
-      }
-    })
-    .catch((error) => console.log("Error:", error));
-});
-
-document.getElementById("actualizar-button").addEventListener("click", function () {
-  const selectedEmpresa = empresaSelect.value;
-  const selectedEstado = estadoSelect.value;
-  initializeTable(selectedEmpresa, selectedEstado);
-});
-
-clearButton.addEventListener("click", () => {
-  empresaSelect.value = "";
-  estadoSelect.value = "";
-  table.clearData();
-});
-
-clearButtonE.addEventListener("click", () => {
-  estadoSelect.value = "";
-  table.clearData();
-});
+initializeTable();
 
 function exportTable() {
   if (table) {

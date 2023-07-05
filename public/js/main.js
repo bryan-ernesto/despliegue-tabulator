@@ -8,7 +8,7 @@ const clearButton = document.getElementById("clear-button");
 const cuentaSelect = document.getElementById("cuenta-select");
 const clearButtonE = document.getElementById("clear-button-e");
 
-fetch("http://192.168.0.8:3000/api/usuarios/Get_empresas", {
+fetch("http://192.168.0.8:3000/api/reporteador/Get_empresas", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -87,7 +87,7 @@ let table;
 
 function initializeTable(idEmpresa, idCuenta) {
   table = new Tabulator("#example-table", {
-    layout: "fitColumns",
+    layout: "fitData",
     columns: [],
     pagination: "local",
     paginationSize: 25,
@@ -135,42 +135,77 @@ function clearFilter(event) {
   filterInput.value = "";
 }
 
-document.getElementById("refresh").addEventListener("click", function () {
-  if (table) {
-    table.clearData();
-    table.setData();
-  }
-  let currentDateTime = new Date().toLocaleString();
-  console.log(
-    "Botón de refrescar tabla clickeado. Fecha y hora actual:",
-    currentDateTime
-  );
-  fetch("http://192.168.0.8:3000/api/recepciones_documento/Get_Prueba", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ dateFecha: currentDateTime }),
-  })
-    .then((response) => {
-      if (response.ok) {
-        console.log("Fecha y hora enviadas correctamente a la API");
-      } else {
-        console.log("Hubo un error al enviar la fecha y hora a la API");
-      }
-    })
-    .catch((error) => console.log("Error:", error));
-});
-
 document.getElementById("actualizar-button").addEventListener("click", function () {
   const selectedEmpresa = empresaSelect.value;
   const selectedCuenta = cuentaSelect.value;
-  initializeTable(selectedEmpresa, selectedCuenta);
+
+  if (selectedEmpresa) {
+    if (selectedCuenta) {
+      Swal.fire({
+        title: "Validando que exista información",
+        text: "Esto puede durar varios minutos",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      fetch("http://192.168.0.8:3000/api/delta/Get_Reporte_ABO_CXP_1", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          Id_Empresa: selectedEmpresa,
+          Id_Cuenta: selectedCuenta,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data && data.length > 0) {
+            initializeTable(selectedEmpresa, selectedCuenta);
+            Swal.update({
+              title: "Enviando parámetros...",
+              text: "Esto puede durar varios minutos",
+            });
+          } else {
+            Swal.fire({
+              icon: "warning",
+              title: "Advertencia",
+              text: "No se encontró información acorde a los filtros seleccionados.",
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Error al obtener los datos:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+          });
+        });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Debes seleccionar un número de cuenta.",
+      });
+    }
+  } else {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Debes seleccionar una empresa.",
+    });
+  }
 });
 
 function exportTable() {
   if (table) {
-    table.download("csv", "registros.csv");
+    table.download("csv", "registros.csv", {
+      bom: true,
+      charset: "utf-8",
+    });
   }
 }
 

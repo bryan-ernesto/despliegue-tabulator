@@ -39,25 +39,10 @@
       </div>
       <button id="logout-button">Cerrar sesión</button>
     </div>
-    <div class="dropdowns">
-      <select id="empresa-select" class="select-large"></select>
-      <button id="clear-button">X</button>
-
-      <select id="departamento-select" class="select-large"></select>
-      <button id="clear-button-d">X</button>
-
-      <select id="equipo-select" class="select-large"></select>
-      <button id="clear-button-e">X</button>
-
-      <button id="actualizar-button">Actualizar</button>
-    </div>
+    <button onclick="exportTable()" class="tabulator-export">
+      Exportar a CSV
+    </button>
     <div id="example-table"></div>
-    <div class="tabulator-buttons mt-2 mb-3">
-      <button onclick="exportTable()" class="tabulator-export">
-        Exportar a CSV
-      </button>
-      <button id="refresh">Refrescar tabla</button>
-    </div>
     <script
       type="text/javascript"
       src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"

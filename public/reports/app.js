@@ -11,14 +11,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const equipmentSelect = document.getElementById("equipo-select");
   const clearButtonE = document.getElementById("clear-button-e");
   const showPageButton1 = document.getElementById("show-page-report1");
-  const showPageButton2 = document.getElementById("show-page-report2");
   const showPageButton3 = document.getElementById("show-page-report3");
   const showPageButton4 = document.getElementById("show-page-report4");
   const showPageButton5 = document.getElementById("show-page-report5");
   const showPageButton6 = document.getElementById("show-page-report6");
 
   showPageButton1.style.display = "none";
-  showPageButton2.style.display = "none";
   showPageButton3.style.display = "none";
   showPageButton4.style.display = "none";
   showPageButton5.style.display = "none";
@@ -26,15 +24,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let empresasData;
 
-  if(username === 'bgamez' || username === 'marriola' || username === 'cvicente'){
+  if (
+    username === "bgamez" ||
+    username === "marriola" ||
+    username === "cvicente"
+  ) {
     showPageButton1.style.display = "block";
-    showPageButton2.style.display = "block";
     showPageButton3.style.display = "block";
     showPageButton4.style.display = "block";
     showPageButton5.style.display = "block";
+  } else if (username === "egalvez") {
+    showPageButton1.style.display = "block";
+    showPageButton3.style.display = "block";
+    showPageButton4.style.display = "block";
+  } else if (username === "hescobar") {
+    showPageButton1.style.display = "block";
+    showPageButton3.style.display = "block";
+    showPageButton4.style.display = "block";
   } else {
     showPageButton1.style.display = "none";
-    showPageButton2.style.display = "none";
     showPageButton3.style.display = "none";
     showPageButton4.style.display = "none";
     showPageButton5.style.display = "none";
@@ -98,13 +106,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (
       selectedEmpresa &&
-      parseInt(selectedCompany) === 4 &&
-      parseInt(selectedDepartment) === 2 &&
-      parseInt(selectedEquipment) === 25
+      parseInt(selectedCompany) === 1 &&
+      parseInt(selectedDepartment) === 9 &&
+      parseInt(selectedEquipment) === 19
     ) {
-      showPageButton1.style.display = "block";
+      showPageButton3.style.display = "block";
     } else {
-      showPageButton1.style.display = "none";
+      showPageButton3.style.display = "none";
     }
 
     if (
@@ -140,8 +148,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (
       selectedEmpresa &&
-      parseInt(selectedCompany) === 1 &&
-      parseInt(selectedDepartment) === 13
+      parseInt(selectedCompany) === 4 &&
+      parseInt(selectedDepartment) === 2 &&
+      parseInt(selectedEquipment) === 25
     ) {
       showPageButton5.style.display = "block";
     } else {
@@ -160,6 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   companySelect.addEventListener("change", () => {
     const selectedCompany = companySelect.value;
+    localStorage.setItem("selectedCompany", selectedCompany);
 
     if (selectedCompany !== "") {
       const selectedEmpresa = empresasData.find(
@@ -215,6 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   departmentSelect.addEventListener("change", () => {
     const selectedDepartment = departmentSelect.value;
+    localStorage.setItem("selectedDepartment", selectedDepartment);
 
     if (selectedDepartment !== "") {
       const selectedCompany = companySelect.value;
@@ -254,6 +265,8 @@ document.addEventListener("DOMContentLoaded", () => {
               option.text = capitalizarCadena(equipo.equipo_nombre);
               equipmentSelect.appendChild(option);
             });
+            const selectedEquipment = equipmentSelect.value;
+            localStorage.setItem("selectedEquipment", selectedEquipment);
           })
           .catch((error) => {
             console.error("Error al obtener los equipos:", error);
@@ -268,6 +281,11 @@ document.addEventListener("DOMContentLoaded", () => {
         showPageButton6.style.display = "none";
       }
     }
+  });
+
+  equipmentSelect.addEventListener("change", () => {
+    const selectedEquipment = equipmentSelect.value;
+    localStorage.setItem("selectedEquipment", selectedEquipment);
   });
 
   clearButtonD.addEventListener("click", () => {
