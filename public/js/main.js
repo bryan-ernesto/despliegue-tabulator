@@ -209,6 +209,11 @@ function exportTable() {
   }
 }
 
+clearButton.addEventListener("click", () => {
+  empresaSelect.value = "";
+  table.clearData();
+});
+
 const logoutButton = document.getElementById("logout-button");
 logoutButton.addEventListener("click", () => {
   localStorage.removeItem("username");

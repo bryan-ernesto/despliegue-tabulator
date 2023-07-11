@@ -25,19 +25,35 @@ document.addEventListener("DOMContentLoaded", () => {
   let empresasData;
 
   if (
-    username === "bgamez" ||
     username === "marriola" ||
-    username === "cvicente"
+    username === "cvicente" ||
+    username === "bmorales" ||
+    username === "djhernandez" ||
+    username === "vgonzalez"
   ) {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
     showPageButton4.style.display = "block";
-    showPageButton5.style.display = "block";
+    showPageButton6.style.display = "block";
   } else if (username === "egalvez") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
     showPageButton4.style.display = "block";
   } else if (username === "hescobar") {
+    showPageButton1.style.display = "block";
+    showPageButton3.style.display = "block";
+    showPageButton4.style.display = "block";
+  } else if (username === "rsales") {
+    showPageButton1.style.display = "block";
+    showPageButton3.style.display = "block";
+    showPageButton4.style.display = "block";
+  } else if (username === "bgamez") {
+    showPageButton1.style.display = "block";
+    showPageButton3.style.display = "block";
+    showPageButton4.style.display = "block";
+    showPageButton5.style.display = "block";
+    showPageButton6.style.display = "block";
+  } else if (username === "olopez") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
     showPageButton4.style.display = "block";
@@ -112,20 +128,8 @@ document.addEventListener("DOMContentLoaded", () => {
     ) {
       showPageButton3.style.display = "block";
     } else {
-      showPageButton3.style.display = "none";
+      showPageButton3.style.display = "none"; 
     }
-
-    if (
-      selectedEmpresa &&
-      parseInt(selectedCompany) === 1 &&
-      parseInt(selectedDepartment) === 9 &&
-      parseInt(selectedEquipment) === 18
-    ) {
-      showPageButton2.style.display = "block";
-    } else {
-      showPageButton2.style.display = "none";
-    }
-
     if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
@@ -147,6 +151,13 @@ document.addEventListener("DOMContentLoaded", () => {
       showPageButton4.style.display = "none";
     }
     if (
+      selectedEmpresa &&
+      parseInt(selectedCompany) === 3 &&
+      parseInt(selectedDepartment) === 7 &&
+      parseInt(selectedEquipment) === 27
+    ) {
+      showPageButton5.style.display = "block";
+    } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 4 &&
       parseInt(selectedDepartment) === 2 &&

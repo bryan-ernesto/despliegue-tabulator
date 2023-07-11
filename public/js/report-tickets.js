@@ -22,7 +22,31 @@ function initializeTable() {
       return {
         int_id_equipo: equipo,
         int_id_departamento: departamento,
-        int_id_empresa: empresa
+        int_id_empresa: empresa,
+        string_nombre_referencia: '',
+        int_id_prioridad:0,
+        int_estado_resolucion:0,
+        int_id_proceso:0,
+        int_id_cat_tipo:0,
+        int_id_cat_canal:0,
+        int_id_cat_seguimiento:0,
+        int_id_cat_responsable:0,
+        int_id_cat_solicitante:0,
+        int_id_cat_creado_por:0,
+        date_asignacion_inicio: '',
+        date_asignacion_fin: '',
+        date_resolucion_inicio: '',
+        date_resolucion_fin: '',
+        date_ultima_vista_inicio: '',
+        date_ultima_vista_fin: '',
+        date_vencimiento_inicio: '',
+        date_vencimiento_fin: '',
+        date_primera_respuesta_inicio: '',
+        date_primera_respuesta_fin: '',
+        date_creacion_inicio: '',
+        date_creacion_fin: '',
+        date_actualizacion_inicio: '',
+        date_actualizacion_fin: '' 
       };
     },
     ajaxContentType: "json",
@@ -52,6 +76,9 @@ function exportTable() {
 const logoutButton = document.getElementById("logout-button");
 logoutButton.addEventListener("click", () => {
   localStorage.removeItem("username");
+  localStorage.removeItem("selectedCompany");
+  localStorage.removeItem("selectedDepartment");
+  localStorage.removeItem("selectedEquipment");
   window.location.href = "/index.html";
   document.body.innerHTML = "<h1>Error: Acceso no autorizado</h1>";
 });

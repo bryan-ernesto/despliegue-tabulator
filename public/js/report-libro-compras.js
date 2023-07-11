@@ -120,6 +120,7 @@ document
   });
 
 function initializeTable(nombreEmpresa, fechaInicial, fechaFinal) {
+  
   table = new Tabulator("#example-table", {
     layout: "fitData",
     columns: [],
@@ -167,62 +168,102 @@ function exportTable() {
     const fechaInicial = fechaInicialInput.value;
     const fechaFinal = fechaFinalInput.value;
 
-    fetch("http://192.168.0.8:3000/api/delta/Get_Reporte_Empresa_Direccion", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        str_numero: empresaId,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        console.log(data[0].DIRECCION);
-        const direccion = data[0].DIRECCION;
-        const worksheet = XLSX.utils.aoa_to_sheet([]);
+    if (selectedOption.value === "0") {
+      const customHeader = { v: "LIBRO DE COMPRAS", s: { font: { sz: 30 } } };
+      const razonSocialCell = {
+        v: "Todas las empresas",
+        s: { font: { sz: 12 } },
+      };
+      const fechasCell = {
+        v: "Fechas: " + fechaInicial + " - " + fechaFinal,
+        s: { font: { sz: 12 } },
+      };
 
-        const customHeader = { v: "LIBRO DE COMPRAS", s: { font: { sz: 30 } } };
-        const razonSocialCell = {
-          v: "Razón Social: " + razonSocial,
-          s: { font: { sz: 12 } },
-        };
-        const direccionCell = {
-          v: "Dirección Comercial: " + direccion,
-          s: { font: { sz: 12 } },
-        };
-        const fechasCell = {
-          v: "Fechas: " + fechaInicial + " - " + fechaFinal,
-          s: { font: { sz: 12 } },
-        };
+      const worksheet = XLSX.utils.aoa_to_sheet([]);
+      worksheet["A1"] = { ...customHeader};
+      worksheet["A3"] = { ...razonSocialCell};
+      worksheet["A4"] = { ...fechasCell};
 
-        // Establecer estilo para los headers
-        const headerStyle = { fill: { fgColor: { rgb: "FFFF00" } } }; // Color de fondo amarillo
+      const columns = table.getColumns();
+      const headers = columns.map((column) => column.getField());
+      const dataT = [
+        headers,
+        ...table.getData().map((row) => Object.values(row)),
+      ];
+      XLSX.utils.sheet_add_aoa(worksheet, dataT, { origin: "A9" });
 
-        worksheet["A1"] = { ...customHeader, s: headerStyle };
-        worksheet["A3"] = { ...razonSocialCell, s: headerStyle };
-        worksheet["A4"] = { ...direccionCell, s: headerStyle };
-        worksheet["A5"] = { ...fechasCell, s: headerStyle };
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Registros");
 
-        const columns = table.getColumns();
-        const headers = columns.map((column) => column.getField());
-        const dataT = [headers, ...table.getData().map(row => Object.values(row))];
-        XLSX.utils.sheet_add_aoa(worksheet, dataT, { origin: "A11" });
-
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Registros");
-
-        // Guardar el archivo con extensión .xlsx y estilos aplicados
-        XLSX.writeFile(workbook, "registros.xlsx", { bookType: "xlsx", bookSST: true, type: "binary", cellStyles: true });
-      })
-      .catch((error) => {
-        console.error("Error al obtener la dirección:", error);
+      XLSX.writeFile(workbook, "registros.xlsx", {
+        bookType: "xlsx",
+        bookSST: true,
+        type: "binary",
+        cellStyles: true,
       });
+    } else {
+      fetch("http://192.168.0.8:3000/api/delta/Get_Reporte_Empresa_Direccion", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          str_numero: empresaId,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          console.log(data[0].DIRECCION);
+          const direccion = data[0].DIRECCION;
+          const worksheet = XLSX.utils.aoa_to_sheet([]);
+
+          const customHeader = {
+            v: "LIBRO DE COMPRAS",
+            s: { font: { sz: 30 } },
+          };
+          const razonSocialCell = {
+            v: "Razón Social: " + razonSocial,
+            s: { font: { sz: 12 } },
+          };
+          const direccionCell = {
+            v: "Dirección Comercial: " + direccion,
+            s: { font: { sz: 12 } },
+          };
+          const fechasCell = {
+            v: "Fechas: " + fechaInicial + " - " + fechaFinal,
+            s: { font: { sz: 12 } },
+          };
+
+          worksheet["A1"] = { ...customHeader};
+          worksheet["A3"] = { ...razonSocialCell};
+          worksheet["A4"] = { ...direccionCell};
+          worksheet["A5"] = { ...fechasCell};
+
+          const columns = table.getColumns();
+          const headers = columns.map((column) => column.getField());
+          const dataT = [
+            headers,
+            ...table.getData().map((row) => Object.values(row)),
+          ];
+          XLSX.utils.sheet_add_aoa(worksheet, dataT, { origin: "A10" });
+
+          const workbook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(workbook, worksheet, `${selectedOption.text}`);
+
+          XLSX.writeFile(workbook, `${selectedOption.text}.xlsx`, {
+            bookType: "xlsx",
+            bookSST: true,
+            type: "binary",
+            cellStyles: true,
+          });
+        })
+        .catch((error) => {
+          console.error("Error al obtener la dirección:", error);
+        });
+    }
   }
 }
-
-
 
 const logoutButton = document.getElementById("logout-button");
 logoutButton.addEventListener("click", () => {
