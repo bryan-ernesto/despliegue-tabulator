@@ -8,8 +8,6 @@ usernameElement.textContent = username;
 
 let table;
 
-console.log(username, empresa, departamento, equipo)
-
 function initializeTable() {
   table = new Tabulator("#example-table", {
     layout: "fitData",

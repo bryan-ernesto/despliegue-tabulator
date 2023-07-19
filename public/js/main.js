@@ -8,19 +8,22 @@ const clearButton = document.getElementById("clear-button");
 const cuentaSelect = document.getElementById("cuenta-select");
 const clearButtonE = document.getElementById("clear-button-e");
 
-fetch("http://192.168.0.8:3000/api/reporteador/Get_empresas", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    str_empresa_nombre: "",
-    int_id_delta: 0,
-    str_nombre_delta: "",
-    int_creado_por: 0,
-    int_actualizado_por: 0,
-  }),
-})
+fetch(
+  "http://192.168.0.8:3000/api/reporteador/Get_Empresas_Cheques_Circulacion",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      str_empresa_nombre: "",
+      int_id_delta: 0,
+      str_nombre_delta: "",
+      int_creado_por: 0,
+      int_actualizado_por: 0,
+    }),
+  }
+)
   .then((response) => response.json())
   .then((data) => {
     empresasData = data;
@@ -48,39 +51,48 @@ fetch("http://192.168.0.8:3000/api/reporteador/Get_empresas", {
     console.error("Error al obtener las empresas:", error);
   });
 
-fetch("http://192.168.0.8:3000/api/delta/Get_Reporte_Cuenta_Bancaria", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  // body: JSON.stringify({
-  //   int_num_inte: 0,
-  // }),
-})
-  .then((response) => response.json())
-  .then((data) => {
-    const cuentaData = data;
-    const initialOption = document.createElement("option");
-    initialOption.value = "";
-    initialOption.text = "Seleccione Número de Cuenta";
-    initialOption.hidden = true;
-    cuentaSelect.appendChild(initialOption);
+  empresaSelect.addEventListener("change", () => {
+    const selectedCompany = empresaSelect.value;
 
-    const selectAllOption = document.createElement("option");
-    selectAllOption.value = "null";
-    selectAllOption.text = "Seleccionar todos las cuentas";
-    cuentaSelect.appendChild(selectAllOption);
+    if (selectedCompany !== "") {
+      const selectedEmpresa = empresasData.find(
+        (empresa) => empresa.id_delta === parseInt(selectedCompany)
+      );
 
-    cuentaData.forEach((cuenta) => {
-      const option = document.createElement("option");
-      option.value = cuenta.NUMERO_INTERNO;
-      option.text = cuenta.CLAVE_BANCO;
-      option.classList.add("empresa-option");
-      cuentaSelect.appendChild(option);
-    });
-  })
-  .catch((error) => {
-    console.error("Error al obtener los numeros de cuenta", error);
+      const companyId = selectedEmpresa.id_delta;
+      const nameDept = selectedEmpresa.nombre_delta;
+
+      fetch("http://192.168.0.8:3000/api/reporteador/Get_Reporteador_CuentaBancaria", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          int_id_empresa_delta: companyId,
+          int_estado: 2,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          cuentaSelect.innerHTML = "";
+
+          const initialOption = document.createElement("option");
+          initialOption.value = "";
+          initialOption.text = "Seleccione Número de Cuenta";
+          initialOption.hidden = true;
+          cuentaSelect.appendChild(initialOption);
+
+          data.forEach((cuenta) => {
+            const option = document.createElement("option");
+            option.value = cuenta.numero_interno;
+            option.text = cuenta.clave_banco;
+            cuentaSelect.appendChild(option);
+          });
+        })
+        .catch((error) => {
+          console.error("Error al obtener los departamentos:", error);
+        });
+    }
   });
 
 let table;
@@ -101,8 +113,9 @@ function initializeTable(idEmpresa, idCuenta) {
     },
     ajaxContentType: "json",
     ajaxResponse: function (url, params, response) {
+      console.log(response);
       var columns = [];
-      var headers = Object.keys(response[0]);
+      var headers = response.length > 0 ? Object.keys(response[0]) : [];
       headers.forEach((header) => {
         columns.push({ title: header, field: header, headerFilter: "input" });
       });
@@ -135,70 +148,81 @@ function clearFilter(event) {
   filterInput.value = "";
 }
 
-document.getElementById("actualizar-button").addEventListener("click", function () {
-  const selectedEmpresa = empresaSelect.value;
-  const selectedCuenta = cuentaSelect.value;
+document.getElementById("descargar-universo-button").addEventListener("click", function() {
+	const empresa = "null";
+	const cuenta = "null";
+	initializeTable(empresa, cuenta);
+});
 
-  if (selectedEmpresa) {
-    if (selectedCuenta) {
-      Swal.fire({
-        title: "Validando que exista información",
-        text: "Esto puede durar varios minutos",
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
-      });
+document
+  .getElementById("actualizar-button")
+  .addEventListener("click", function () {
+    const selectedEmpresa = empresaSelect.value;
+    const selectedCuenta = cuentaSelect.value;
 
-      fetch("http://192.168.0.8:3000/api/delta/Get_Reporte_ABO_CXP_1", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          Id_Empresa: selectedEmpresa,
-          Id_Cuenta: selectedCuenta,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data && data.length > 0) {
-            initializeTable(selectedEmpresa, selectedCuenta);
-            Swal.update({
-              title: "Enviando parámetros...",
-              text: "Esto puede durar varios minutos",
-            });
-          } else {
-            Swal.fire({
-              icon: "warning",
-              title: "Advertencia",
-              text: "No se encontró información acorde a los filtros seleccionados.",
-            });
-          }
-        })
-        .catch((error) => {
-          console.error("Error al obtener los datos:", error);
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
-          });
+    console.log(selectedEmpresa, selectedCuenta)
+
+    if (selectedEmpresa) {
+      if (selectedCuenta) {
+        Swal.fire({
+          title: "Validando que exista información",
+          text: "Esto puede durar varios minutos",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
         });
+
+        fetch("http://192.168.0.8:3000/api/delta/Get_Reporte_ABO_CXP_1", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            Id_Empresa: selectedEmpresa,
+            Id_Cuenta: selectedCuenta,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data && data.length > 0) {
+              Swal.update({
+                title: "Enviando parámetros...",
+                text: "Esto puede durar varios minutos",
+              });
+              initializeTable(selectedEmpresa, selectedCuenta);
+              Swal.close();
+            } else {
+              Swal.fire({
+                icon: "warning",
+                title: "Advertencia",
+                text: "No se encontró información acorde a los filtros seleccionados.",
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Error al obtener los datos:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+            });
+          });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Debes seleccionar un número de cuenta.",
+        });
+      }
     } else {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "Debes seleccionar un número de cuenta.",
+        text: "Debes seleccionar una empresa.",
       });
     }
-  } else {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: "Debes seleccionar una empresa.",
-    });
-  }
-});
+  });
 
 function exportTable() {
   if (table) {

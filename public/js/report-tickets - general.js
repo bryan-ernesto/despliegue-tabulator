@@ -10,7 +10,9 @@ const clearButtonD = document.getElementById("clear-button-e");
 const equipoSelect = document.getElementById("equipo-select");
 const clearButtonE = document.getElementById("clear-button-d");
 
-fetch("http://192.168.0.8:3000/api/reporteador/Get_empresas", {
+let empresasData;
+
+fetch("http://192.168.0.8:3000/api/reporteador/Get_Reporteador_EmpresasInternas", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -19,13 +21,14 @@ fetch("http://192.168.0.8:3000/api/reporteador/Get_empresas", {
     str_empresa_nombre: "",
     int_id_delta: 0,
     str_nombre_delta: "",
+    str_tipo: "",
     int_creado_por: 0,
     int_actualizado_por: 0,
   }),
 })
   .then((response) => response.json())
   .then((data) => {
-    const empresasData = data;
+    empresasData = data;
 
     const initialOption = document.createElement("option");
     initialOption.value = "";
@@ -50,83 +53,117 @@ fetch("http://192.168.0.8:3000/api/reporteador/Get_empresas", {
     console.error("Error al obtener las empresas:", error);
   });
 
-fetch("http://192.168.0.8:3000/api/usuarios/Get_departamentos", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    str_departamento_nombre: "",
-    int_creado_por: 0,
-    int_actualizado_por: 0,
-    int_id_cat_empresa: 0,
-  }),
-})
-  .then((response) => response.json())
-  .then((data) => {
-    const departamentoData = data;
-    const initialOption = document.createElement("option");
-    initialOption.value = "";
-    initialOption.text = "Seleccione Departamento";
-    initialOption.hidden = true;
-    departamentoSelect.appendChild(initialOption);
+empresaSelect.addEventListener("change", () => {
+  const selectedCompany = empresaSelect.value;
 
-    const selectAllOption = document.createElement("option");
-    selectAllOption.value = "0";
-    selectAllOption.text = "Seleccionar todos los departamentos";
-    departamentoSelect.appendChild(selectAllOption);
+  if (selectedCompany !== "") {
+    const selectedEmpresa = empresasData.find(
+      (empresa) => empresa.empresa_id_cat_empresa === parseInt(selectedCompany)
+    );
 
-    departamentoData.forEach((estado) => {
-      const option = document.createElement("option");
-      option.value = estado.departamento_id_cat_departamento;
-      option.text = estado.departamento_nombre;
-      option.classList.add("empresa-option");
-      departamentoSelect.appendChild(option);
-    });
-  })
-  .catch((error) => {
-    console.error("Error al obtener los departamentos:", error);
-  });
+    const companyId = selectedEmpresa.empresa_id_cat_empresa;
+    const nameDept = selectedEmpresa.departamento_nombre;
 
-fetch("http://192.168.0.8:3000/api/usuarios/Get_Equipos", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    int_id_cat_equipo: 0,
-    str_equipo_nombre: "",
-    int_id_cat_departamento: 0,
-    int_id_cat_empresa: 0,
-    int_creado_por: 0,
-    int_actualizado_por: 0,
-  }),
-})
-  .then((response) => response.json())
-  .then((data) => {
-    const equipoData = data;
-    const initialOption = document.createElement("option");
-    initialOption.value = "";
-    initialOption.text = "Seleccione Equpo";
-    initialOption.hidden = true;
-    equipoSelect.appendChild(initialOption);
+    fetch("http://192.168.0.8:3000/api/usuarios/Get_departamentos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        str_departamento_nombre: "",
+        int_creado_por: 0,
+        int_actualizado_por: 0,
+        int_id_cat_empresa: companyId,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        departamentoSelect.innerHTML = "";
 
-    const selectAllOption = document.createElement("option");
-    selectAllOption.value = "0";
-    selectAllOption.text = "Seleccionar todos los equipos";
-    equipoSelect.appendChild(selectAllOption);
+        const initialOption = document.createElement("option");
+        initialOption.value = "";
+        initialOption.text = "Seleccione Departamento";
+        initialOption.hidden = true;
+        departamentoSelect.appendChild(initialOption);
 
-    equipoData.forEach((equipo) => {
-      const option = document.createElement("option");
-      option.value = equipo.equipo_id_cat_equipo;
-      option.text = equipo.equipo_nombre;
-      option.classList.add("empresa-option");
-      equipoSelect.appendChild(option);
-    });
-  })
-  .catch((error) => {
-    console.error("Error al obtener los equipos de documento:", error);
-  });
+        data.forEach((departamento) => {
+          const option = document.createElement("option");
+          option.value = departamento.departamento_id_cat_departamento;
+          option.text = departamento.departamento_nombre;
+          departamentoSelect.appendChild(option);
+        });
+      })
+      .catch((error) => {
+        console.error("Error al obtener los departamentos:", error);
+      });
+  } else {
+    departamentoSelect.innerHTML = "";
+    equipoSelect.innerHTML = "";
+    showPageButton1.style.display = "none";
+    showPageButton2.style.display = "none";
+    showPageButton3.style.display = "none";
+    showPageButton4.style.display = "none";
+    showPageButton5.style.display = "none";
+    showPageButton6.style.display = "none";
+  }
+});
+
+departamentoSelect.addEventListener("change", () => {
+  const selectedCompany = empresaSelect.value;
+
+  if (selectedCompany !== "") {
+    const selectedEmpresa = empresasData.find(
+      (empresa) => empresa.empresa_id_cat_empresa === parseInt(selectedCompany)
+    );
+
+    const companyId = selectedEmpresa.empresa_id_cat_empresa;
+    const nameDept = selectedEmpresa.departamento_nombre;
+
+    fetch("http://192.168.0.8:3000/api/usuarios/Get_Equipos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        int_id_cat_equipo: 0,
+        str_equipo_nombre:"",
+        int_id_cat_departamento:0,
+        int_id_cat_empresa:companyId,
+        int_creado_por:0,
+        int_actualizado_por:0
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        equipoSelect.innerHTML = "";
+
+        const initialOption = document.createElement("option");
+        initialOption.value = "";
+        initialOption.text = "Seleccione Equipo";
+        initialOption.hidden = true;
+        equipoSelect.appendChild(initialOption);
+
+        data.forEach((equipo) => {
+          const option = document.createElement("option");
+          option.value = equipo.equipo_id_cat_equipo;
+          option.text = equipo.equipo_nombre;
+          equipoSelect.appendChild(option);
+        });
+      })
+      .catch((error) => {
+        console.error("Error al obtener los equipos:", error);
+      });
+  } else {
+    departamentoSelect.innerHTML = "";
+    equipoSelect.innerHTML = "";
+    showPageButton1.style.display = "none";
+    showPageButton2.style.display = "none";
+    showPageButton3.style.display = "none";
+    showPageButton4.style.display = "none";
+    showPageButton5.style.display = "none";
+    showPageButton6.style.display = "none";
+  }
+});
 
 let table;
 
@@ -148,41 +185,44 @@ document
               Swal.showLoading();
             },
           });
-          fetch("http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_1", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              int_id_equipo: selectedEquipo,
-              int_id_departamento: selectedDepartamento,
-              int_id_empresa: selectedEmpresa,
-              string_nombre_referencia: '',
-              int_id_prioridad:0,
-              int_estado_resolucion:0,
-              int_id_proceso:0,
-              int_id_cat_tipo:0,
-              int_id_cat_canal:0,
-              int_id_cat_seguimiento:0,
-              int_id_cat_responsable:0,
-              int_id_cat_solicitante:0,
-              int_id_cat_creado_por:0,
-              date_asignacion_inicio: '',
-              date_asignacion_fin: '',
-              date_resolucion_inicio: '',
-              date_resolucion_fin: '',
-              date_ultima_vista_inicio: '',
-              date_ultima_vista_fin: '',
-              date_vencimiento_inicio: '',
-              date_vencimiento_fin: '',
-              date_primera_respuesta_inicio: '',
-              date_primera_respuesta_fin: '',
-              date_creacion_inicio: '',
-              date_creacion_fin: '',
-              date_actualizacion_inicio: '',
-              date_actualizacion_fin: '' 
-            }),
-          })
+          fetch(
+            "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_1",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                int_id_equipo: selectedEquipo,
+                int_id_departamento: selectedDepartamento,
+                int_id_empresa: selectedEmpresa,
+                string_nombre_referencia: "",
+                int_id_prioridad: 0,
+                int_estado_resolucion: 0,
+                int_id_proceso: 0,
+                int_id_cat_tipo: 0,
+                int_id_cat_canal: 0,
+                int_id_cat_seguimiento: 0,
+                int_id_cat_responsable: 0,
+                int_id_cat_solicitante: 0,
+                int_id_cat_creado_por: 0,
+                date_asignacion_inicio: "",
+                date_asignacion_fin: "",
+                date_resolucion_inicio: "",
+                date_resolucion_fin: "",
+                date_ultima_vista_inicio: "",
+                date_ultima_vista_fin: "",
+                date_vencimiento_inicio: "",
+                date_vencimiento_fin: "",
+                date_primera_respuesta_inicio: "",
+                date_primera_respuesta_fin: "",
+                date_creacion_inicio: "",
+                date_creacion_fin: "",
+                date_actualizacion_inicio: "",
+                date_actualizacion_fin: "",
+              }),
+            }
+          )
             .then((response) => response.json())
             .then((data) => {
               if (data && data.length > 0) {
@@ -190,7 +230,12 @@ document
                   title: "Enviando parámetros...",
                   text: "Esto puede durar varios minutos",
                 });
-                initializeTable(selectedEquipo, selectedDepartamento, selectedEmpresa);
+                initializeTable(
+                  selectedEquipo,
+                  selectedDepartamento,
+                  selectedEmpresa
+                );
+                Swal.close();
               } else {
                 Swal.fire({
                   icon: "warning",
@@ -230,61 +275,61 @@ document
     }
   });
 
-  function initializeTable(equipo, departamento, empresa) {
-    console.log(equipo, departamento, empresa);
-    table = new Tabulator("#example-table", {
-      layout: "fitData",
-      columns: [],
-      pagination: "local",
-      paginationSize: 25,
-      paginationSizeSelector: [10, 25, 50, 100],
-      ajaxURL: "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets",
-      ajaxParams: function (params) {
-        return {
-          int_id_equipo: equipo,
-          int_id_departamento: departamento,
-          int_id_empresa: empresa,
-          string_nombre_referencia: '',
-          int_id_prioridad:0,
-          int_estado_resolucion:0,
-          int_id_proceso:0,
-          int_id_cat_tipo:0,
-          int_id_cat_canal:0,
-          int_id_cat_seguimiento:0,
-          int_id_cat_responsable:0,
-          int_id_cat_solicitante:0,
-          int_id_cat_creado_por:0,
-          date_asignacion_inicio: '',
-          date_asignacion_fin: '',
-          date_resolucion_inicio: '',
-          date_resolucion_fin: '',
-          date_ultima_vista_inicio: '',
-          date_ultima_vista_fin: '',
-          date_vencimiento_inicio: '',
-          date_vencimiento_fin: '',
-          date_primera_respuesta_inicio: '',
-          date_primera_respuesta_fin: '',
-          date_creacion_inicio: '',
-          date_creacion_fin: '',
-          date_actualizacion_inicio: '',
-          date_actualizacion_fin: '' 
-        };
-      },
-      ajaxContentType: "json",
-      ajaxResponse: function (url, params, response) {
-        var columns = [];
-        var headers = Object.keys(response[0]);
-        headers.forEach((header) => {
-          columns.push({ title: header, field: header, headerFilter: "input" });
-        });
-  
-        table.setColumns(columns);
-        return response;
-      },
-    });
-  
-    table.setData();
-  }
+function initializeTable(equipo, departamento, empresa) {
+  console.log(equipo, departamento, empresa);
+  table = new Tabulator("#example-table", {
+    layout: "fitData",
+    columns: [],
+    pagination: "local",
+    paginationSize: 25,
+    paginationSizeSelector: [10, 25, 50, 100],
+    ajaxURL: "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets",
+    ajaxParams: function (params) {
+      return {
+        int_id_equipo: equipo,
+        int_id_departamento: departamento,
+        int_id_empresa: empresa,
+        string_nombre_referencia: "",
+        int_id_prioridad: 0,
+        int_estado_resolucion: 0,
+        int_id_proceso: 0,
+        int_id_cat_tipo: 0,
+        int_id_cat_canal: 0,
+        int_id_cat_seguimiento: 0,
+        int_id_cat_responsable: 0,
+        int_id_cat_solicitante: 0,
+        int_id_cat_creado_por: 0,
+        date_asignacion_inicio: "",
+        date_asignacion_fin: "",
+        date_resolucion_inicio: "",
+        date_resolucion_fin: "",
+        date_ultima_vista_inicio: "",
+        date_ultima_vista_fin: "",
+        date_vencimiento_inicio: "",
+        date_vencimiento_fin: "",
+        date_primera_respuesta_inicio: "",
+        date_primera_respuesta_fin: "",
+        date_creacion_inicio: "",
+        date_creacion_fin: "",
+        date_actualizacion_inicio: "",
+        date_actualizacion_fin: "",
+      };
+    },
+    ajaxContentType: "json",
+    ajaxResponse: function (url, params, response) {
+      var columns = [];
+      var headers = Object.keys(response[0]);
+      headers.forEach((header) => {
+        columns.push({ title: header, field: header, headerFilter: "input" });
+      });
+
+      table.setColumns(columns);
+      return response;
+    },
+  });
+
+  table.setData();
+}
 
 function exportTable() {
   if (table) {

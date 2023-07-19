@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton4.style.display = "block";
     showPageButton5.style.display = "block";
     showPageButton6.style.display = "block";
-  } else if (username === "olopez") {
+  } else if (username === "olopez" || username === "cpcifuentes") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
     showPageButton4.style.display = "block";
@@ -162,6 +162,13 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedCompany) === 4 &&
       parseInt(selectedDepartment) === 2 &&
       parseInt(selectedEquipment) === 25
+    ) {
+      showPageButton5.style.display = "block";
+    } else if (
+      selectedEmpresa &&
+      parseInt(selectedCompany) === 1 &&
+      parseInt(selectedDepartment) === 18 &&
+      parseInt(selectedEquipment) === 24
     ) {
       showPageButton5.style.display = "block";
     } else {
