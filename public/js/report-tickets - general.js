@@ -36,11 +36,6 @@ fetch("http://192.168.0.8:3000/api/reporteador/Get_Reporteador_EmpresasInternas"
     initialOption.hidden = true;
     empresaSelect.appendChild(initialOption);
 
-    const selectAllOption = document.createElement("option");
-    selectAllOption.value = "0";
-    selectAllOption.text = "Seleccionar todas las empresas";
-    empresaSelect.appendChild(selectAllOption);
-
     empresasData.forEach((empresa) => {
       const option = document.createElement("option");
       option.value = empresa.empresa_id_cat_empresa;

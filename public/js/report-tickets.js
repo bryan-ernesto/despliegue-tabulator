@@ -33,6 +33,11 @@ fetch("http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_EstadoProceso", {
     initialOption.hidden = true;
     procesoSelect.appendChild(initialOption);
 
+    const selectAllOption = document.createElement("option");
+    selectAllOption.value = "0";
+    selectAllOption.text = "Seleccionar todas los procesos";
+    procesoSelect.appendChild(selectAllOption);
+
     procesosData.forEach((proceso) => {
       const option = document.createElement("option");
       option.value = proceso.id_ticket_estado_proceso;
@@ -64,6 +69,11 @@ fetch("http://192.168.0.8:3000/api/reporteador/Get_Usuarios_Reporte_Tickets", {
     initialOption.hidden = true;
     usuarioSelect.appendChild(initialOption);
 
+    const selectAllOption = document.createElement("option");
+    selectAllOption.value = "0";
+    selectAllOption.text = "Seleccionar todos los usuarios";
+    usuarioSelect.appendChild(selectAllOption);
+
     usuariosData.forEach((usuario) => {
       const option = document.createElement("option");
       option.value = usuario.usuario_responsable;
@@ -90,6 +100,8 @@ document
     const fechaFinal = "" ?? "";
     procesoSelect.value = "";
     usuarioSelect.value = "";
+    fechaInicialInput.value = "";
+    fechaFinalInput.value = "";
     initializeTable(
       selectEquipo,
       selectDepartamento,
@@ -305,6 +317,15 @@ function exportTable() {
   } else {
   }
 }
+clearButton.addEventListener("click", () => {
+  procesoSelect.value = "";
+  table.clearData();
+});
+
+clearButtonE.addEventListener("click", () => {
+  usuarioSelect.value = "";
+  table.clearData();
+});
 
 const logoutButton = document.getElementById("logout-button");
 logoutButton.addEventListener("click", () => {

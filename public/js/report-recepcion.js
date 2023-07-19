@@ -204,10 +204,32 @@ clearButtonE.addEventListener("click", () => {
 
 function exportTable() {
   if (table) {
-    table.download("csv", "registros.csv", {
-      bom: true,
-      charset: "utf-8",
+    const customHeader = {
+      v: "REPORTE RECEPCIÓN DE DOCUMENTOS",
+      s: { font: { sz: 30 } },
+    };
+
+    const worksheet = XLSX.utils.aoa_to_sheet([]);
+    worksheet["A1"] = { ...customHeader };
+
+    const columns = table.getColumns();
+    const headers = columns.map((column) => column.getField());
+    const dataT = [
+      headers,
+      ...table.getData().map((row) => Object.values(row)),
+    ];
+    XLSX.utils.sheet_add_aoa(worksheet, dataT, { origin: "A9" });
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Registros");
+
+    XLSX.writeFile(workbook, "registros.xlsx", {
+      bookType: "xlsx",
+      bookSST: true,
+      type: "binary",
+      cellStyles: true,
     });
+  } else {
   }
 }
 
