@@ -51,18 +51,20 @@ fetch(
     console.error("Error al obtener las empresas:", error);
   });
 
-  empresaSelect.addEventListener("change", () => {
-    const selectedCompany = empresaSelect.value;
+empresaSelect.addEventListener("change", () => {
+  const selectedCompany = empresaSelect.value;
 
-    if (selectedCompany !== "") {
-      const selectedEmpresa = empresasData.find(
-        (empresa) => empresa.id_delta === parseInt(selectedCompany)
-      );
+  if (selectedCompany !== "") {
+    const selectedEmpresa = empresasData.find(
+      (empresa) => empresa.id_delta === parseInt(selectedCompany)
+    );
 
-      const companyId = selectedEmpresa.id_delta;
-      const nameDept = selectedEmpresa.nombre_delta;
+    const companyId = selectedEmpresa.id_delta;
+    const nameDept = selectedEmpresa.nombre_delta;
 
-      fetch("http://192.168.0.8:3000/api/reporteador/Get_Reporteador_CuentaBancaria", {
+    fetch(
+      "http://192.168.0.8:3000/api/reporteador/Get_Reporteador_CuentaBancaria",
+      {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -71,29 +73,30 @@ fetch(
           int_id_empresa_delta: companyId,
           int_estado: 2,
         }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          cuentaSelect.innerHTML = "";
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        cuentaSelect.innerHTML = "";
 
-          const initialOption = document.createElement("option");
-          initialOption.value = "";
-          initialOption.text = "Seleccione Número de Cuenta";
-          initialOption.hidden = true;
-          cuentaSelect.appendChild(initialOption);
+        const initialOption = document.createElement("option");
+        initialOption.value = "";
+        initialOption.text = "Seleccione Número de Cuenta";
+        initialOption.hidden = true;
+        cuentaSelect.appendChild(initialOption);
 
-          data.forEach((cuenta) => {
-            const option = document.createElement("option");
-            option.value = cuenta.numero_interno;
-            option.text = cuenta.clave_banco;
-            cuentaSelect.appendChild(option);
-          });
-        })
-        .catch((error) => {
-          console.error("Error al obtener los departamentos:", error);
+        data.forEach((cuenta) => {
+          const option = document.createElement("option");
+          option.value = cuenta.numero_interno;
+          option.text = cuenta.clave_banco;
+          cuentaSelect.appendChild(option);
         });
-    }
-  });
+      })
+      .catch((error) => {
+        console.error("Error al obtener los departamentos:", error);
+      });
+  }
+});
 
 let table;
 
@@ -148,11 +151,15 @@ function clearFilter(event) {
   filterInput.value = "";
 }
 
-document.getElementById("descargar-universo-button").addEventListener("click", function() {
-	const empresa = "null";
-	const cuenta = "null";
-	initializeTable(empresa, cuenta);
-});
+document
+  .getElementById("descargar-universo-button")
+  .addEventListener("click", function () {
+    const empresa = "null";
+    const cuenta = "null";
+    empresaSelect.value = "";
+    cuentaSelect.value = "";
+    initializeTable(empresa, cuenta);
+  });
 
 document
   .getElementById("actualizar-button")
@@ -160,7 +167,7 @@ document
     const selectedEmpresa = empresaSelect.value;
     const selectedCuenta = cuentaSelect.value;
 
-    console.log(selectedEmpresa, selectedCuenta)
+    console.log(selectedEmpresa, selectedCuenta);
 
     if (selectedEmpresa) {
       if (selectedCuenta) {
@@ -226,10 +233,76 @@ document
 
 function exportTable() {
   if (table) {
-    table.download("csv", "registros.csv", {
-      bom: true,
-      charset: "utf-8",
-    });
+    const selectedOption = empresaSelect.selectedOptions[0];
+    const razonSocial = selectedOption.getAttribute("data-razon-social");
+    const cuentaId = cuentaSelect.value;
+
+    if (selectedOption.value === "null") {
+      const customHeader = {
+        v: "CHEQUES EN CIRCULACIÓN",
+        s: { font: { sz: 30 } },
+      };
+      const razonSocialCell = {
+        v: "Todas las empresas",
+        s: { font: { sz: 12 } },
+      };
+      const fechasCell = {
+        v: "Todas las cuentas",
+        s: { font: { sz: 12 } },
+      };
+
+      const worksheet = XLSX.utils.aoa_to_sheet([]);
+      worksheet["A1"] = { ...customHeader };
+      worksheet["A3"] = { ...razonSocialCell };
+      worksheet["A4"] = { ...fechasCell };
+
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Registros");
+
+      XLSX.writeFile(workbook, "registros.xlsx", {
+        bookType: "xlsx",
+        bookSST: true,
+        type: "binary",
+        cellStyles: true,
+      });
+    } else {
+      const worksheet = XLSX.utils.aoa_to_sheet([]);
+
+      const customHeader = {
+        v: "CHEQUES EN CIRCULACION",
+        s: { font: { sz: 30 } },
+      };
+      const razonSocialCell = {
+        v: "Empresa: " + razonSocial,
+        s: { font: { sz: 12 } },
+      };
+      const fechasCell = {
+        v: "Cuenta: " + cuentaId,
+        s: { font: { sz: 12 } },
+      };
+
+      worksheet["A1"] = { ...customHeader };
+      worksheet["A3"] = { ...razonSocialCell };
+      worksheet["A4"] = { ...fechasCell };
+
+      const columns = table.getColumns();
+      const headers = columns.map((column) => column.getField());
+      const dataT = [
+        headers,
+        ...table.getData().map((row) => Object.values(row)),
+      ];
+      XLSX.utils.sheet_add_aoa(worksheet, dataT, { origin: "A9" });
+
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Registros");
+
+      XLSX.writeFile(workbook, "registros.xlsx", {
+        bookType: "xlsx",
+        bookSST: true,
+        type: "binary",
+        cellStyles: true,
+      });
+    }
   }
 }
 

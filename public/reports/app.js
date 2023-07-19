@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ) {
       showPageButton3.style.display = "block";
     } else {
-      showPageButton3.style.display = "none"; 
+      showPageButton3.style.display = "none";
     }
     if (
       selectedEmpresa &&
@@ -169,6 +169,13 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 18 &&
       parseInt(selectedEquipment) === 24
+    ) {
+      showPageButton5.style.display = "block";
+    } else if (
+      selectedEmpresa &&
+      parseInt(selectedCompany) === 4 &&
+      parseInt(selectedDepartment) === 2 &&
+      parseInt(selectedEquipment) === 29
     ) {
       showPageButton5.style.display = "block";
     } else {

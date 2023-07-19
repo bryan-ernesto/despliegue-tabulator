@@ -158,3 +158,8 @@ span {
   margin-bottom: 25px;
   background-color: #aa4655;
 }
+
+.report-button {
+  margin-left: 10px;
+  margin-right: 10px;
+}
