@@ -38,7 +38,7 @@ button {
 button:hover {
   background-color: rgba(26, 21, 32, 1);
   transition: 0.3s;
-  border-radius: 20%;
+  border-radius: 10px;
 }
 
 .user-bar {
@@ -88,7 +88,8 @@ span {
 #show-page-report3,
 #show-page-report4,
 #show-page-report5,
-#show-page-report6 {
+#show-page-report6,
+#show-page-report7 {
   margin-top: 20px;
   display: block;
   text-align: center;
@@ -99,7 +100,8 @@ span {
 #show-page-report3 a,
 #show-page-report4 a,
 #show-page-report5 a,
-#show-page-report6 a {
+#show-page-report6 a,
+#show-page-report7 a{
   display: block;
   padding: 10px 20px;
   background-color: rgba(90, 84, 104, 1);
@@ -113,7 +115,8 @@ span {
 #show-page-report3 a:hover,
 #show-page-report4 a:hover,
 #show-page-report5 a:hover,
-#show-page-report6 a:hover {
+#show-page-report6 a:hover,
+#show-page-report7 a:hover {
   background-color: rgba(26, 21, 32, 1);
   transition: 0.3s;
   border-radius: 20%;
@@ -131,7 +134,8 @@ span {
 #show-page-report3 button,
 #show-page-report4 button,
 #show-page-report5 button,
-#show-page-report6 button {
+#show-page-report6 button,
+#show-page-report7 button{
   display: block;
   padding: 10px 20px;
   background-color: rgba(90, 84, 104, 1);
@@ -146,7 +150,8 @@ span {
 #show-page-report3 button:hover,
 #show-page-report4 button:hover,
 #show-page-report5 button:hover,
-#show-page-report6 button:hover {
+#show-page-report6 button:hover,
+#show-page-report7 button:hover {
   background-color: rgba(26, 21, 32, 1);
   transition: 0.3s;
   border-radius: 20%;

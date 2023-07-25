@@ -12,20 +12,23 @@ const clearButtonE = document.getElementById("clear-button-d");
 
 let empresasData;
 
-fetch("http://192.168.0.8:3000/api/reporteador/Get_Reporteador_EmpresasInternas", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    str_empresa_nombre: "",
-    int_id_delta: 0,
-    str_nombre_delta: "",
-    str_tipo: "",
-    int_creado_por: 0,
-    int_actualizado_por: 0,
-  }),
-})
+fetch(
+  "http://192.168.0.8:3000/api/reporteador/Get_Reporteador_EmpresasInternas",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      str_empresa_nombre: "",
+      int_id_delta: 0,
+      str_nombre_delta: "",
+      str_tipo: "",
+      int_creado_por: 0,
+      int_actualizado_por: 0,
+    }),
+  }
+)
   .then((response) => response.json())
   .then((data) => {
     empresasData = data;
@@ -121,11 +124,11 @@ departamentoSelect.addEventListener("change", () => {
       },
       body: JSON.stringify({
         int_id_cat_equipo: 0,
-        str_equipo_nombre:"",
-        int_id_cat_departamento:0,
-        int_id_cat_empresa:companyId,
-        int_creado_por:0,
-        int_actualizado_por:0
+        str_equipo_nombre: "",
+        int_id_cat_departamento: 0,
+        int_id_cat_empresa: companyId,
+        int_creado_por: 0,
+        int_actualizado_por: 0,
       }),
     })
       .then((response) => response.json())
@@ -161,6 +164,18 @@ departamentoSelect.addEventListener("change", () => {
 });
 
 let table;
+
+document
+  .getElementById("descargar-universo-button")
+  .addEventListener("click", function () {
+    const selectEquipo = 0;
+    const selectDepartamento = 0;
+    const selectEmpresa = 0;
+    empresaSelect.value = "";
+    departamentoSelect.value = "";
+    equipoSelect.value = "";
+    initializeTable(selectEquipo, selectDepartamento, selectEmpresa);
+  });
 
 document
   .getElementById("actualizar-button")
@@ -231,12 +246,19 @@ document
                   selectedEmpresa
                 );
                 Swal.close();
+                const recordCountText =
+                  document.getElementById("record-count-text");
+                recordCountText.textContent = `Cantidad de registros: ${data.length}`;
+                recordCountText.style.display = "block"; // Mostrar el elemento
               } else {
                 Swal.fire({
                   icon: "warning",
                   title: "Advertencia",
                   text: "No se encontró información acorde a los filtros seleccionados.",
                 });
+                const recordCountText =
+                  document.getElementById("record-count-text");
+                recordCountText.style.display = "none"; // Ocultar el elemento
               }
             })
             .catch((error) => {
@@ -328,7 +350,32 @@ function initializeTable(equipo, departamento, empresa) {
 
 function exportTable() {
   if (table) {
-    table.download("csv", "registros.csv");
+    const customHeader = {
+      v: "REPORTE DE TICKETS",
+      s: { font: { sz: 30 } },
+    };
+
+    const worksheet = XLSX.utils.aoa_to_sheet([]);
+    worksheet["A1"] = { ...customHeader };
+
+    const columns = table.getColumns();
+    const headers = columns.map((column) => column.getField());
+    const dataT = [
+      headers,
+      ...table.getData().map((row) => Object.values(row)),
+    ];
+    XLSX.utils.sheet_add_aoa(worksheet, dataT, { origin: "A9" });
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Registros");
+
+    XLSX.writeFile(workbook, "registros.xlsx", {
+      bookType: "xlsx",
+      bookSST: true,
+      type: "binary",
+      cellStyles: true,
+    });
+  } else {
   }
 }
 

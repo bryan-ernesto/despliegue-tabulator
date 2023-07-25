@@ -187,12 +187,19 @@ document
                   fechaFinal
                 );
                 Swal.close();
+                const recordCountText =
+                  document.getElementById("record-count-text");
+                recordCountText.textContent = `Cantidad de registros: ${data.length}`;
+                recordCountText.style.display = "block"; // Mostrar el elemento
               } else {
                 Swal.fire({
                   icon: "warning",
                   title: "Advertencia",
                   text: "No se encontró información acorde a los filtros seleccionados.",
                 });
+                const recordCountText =
+                  document.getElementById("record-count-text");
+                recordCountText.style.display = "none"; // Ocultar el elemento
               }
             })
             .catch((error) => {

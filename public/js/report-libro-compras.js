@@ -87,12 +87,20 @@ document
               });
               initializeTable(selectedEmpresa, fechaInicial, fechaFinal);
               Swal.close();
+              const recordCountText =
+                document.getElementById("record-count-text");
+              recordCountText.textContent = `Cantidad de registros: ${data.length}`;
+              recordCountText.style.display = "block"; // Mostrar el elemento
             } else {
               Swal.fire({
                 icon: "warning",
                 title: "Advertencia",
                 text: "No se encontró información acorde a los filtros seleccionados.",
               });
+              // Ocultar el texto cuando no hay registros
+              const recordCountText =
+                document.getElementById("record-count-text");
+              recordCountText.style.display = "none"; // Ocultar el elemento
             }
           })
           .catch((error) => {
@@ -120,7 +128,6 @@ document
   });
 
 function initializeTable(nombreEmpresa, fechaInicial, fechaFinal) {
-  
   table = new Tabulator("#example-table", {
     layout: "fitData",
     columns: [],
@@ -180,9 +187,9 @@ function exportTable() {
       };
 
       const worksheet = XLSX.utils.aoa_to_sheet([]);
-      worksheet["A1"] = { ...customHeader};
-      worksheet["A3"] = { ...razonSocialCell};
-      worksheet["A4"] = { ...fechasCell};
+      worksheet["A1"] = { ...customHeader };
+      worksheet["A3"] = { ...razonSocialCell };
+      worksheet["A4"] = { ...fechasCell };
 
       const columns = table.getColumns();
       const headers = columns.map((column) => column.getField());
@@ -235,10 +242,10 @@ function exportTable() {
             s: { font: { sz: 12 } },
           };
 
-          worksheet["A1"] = { ...customHeader};
-          worksheet["A3"] = { ...razonSocialCell};
-          worksheet["A4"] = { ...direccionCell};
-          worksheet["A5"] = { ...fechasCell};
+          worksheet["A1"] = { ...customHeader };
+          worksheet["A3"] = { ...razonSocialCell };
+          worksheet["A4"] = { ...direccionCell };
+          worksheet["A5"] = { ...fechasCell };
 
           const columns = table.getColumns();
           const headers = columns.map((column) => column.getField());
@@ -249,7 +256,11 @@ function exportTable() {
           XLSX.utils.sheet_add_aoa(worksheet, dataT, { origin: "A10" });
 
           const workbook = XLSX.utils.book_new();
-          XLSX.utils.book_append_sheet(workbook, worksheet, `${selectedOption.text}`);
+          XLSX.utils.book_append_sheet(
+            workbook,
+            worksheet,
+            `${selectedOption.text}`
+          );
 
           XLSX.writeFile(workbook, `${selectedOption.text}.xlsx`, {
             bookType: "xlsx",

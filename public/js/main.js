@@ -34,11 +34,6 @@ fetch(
     initialOption.hidden = true;
     empresaSelect.appendChild(initialOption);
 
-    const selectAllOption = document.createElement("option");
-    selectAllOption.value = "null";
-    selectAllOption.text = "Seleccionar todas las empresas";
-    empresaSelect.appendChild(selectAllOption);
-
     empresasData.forEach((empresa) => {
       const option = document.createElement("option");
       option.value = empresa.id_delta;
@@ -130,27 +125,6 @@ function initializeTable(idEmpresa, idCuenta) {
   table.setData();
 }
 
-function applyFilter(event) {
-  var filterInput = event.target.parentNode.querySelector(".filter-input");
-  var column = filterInput.getAttribute("data-column");
-  var filterValue = filterInput.value;
-  table.setFilter(column, "like", filterValue);
-}
-
-function clearFilter(event) {
-  var filterInput = event.target.parentNode.querySelector(".filter-input");
-  var column = filterInput.getAttribute("data-column");
-  var filters = table.getFilters();
-  filters = filters.filter(function (filter) {
-    return filter.field !== column;
-  });
-  table.clearFilter();
-  filters.forEach(function (filter) {
-    table.setFilter(filter.field, filter.type, filter.value);
-  });
-  filterInput.value = "";
-}
-
 document
   .getElementById("descargar-universo-button")
   .addEventListener("click", function () {
@@ -199,12 +173,20 @@ document
               });
               initializeTable(selectedEmpresa, selectedCuenta);
               Swal.close();
+              const recordCountText =
+                document.getElementById("record-count-text");
+              recordCountText.textContent = `Cantidad de registros: ${data.length}`;
+              recordCountText.style.display = "block"; // Mostrar el elemento
             } else {
               Swal.fire({
                 icon: "warning",
                 title: "Advertencia",
                 text: "No se encontró información acorde a los filtros seleccionados.",
               });
+              // Ocultar el texto cuando no hay registros
+              const recordCountText =
+                document.getElementById("record-count-text");
+              recordCountText.style.display = "none"; // Ocultar el elemento
             }
           })
           .catch((error) => {
@@ -233,76 +215,32 @@ document
 
 function exportTable() {
   if (table) {
-    const selectedOption = empresaSelect.selectedOptions[0];
-    const razonSocial = selectedOption.getAttribute("data-razon-social");
-    const cuentaId = cuentaSelect.value;
+    const customHeader = {
+      v: "REPORTE CHEQUES EN CIRCULACIÓN",
+      s: { font: { sz: 30 } },
+    };
 
-    if (selectedOption.value === "null") {
-      const customHeader = {
-        v: "CHEQUES EN CIRCULACIÓN",
-        s: { font: { sz: 30 } },
-      };
-      const razonSocialCell = {
-        v: "Todas las empresas",
-        s: { font: { sz: 12 } },
-      };
-      const fechasCell = {
-        v: "Todas las cuentas",
-        s: { font: { sz: 12 } },
-      };
+    const worksheet = XLSX.utils.aoa_to_sheet([]);
+    worksheet["A1"] = { ...customHeader };
 
-      const worksheet = XLSX.utils.aoa_to_sheet([]);
-      worksheet["A1"] = { ...customHeader };
-      worksheet["A3"] = { ...razonSocialCell };
-      worksheet["A4"] = { ...fechasCell };
+    const columns = table.getColumns();
+    const headers = columns.map((column) => column.getField());
+    const dataT = [
+      headers,
+      ...table.getData().map((row) => Object.values(row)),
+    ];
+    XLSX.utils.sheet_add_aoa(worksheet, dataT, { origin: "A5" });
 
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Registros");
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Registros");
 
-      XLSX.writeFile(workbook, "registros.xlsx", {
-        bookType: "xlsx",
-        bookSST: true,
-        type: "binary",
-        cellStyles: true,
-      });
-    } else {
-      const worksheet = XLSX.utils.aoa_to_sheet([]);
-
-      const customHeader = {
-        v: "CHEQUES EN CIRCULACION",
-        s: { font: { sz: 30 } },
-      };
-      const razonSocialCell = {
-        v: "Empresa: " + razonSocial,
-        s: { font: { sz: 12 } },
-      };
-      const fechasCell = {
-        v: "Cuenta: " + cuentaId,
-        s: { font: { sz: 12 } },
-      };
-
-      worksheet["A1"] = { ...customHeader };
-      worksheet["A3"] = { ...razonSocialCell };
-      worksheet["A4"] = { ...fechasCell };
-
-      const columns = table.getColumns();
-      const headers = columns.map((column) => column.getField());
-      const dataT = [
-        headers,
-        ...table.getData().map((row) => Object.values(row)),
-      ];
-      XLSX.utils.sheet_add_aoa(worksheet, dataT, { origin: "A9" });
-
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Registros");
-
-      XLSX.writeFile(workbook, "registros.xlsx", {
-        bookType: "xlsx",
-        bookSST: true,
-        type: "binary",
-        cellStyles: true,
-      });
-    }
+    XLSX.writeFile(workbook, "reporte-ch-circulacion.xlsx", {
+      bookType: "xlsx",
+      bookSST: true,
+      type: "binary",
+      cellStyles: true,
+    });
+  } else {
   }
 }
 

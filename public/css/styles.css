@@ -19,7 +19,7 @@ body::before {
   height: 100%;
   background-image: url("../img/Logo_Input.png");
   background-repeat: no-repeat;
-  background-size: 60%;
+  background-size: 50%;
   background-position: bottom;
   filter: blur(7px);
   z-index: -1;
@@ -34,6 +34,18 @@ body::before {
   font-size: 25px;
   cursor: pointer;
   margin-right: 20px;
+}
+
+.h1-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px; 
+}
+
+h1 {
+  font-size: 36px; 
+  color: #1f1f1f; 
 }
 
 .welcome-info {
@@ -52,7 +64,7 @@ body::before {
   font-size: 25px;
   padding: 5px 10px;
   border: none;
-  margin-left: auto; /* Mover el botón al final de la user-bar */
+  margin-left: auto; 
 }
 
 #btn-menu {
@@ -171,7 +183,7 @@ body::before {
 }
 
 .tabulator {
-  margin: 40px 3px 0 3px;
+  margin: 85px 3px 0 3px;
 }
 
 .user-bar {
@@ -419,4 +431,15 @@ button:hover {
 
 .contenido {
   min-height: 100vh;
+}
+
+.centrado {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%); 
+  background: white;  
+  padding: 10px;  
+  border: 1px solid #ccc;  
+  display: none;
 }

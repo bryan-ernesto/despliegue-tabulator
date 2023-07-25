@@ -15,12 +15,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const showPageButton4 = document.getElementById("show-page-report4");
   const showPageButton5 = document.getElementById("show-page-report5");
   const showPageButton6 = document.getElementById("show-page-report6");
+  const showPageButton7 = document.getElementById("show-page-report7");
 
   showPageButton1.style.display = "none";
   showPageButton3.style.display = "none";
   showPageButton4.style.display = "none";
   showPageButton5.style.display = "none";
   showPageButton6.style.display = "none";
+  showPageButton7.style.display = "none";
 
   let empresasData;
 
@@ -35,6 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton3.style.display = "block";
     showPageButton4.style.display = "block";
     showPageButton6.style.display = "block";
+    showPageButton7.style.display = "block";
   } else if (username === "egalvez") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
@@ -53,6 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton4.style.display = "block";
     showPageButton5.style.display = "block";
     showPageButton6.style.display = "block";
+    showPageButton7.style.display = "block";
   } else if (username === "olopez" || username === "cpcifuentes") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
