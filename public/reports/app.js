@@ -1,6 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
   const username = localStorage.getItem("username");
 
+  if (!username) {
+    window.location.href = "/index.html"; 
+    return; 
+  }
+
   const usernameElement = document.getElementById("username");
   usernameElement.textContent = username;
 
@@ -61,11 +66,19 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
     showPageButton4.style.display = "block";
+  } else if (
+    username === "msolano" ||
+    username === "sorellana" ||
+    username === "rixim"
+  ) {
+    showPageButton7.style.display = "block";
   } else {
     showPageButton1.style.display = "none";
     showPageButton3.style.display = "none";
     showPageButton4.style.display = "none";
     showPageButton5.style.display = "none";
+    showPageButton6.style.display = "none";
+    showPageButton7.style.display = "none";
   }
 
   fetch("http://192.168.0.8:3000/api/reporteador/Get_Usuarios_Reporteador", {
