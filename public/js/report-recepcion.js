@@ -165,6 +165,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                   text: "Esto puede durar varios minutos",
                 });
                 initializeTable(selectedEmpresa, selectedEstado);
+                Swal.close();
                 const recordCountText =
                   document.getElementById("record-count-text");
                 recordCountText.textContent = `Cantidad de registros: ${data.length}`;

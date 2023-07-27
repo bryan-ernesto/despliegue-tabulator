@@ -219,34 +219,42 @@ document.addEventListener("DOMContentLoaded", (event) => {
       }
     });
 
-  function exportTable() {
+  async function exportTable() {
     if (table) {
-      const customHeader = {
-        v: "REPORTE CHEQUES EN CIRCULACIÓN",
-        s: { font: { sz: 30 } },
-      };
+      const workbook = new ExcelJS.Workbook();
+      workbook.creator = "Me";
+      workbook.lastModifiedBy = "Me";
+      workbook.created = new Date();
+      workbook.modified = new Date();
+      const sheet = workbook.addWorksheet("Registros");
 
-      const worksheet = XLSX.utils.aoa_to_sheet([]);
-      worksheet["A1"] = { ...customHeader };
+      sheet.getCell("A1").value = "REPORTE CHEQUES EN CIRCULACIÓN";
+      sheet.getCell("A1").font = { size: 30 };
 
       const columns = table.getColumns();
       const headers = columns.map((column) => column.getField());
-      const dataT = [
-        headers,
-        ...table.getData().map((row) => Object.values(row)),
-      ];
-      XLSX.utils.sheet_add_aoa(worksheet, dataT, { origin: "A5" });
+      const data = table.getData().map((row) => Object.values(row));
 
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Registros");
-
-      XLSX.writeFile(workbook, "reporte-ch-circulacion.xlsx", {
-        bookType: "xlsx",
-        bookSST: true,
-        type: "binary",
-        cellStyles: true,
+      headers.forEach((header, i) => {
+        sheet.getCell(`${String.fromCharCode(65 + i)}5`).value = header;
       });
-    } else {
+
+      data.forEach((row, i) => {
+        row.forEach((value, j) => {
+          sheet.getCell(`${String.fromCharCode(65 + j)}${i + 6}`).value = isNaN(
+            value
+          )
+            ? value
+            : Number(value);
+        });
+      });
+
+      workbook.xlsx.writeBuffer().then(function (buffer) {
+        let blob = new Blob([buffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        saveAs(blob, "reporte-ch-circulacion.xlsx");
+      });
     }
   }
 

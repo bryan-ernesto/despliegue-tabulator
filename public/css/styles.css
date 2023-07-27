@@ -40,12 +40,12 @@ body::before {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 50px;
+  margin-top: 50px; 
 }
 
 h1 {
-  font-size: 36px;
-  color: #1f1f1f;
+  font-size: 36px; 
+  color: #1f1f1f; 
 }
 
 .welcome-info {
@@ -64,7 +64,7 @@ h1 {
   font-size: 25px;
   padding: 5px 10px;
   border: none;
-  margin-left: auto;
+  margin-left: auto; 
 }
 
 #btn-menu {
@@ -369,12 +369,13 @@ button:hover {
   min-height: 100vh;
 }
 
-.centrado {
+.table-container {
+  position: relative;
+}
+
+.count-text {
   position: absolute;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  padding: 10px;
-  border: 1px solid #ccc;
-  display: none;
+  top: -40px; /* Ajusta este valor según necesites */
+  width: 100%;
+  text-align: center;
 }

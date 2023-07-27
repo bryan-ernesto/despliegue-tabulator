@@ -56,11 +56,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
               recordCountText.textContent = `Cantidad de registros: ${data.length}`;
               recordCountText.style.display = "block"; // Mostrar el elemento
 
+              // Calcular y ajustar la posición de recordCountText
               let tableElement = document.getElementById("example-table");
-              let tablePosition = tableElement.getBoundingClientRect();
+              let tablePosition = tableElement.offsetTop; // Usar offsetTop en lugar de getBoundingClientRect()
               recordCountText.style.top = `${
-                tablePosition.top - recordCountText.offsetHeight + 100
-              }px`;
+                tablePosition - recordCountText.offsetHeight + 20
+              }px`; // Agregamos 20px extra
             } else {
               Swal.fire({
                 icon: "warning",
@@ -161,11 +162,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
               document.getElementById("record-count-text");
             recordCountText.textContent = `Cantidad de registros: ${data.length}`;
             recordCountText.style.display = "block"; // Mostrar el elemento
-            let tableElement = document.getElementById("example-table");
-            let tablePosition = tableElement.getBoundingClientRect();
-            recordCountText.style.top = `${
-              tablePosition.top - recordCountText.offsetHeight
-            }px`;
           } else {
             Swal.fire({
               icon: "warning",

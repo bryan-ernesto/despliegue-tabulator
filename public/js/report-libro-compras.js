@@ -172,7 +172,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     table.clearData();
   });
 
-  function exportTable() {
+  async function exportTable() {
     if (table) {
       const selectedOption = empresaSelect.selectedOptions[0];
       const razonSocial = selectedOption.getAttribute("data-razon-social");
@@ -181,41 +181,24 @@ document.addEventListener("DOMContentLoaded", (event) => {
       const fechaInicial = fechaInicialInput.value;
       const fechaFinal = fechaFinalInput.value;
 
+      const workbook = new ExcelJS.Workbook();
+      workbook.creator = "Me";
+      workbook.lastModifiedBy = "Me";
+      workbook.created = new Date();
+      workbook.modified = new Date();
+      const sheet = workbook.addWorksheet(
+        selectedOption.value === "0" ? "Registros" : selectedOption.text
+      );
+
+      let startRow = 7;
+      sheet.getCell("A1").value = "LIBRO DE COMPRAS";
+      sheet.getCell("A1").font = { size: 30 };
+
       if (selectedOption.value === "0") {
-        const customHeader = { v: "LIBRO DE COMPRAS", s: { font: { sz: 30 } } };
-        const razonSocialCell = {
-          v: "Todas las empresas",
-          s: { font: { sz: 12 } },
-        };
-        const fechasCell = {
-          v: "Fechas: " + fechaInicial + " - " + fechaFinal,
-          s: { font: { sz: 12 } },
-        };
-
-        const worksheet = XLSX.utils.aoa_to_sheet([]);
-        worksheet["A1"] = { ...customHeader };
-        worksheet["A3"] = { ...razonSocialCell };
-        worksheet["A4"] = { ...fechasCell };
-
-        const columns = table.getColumns();
-        const headers = columns.map((column) => column.getField());
-        const dataT = [
-          headers,
-          ...table.getData().map((row) => Object.values(row)),
-        ];
-        XLSX.utils.sheet_add_aoa(worksheet, dataT, { origin: "A9" });
-
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Registros");
-
-        XLSX.writeFile(workbook, "reporte-libro-compras.xlsx", {
-          bookType: "xlsx",
-          bookSST: true,
-          type: "binary",
-          cellStyles: true,
-        });
+        sheet.getCell("A3").value = "Todas las empresas";
+        sheet.getCell("A3").font = { size: 12 };
       } else {
-        fetch(
+        const response = await fetch(
           "http://192.168.0.8:3000/api/delta/Get_Reporte_Empresa_Direccion",
           {
             method: "POST",
@@ -226,65 +209,51 @@ document.addEventListener("DOMContentLoaded", (event) => {
               str_numero: empresaId,
             }),
           }
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(data);
-            console.log(data[0].DIRECCION);
-            const direccion = data[0].DIRECCION;
-            const worksheet = XLSX.utils.aoa_to_sheet([]);
+        );
+        const data = await response.json();
+        const direccion = data[0].DIRECCION;
 
-            const customHeader = {
-              v: "LIBRO DE COMPRAS",
-              s: { font: { sz: 30 } },
-            };
-            const razonSocialCell = {
-              v: "Razón Social: " + razonSocial,
-              s: { font: { sz: 12 } },
-            };
-            const direccionCell = {
-              v: "Dirección Comercial: " + direccion,
-              s: { font: { sz: 12 } },
-            };
-            const fechasCell = {
-              v: "Fechas: " + fechaInicial + " - " + fechaFinal,
-              s: { font: { sz: 12 } },
-            };
-
-            worksheet["A1"] = { ...customHeader };
-            worksheet["A3"] = { ...razonSocialCell };
-            worksheet["A4"] = { ...direccionCell };
-            worksheet["A5"] = { ...fechasCell };
-
-            const columns = table.getColumns();
-            const headers = columns.map((column) => column.getField());
-            const dataT = [
-              headers,
-              ...table.getData().map((row) => Object.values(row)),
-            ];
-            XLSX.utils.sheet_add_aoa(worksheet, dataT, { origin: "A10" });
-
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(
-              workbook,
-              worksheet,
-              `${selectedOption.text}`
-            );
-
-            XLSX.writeFile(workbook, `reporte-libro-compras.xlsx`, {
-              bookType: "xlsx",
-              bookSST: true,
-              type: "binary",
-              cellStyles: true,
-            });
-          })
-          .catch((error) => {
-            console.error("Error al obtener la dirección:", error);
-          });
+        sheet.getCell("A3").value = "Razón Social: " + razonSocial;
+        sheet.getCell("A3").font = { size: 12 };
+        sheet.getCell("A4").value = "Dirección Comercial: " + direccion;
+        sheet.getCell("A4").font = { size: 12 };
       }
+
+      sheet.getCell("A5").value =
+        "Fechas: " + fechaInicial + " - " + fechaFinal;
+      sheet.getCell("A5").font = { size: 12 };
+
+      const columns = table.getColumns();
+      const headers = columns.map((column) => column.getField());
+      const data = table.getData().map((row) => Object.values(row));
+
+      headers.forEach((header, i) => {
+        sheet.getCell(`${String.fromCharCode(65 + i)}${startRow}`).value =
+          header;
+      });
+
+      data.forEach((row, i) => {
+        row.forEach((value, j) => {
+          sheet.getCell(
+            `${String.fromCharCode(65 + j)}${i + startRow + 1}`
+          ).value = isNaN(value) ? value : Number(value);
+        });
+      });
+
+      workbook.xlsx.writeBuffer().then(function (buffer) {
+        let blob = new Blob([buffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        saveAs(
+          blob,
+          selectedOption.value === "0"
+            ? "registros.xlsx"
+            : `${selectedOption.text}.xlsx`
+        );
+      });
     }
   }
-
+  
   document
     .getElementById("export-table")
     .addEventListener("click", function () {

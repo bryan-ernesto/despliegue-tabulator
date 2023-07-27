@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton5.style.display = "block";
     showPageButton6.style.display = "block";
     showPageButton7.style.display = "block";
-  } else if (username === "olopez" || username === "cpcifuentes") {
+  } else if (username === "olopez" || username === "cpcifuentes" || username === "jatorres") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
     showPageButton4.style.display = "block";
