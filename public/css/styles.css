@@ -318,7 +318,7 @@ button:hover {
 .select-large {
   margin-top: 30px;
   margin-left: 30px;
-  width: 300px;
+  width: 200px;
   height: 50px;
 }
 
@@ -353,6 +353,10 @@ button:hover {
 }
 
 #clear-button-e {
+  margin-top: 18px;
+}
+
+#clear-button-es {
   margin-top: 18px;
 }
 

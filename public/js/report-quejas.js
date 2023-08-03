@@ -66,9 +66,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
       const selectAllOption = document.createElement("option");
       selectAllOption.value = "";
-      selectAllOption.text = "Seleccionar todos las empresas";
+      selectAllOption.text = "Seleccionar todas las empresas";
       empresaSelect.appendChild(selectAllOption);
-
+      
       estadosData.forEach((empresa) => {
         const option = document.createElement("option");
         option.value = empresa.Empresa;
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       const selectAllOption = document.createElement("option");
       selectAllOption.value = "";
       selectAllOption.text = "Seleccionar todos los estados";
-      estadoSelect.appendChild(selectAllOption);
+      estadoSelect.appendChild(selectAllOption);     
 
       estadosData.forEach((estado) => {
         const option = document.createElement("option");
@@ -124,9 +124,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
       const selectedEstado = estadoSelect.value;
       const fechaInicial = fechaInicialInput.value;
       const fechaFinal = fechaFinalInput.value;
-      if (selectedTipo) {
-        if (selectedEmpresa) {
-          if (selectedEstado) {
+      if (selectedTipo !== undefined && selectedTipo !== null) {
+        if (selectedEmpresa !== undefined && selectedEmpresa !== null) {
+          if (selectedEstado !== undefined && selectedEstado !== null) {
             if (fechaInicial && fechaFinal) {
               Swal.fire({
                 title: "Validando que exista información",
@@ -166,16 +166,11 @@ document.addEventListener("DOMContentLoaded", (event) => {
                       fechaInicial,
                       fechaFinal
                     );
-                    console.log(selectedTipo,
-                      selectedEmpresa,
-                      selectedEstado,
-                      fechaInicial,
-                      fechaFinal)
                     Swal.close();
                     const recordCountText =
                       document.getElementById("record-count-text");
                     recordCountText.textContent = `Cantidad de registros: ${data.length}`;
-                    recordCountText.style.display = "block"; // Mostrar el elemento
+                    recordCountText.style.display = "block"; 
                   } else {
                     Swal.fire({
                       icon: "warning",
@@ -184,7 +179,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                     });
                     const recordCountText =
                       document.getElementById("record-count-text");
-                    recordCountText.style.display = "none"; // Ocultar el elemento
+                    recordCountText.style.display = "none";
                   }
                 })
                 .catch((error) => {
@@ -223,11 +218,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
           text: "Debes seleccionar un tipo.",
         });
       }
-      console.log(selectedTipo,
-        selectedEmpresa,
-        selectedEstado,
-        fechaInicial,
-        fechaFinal)
     });
 
   function initializeTable(
@@ -247,7 +237,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       ajaxConfig: {
         method: "POST", // Cambia a POST
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
       },
       ajaxParams: function (params) {
@@ -284,22 +274,19 @@ document.addEventListener("DOMContentLoaded", (event) => {
           Swal.showLoading();
         },
       });
-      fetch(
-        "http://192.168.0.8:3000/api/sharepoint/Get_Sharepoint_Quejas",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            str_tipo: "",
-            str_empresa: "",
-            str_estado: "",
-            fecha_inicio: "",
-            fecha_final: "",
-          }),
-        }
-      )
+      fetch("http://192.168.0.8:3000/api/sharepoint/Get_Sharepoint_Quejas", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          str_tipo: "",
+          str_empresa: "",
+          str_estado: "",
+          fecha_inicio: "",
+          fecha_final: "",
+        }),
+      })
         .then((response) => response.json())
         .then((data) => {
           if (data && data.length > 0) {
@@ -350,12 +337,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
         headers,
         ...table.getData().map((row) => Object.values(row)),
       ];
-      XLSX.utils.sheet_add_aoa(worksheet, dataT, { origin: "A9" });
+      XLSX.utils.sheet_add_aoa(worksheet, dataT, { origin: "A5" });
 
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Registros");
 
-      XLSX.writeFile(workbook, "registros.xlsx", {
+      XLSX.writeFile(workbook, "reporte-quejas.xlsx", {
         bookType: "xlsx",
         bookSST: true,
         type: "binary",
@@ -372,12 +359,17 @@ document.addEventListener("DOMContentLoaded", (event) => {
     });
 
   clearButton.addEventListener("click", () => {
-    procesoSelect.value = "";
+    tipoSelect.value = "";
     table.clearData();
   });
 
   clearButtonE.addEventListener("click", () => {
-    usuarioSelect.value = "";
+    empresaSelect.value = "";
+    table.clearData();
+  });
+
+  clearButtonES.addEventListener("click", () => {
+    estadoSelect.value = "";
     table.clearData();
   });
 

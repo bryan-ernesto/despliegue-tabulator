@@ -247,7 +247,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         saveAs(
           blob,
           selectedOption.value === "0"
-            ? "registros.xlsx"
+            ? "reporte-compras.xlsx"
             : `${selectedOption.text}.xlsx`
         );
       });

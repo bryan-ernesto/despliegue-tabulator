@@ -54,14 +54,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
               const recordCountText =
                 document.getElementById("record-count-text");
               recordCountText.textContent = `Cantidad de registros: ${data.length}`;
-              recordCountText.style.display = "block"; // Mostrar el elemento
+              recordCountText.style.display = "block";
 
-              // Calcular y ajustar la posición de recordCountText
               let tableElement = document.getElementById("example-table");
-              let tablePosition = tableElement.offsetTop; // Usar offsetTop en lugar de getBoundingClientRect()
+              let tablePosition = tableElement.offsetTop;
               recordCountText.style.top = `${
                 tablePosition - recordCountText.offsetHeight + 20
-              }px`; // Agregamos 20px extra
+              }px`;
             } else {
               Swal.fire({
                 icon: "warning",
@@ -70,7 +69,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
               });
               const recordCountText =
                 document.getElementById("record-count-text");
-              recordCountText.style.display = "none"; // Ocultar el elemento
+              recordCountText.style.display = "none";
             }
           })
           .catch((error) => {

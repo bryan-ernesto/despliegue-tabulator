@@ -323,7 +323,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Registros");
 
-      XLSX.writeFile(workbook, "registros.xlsx", {
+      XLSX.writeFile(workbook, "reporte-tickets.xlsx", {
         bookType: "xlsx",
         bookSST: true,
         type: "binary",
