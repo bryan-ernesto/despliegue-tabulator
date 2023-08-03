@@ -1,59 +1,57 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="../../img/Logo.png" type="image/x-icon" />
-    <title>Lista de Reportes</title>
-    <link rel="stylesheet" href="/css/drop.css" />
-  </head>
-  <body>
-    <div class="user-bar">
-      <div class="user-info">
-        <span id="welcome-message">Bienvenido,</span>
-        <span id="username"></span>
-      </div>
-      <button id="logout-button">Cerrar sesión</button>
-    </div>
-    <div class="dropdowns">
-      <select id="empresa-select" class="select-large"></select>
-      <button id="clear-button">X</button>
 
-      <select id="departamento-select" class="select-large"></select>
-      <button id="clear-button-d">X</button>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="../../img/Logo.png" type="image/x-icon" />
+  <title>Lista de Reportes</title>
+  <link rel="stylesheet" href="/css/drop.css" />
+</head>
 
-      <select id="equipo-select" class="select-large"></select>
-      <button id="clear-button-e">X</button>
+<body>
+  <div class="user-bar">
+    <div class="user-info">
+      <span id="welcome-message">Bienvenido,</span>
+      <span id="username"></span>
     </div>
-    <div class="buttons-reports">
-      <button id="show-page-report1" class="report-button">
-        <a href="reports/reporte-cheques-circulacion-general.html"
-          >Reporte Cheques en Circulación General</a
-        >
-      </button>
-      <button id="show-page-report3" class="report-button">
-        <a href="reports/reporte-libro-de-compras.html"
-          >Reporte Libro de Compras</a
-        >
-      </button>
-      <button id="show-page-report4" class="report-button">
-        <a href="reports/reporte-recepcion-documentos.html"
-          >Reporte Recepción de Documentos</a
-        >
-      </button>
-      <button id="show-page-report5" class="report-button">
-        <a href="reports/reporte-nova-tickets.html">Reporte Tickets</a>
-      </button>
-      <button id="show-page-report6" class="report-button">
-        <a href="reports/reporte-nova-tickets - general.html"
-          >Reporte Tickets - General</a
-        >
-      </button>
-      <button id="show-page-report7" class="report-button">
-        <a href="reports/reporte-levantamientos.html">Reporte Levantamientos</a>
-      </button>
-    </div>
-    <script src="app.js"></script>
-  </body>
+    <button id="logout-button">Cerrar sesión</button>
+  </div>
+  <div class="dropdowns">
+    <select id="empresa-select" class="select-large"></select>
+    <button id="clear-button">X</button>
+
+    <select id="departamento-select" class="select-large"></select>
+    <button id="clear-button-d">X</button>
+
+    <select id="equipo-select" class="select-large"></select>
+    <button id="clear-button-e">X</button>
+  </div>
+  <div class="buttons-reports">
+    <button id="show-page-report1" class="report-button">
+      <a href="reports/reporte-cheques-circulacion-general.html">Reporte Cheques en Circulación General</a>
+    </button>
+    <button id="show-page-report3" class="report-button">
+      <a href="reports/reporte-libro-de-compras.html">Reporte Libro de Compras</a>
+    </button>
+    <button id="show-page-report4" class="report-button">
+      <a href="reports/reporte-recepcion-documentos.html">Reporte Recepción de Documentos</a>
+    </button>
+    <button id="show-page-report5" class="report-button">
+      <a href="reports/reporte-nova-tickets.html">Reporte Tickets</a>
+    </button>
+    <button id="show-page-report6" class="report-button">
+      <a href="reports/reporte-nova-tickets - general.html">Reporte Tickets - General</a>
+    </button>
+    <button id="show-page-report7" class="report-button">
+      <a href="reports/reporte-levantamientos.html">Reporte Levantamientos</a>
+    </button>
+    <button id="show-page-report8" class="report-button">
+      <a href="reports/reporte-nova-quejas.html">Reporte Quejas</a>
+    </button>
+  </div>
+  <script src="app.js"></script>
+</body>
+
 </html>

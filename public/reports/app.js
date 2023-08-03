@@ -2,8 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const username = localStorage.getItem("username");
 
   if (!username) {
-    window.location.href = "/index.html"; 
-    return; 
+    window.location.href = "/index.html";
+    return;
   }
 
   const usernameElement = document.getElementById("username");
@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const showPageButton5 = document.getElementById("show-page-report5");
   const showPageButton6 = document.getElementById("show-page-report6");
   const showPageButton7 = document.getElementById("show-page-report7");
+  const showPageButton8 = document.getElementById("show-page-report8");
 
   showPageButton1.style.display = "none";
   showPageButton3.style.display = "none";
@@ -28,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
   showPageButton5.style.display = "none";
   showPageButton6.style.display = "none";
   showPageButton7.style.display = "none";
+  showPageButton8.style.display = "none";
 
   let empresasData;
 
@@ -43,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton4.style.display = "block";
     showPageButton6.style.display = "block";
     showPageButton7.style.display = "block";
+    showPageButton8.style.display = "block";
   } else if (username === "egalvez") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
@@ -62,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton5.style.display = "block";
     showPageButton6.style.display = "block";
     showPageButton7.style.display = "block";
+    showPageButton8.style.display = "block";
   } else if (username === "olopez" || username === "cpcifuentes" || username === "jatorres") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
@@ -79,6 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton5.style.display = "none";
     showPageButton6.style.display = "none";
     showPageButton7.style.display = "none";
+    showPageButton8.style.display = "none";
   }
 
   fetch("http://192.168.0.8:3000/api/reporteador/Get_Usuarios_Reporteador", {
@@ -195,7 +200,15 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedEquipment) === 29
     ) {
       showPageButton5.style.display = "block";
-    } else {
+    } else if (
+      selectedEmpresa &&
+      parseInt(selectedCompany) === 1 &&
+      parseInt(selectedDepartment) === 4 &&
+      parseInt(selectedEquipment) === 7
+    ) {
+      showPageButton5.style.display = "block";
+    }
+    else {
       showPageButton5.style.display = "none";
     }
     if (
