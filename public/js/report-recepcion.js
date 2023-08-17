@@ -1,14 +1,22 @@
+window.onpageshow = function (event) {
+  if (event.persisted) {
+    window.location.reload();
+  }
+};
+
 document.addEventListener("DOMContentLoaded", (event) => {
   const username = localStorage.getItem("username");
 
   if (!username) {
-    window.location.href = "/index.html"; // Reemplaza con la URL de tu página de inicio de sesión
-    return; // Esto es importante para que el código después de esto no se ejecute si el usuario no está autenticado
+    window.location.href = "/index.html"; 
+    return;
   }
 
   const usernameElement = document.getElementById("username");
   usernameElement.textContent = username;
 
+  const fechaInicialInput = document.getElementById("fecha-inicial");
+  const fechaFinalInput = document.getElementById("fecha-final");
   const empresaSelect = document.getElementById("empresa-select");
   const clearButton = document.getElementById("clear-button");
   const estadoSelect = document.getElementById("estado-select");
@@ -38,9 +46,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
       empresaSelect.appendChild(initialOption);
 
       const selectAllOption = document.createElement("option");
-      selectAllOption.value = "0";
+      selectAllOption.value = 0;
       selectAllOption.text = "Seleccionar todas las empresas";
       empresaSelect.appendChild(selectAllOption);
+
 
       empresasData.forEach((empresa) => {
         const option = document.createElement("option");
@@ -78,7 +87,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       estadoSelect.appendChild(initialOption);
 
       const selectAllOption = document.createElement("option");
-      selectAllOption.value = "0";
+      selectAllOption.value = 0;
       selectAllOption.text = "Seleccionar todos los estados";
       estadoSelect.appendChild(selectAllOption);
 
@@ -97,7 +106,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   let table;
   let noDataPopup;
 
-  function initializeTable(nombreEmpresa, idEstado) {
+  function initializeTable(nombreEmpresa, idEstado, fechaInicial, fechaFinal) {
     table = new Tabulator("#example-table", {
       layout: "fitData",
       columns: [],
@@ -110,6 +119,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
         return {
           int_id_empresa: nombreEmpresa,
           id_estado: idEstado,
+          date_fecha_inicial: fechaInicial,
+          date_fecha_final: fechaFinal,
         };
       },
       ajaxContentType: "json",
@@ -134,61 +145,74 @@ document.addEventListener("DOMContentLoaded", (event) => {
     .addEventListener("click", function () {
       const selectedEmpresa = empresaSelect.value;
       const selectedEstado = estadoSelect.value;
+      const fechaInicial = fechaInicialInput.value;
+      const fechaFinal = fechaFinalInput.value;
+
       if (selectedEmpresa) {
         if (selectedEstado) {
-          Swal.fire({
-            title: "Validando que exista información",
-            text: "Esto puede durar varios minutos",
-            allowOutsideClick: false,
-            didOpen: () => {
-              Swal.showLoading();
-            },
-          });
-          fetch(
-            "http://192.168.0.8:3000/api/reporteador/Get_Reporteador_RecepcionDocumento_1",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
+          if (fechaInicial && fechaFinal) {
+            Swal.fire({
+              title: "Validando que exista información",
+              text: "Esto puede durar varios minutos",
+              allowOutsideClick: false,
+              didOpen: () => {
+                Swal.showLoading();
               },
-              body: JSON.stringify({
-                int_id_empresa: selectedEmpresa,
-                id_estado: selectedEstado,
-              }),
-            }
-          )
-            .then((response) => response.json())
-            .then((data) => {
-              if (data && data.length > 0) {
-                Swal.update({
-                  title: "Enviando parámetros...",
-                  text: "Esto puede durar varios minutos",
-                });
-                initializeTable(selectedEmpresa, selectedEstado);
-                Swal.close();
-                const recordCountText =
-                  document.getElementById("record-count-text");
-                recordCountText.textContent = `Cantidad de registros: ${data.length}`;
-                recordCountText.style.display = "block"; // Mostrar el elemento
-              } else {
-                Swal.fire({
-                  icon: "warning",
-                  title: "Advertencia",
-                  text: "No se encontró información acorde a los filtros seleccionados.",
-                });
-                const recordCountText =
-                  document.getElementById("record-count-text");
-                recordCountText.style.display = "none"; // Ocultar el elemento
-              }
-            })
-            .catch((error) => {
-              console.error("Error al obtener los datos:", error);
-              Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
-              });
             });
+            fetch(
+              "http://192.168.0.8:3000/api/reporteador/Get_Reporteador_RecepcionDocumento_1",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  int_id_empresa: selectedEmpresa,
+                  id_estado: selectedEstado,
+                  date_fecha_inicial: fechaInicial,
+                  date_fecha_final: fechaFinal,
+                }),
+              }
+            )
+              .then((response) => response.json())
+              .then((data) => {
+                if (data && data.length > 0) {
+                  Swal.update({
+                    title: "Enviando parámetros...",
+                    text: "Esto puede durar varios minutos",
+                  });
+                  initializeTable(selectedEmpresa, selectedEstado, fechaInicial, fechaFinal);
+                  Swal.close();
+                  const recordCountText =
+                    document.getElementById("record-count-text");
+                  recordCountText.textContent = `Cantidad de registros: ${data.length}`;
+                  recordCountText.style.display = "block"; // Mostrar el elemento
+                } else {
+                  Swal.fire({
+                    icon: "warning",
+                    title: "Advertencia",
+                    text: "No se encontró información acorde a los filtros seleccionados.",
+                  });
+                  const recordCountText =
+                    document.getElementById("record-count-text");
+                  recordCountText.style.display = "none"; // Ocultar el elemento
+                }
+              })
+              .catch((error) => {
+                console.error("Error al obtener los datos:", error);
+                Swal.fire({
+                  icon: "error",
+                  title: "Error",
+                  text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+                });
+              });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Debes seleccionar una fecha inicial y una fecha final.",
+            });
+          }
         } else {
           Swal.fire({
             icon: "error",
@@ -203,6 +227,72 @@ document.addEventListener("DOMContentLoaded", (event) => {
           text: "Debes seleccionar una empresa.",
         });
       }
+    });
+
+    document
+    .getElementById("descargar-universo-button")
+    .addEventListener("click", function () {
+      const selectedEmpresa = 0;
+      const selectedEstado = 0;
+      const fechaInicial = "";
+      const fechaFinal = "";
+      fechaInicialInput.value = "";
+      fechaFinalInput.value = "";
+      Swal.fire({
+        title: "Validando que exista información",
+        text: "Esto puede durar varios minutos",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+      fetch(
+        "http://192.168.0.8:3000/api/reporteador/Get_Reporteador_RecepcionDocumento_1",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            int_id_empresa: selectedEmpresa,
+            id_estado: selectedEstado,
+            date_fecha_inicial: fechaInicial,
+            date_fecha_final: fechaFinal,
+          }),
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          if (data && data.length > 0) {
+            Swal.update({
+              title: "Enviando parámetros...",
+              text: "Esto puede durar varios minutos",
+            });
+            initializeTable(selectedEmpresa, selectedEstado, fechaInicial, fechaFinal);
+            Swal.close();
+            const recordCountText =
+              document.getElementById("record-count-text");
+            recordCountText.textContent = `Cantidad de registros: ${data.length}`;
+            recordCountText.style.display = "block"; // Mostrar el elemento
+          } else {
+            Swal.fire({
+              icon: "warning",
+              title: "Advertencia",
+              text: "No se encontró información acorde a los filtros seleccionados.",
+            });
+            const recordCountText =
+              document.getElementById("record-count-text");
+            recordCountText.style.display = "none"; // Ocultar el elemento
+          }
+        })
+        .catch((error) => {
+          console.error("Error al obtener los datos:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+          });
+        });
     });
 
   clearButton.addEventListener("click", () => {
@@ -269,4 +359,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
       window.location.href = targetPage;
     });
   });
+});
+
+window.addEventListener('popstate', function (event) {
+  location.reload(true);
 });

@@ -6,17 +6,22 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" href="../../img/Logo.png" type="image/x-icon" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <title>Lista de Reportes</title>
   <link rel="stylesheet" href="/css/drop.css" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
 </head>
 
 <body>
   <div class="user-bar">
     <div class="user-info">
-      <span id="welcome-message">Bienvenido,</span>
+      <span id="welcome-message" class="welcome-message-nav">Bienvenido,</span>
       <span id="username"></span>
     </div>
-    <button id="logout-button">Cerrar sesión</button>
+    <img src="../img/Logo_Groupnova_Negro-removebg-preview.png" alt="Nombre Groupnova" class="img-userbar">
+    <button id="logout-button"><i class="fas fa-sign-out-alt icon-logout"></i> Cerrar sesión</button>
   </div>
   <div class="dropdowns">
     <select id="empresa-select" class="select-large"></select>
@@ -30,25 +35,40 @@
   </div>
   <div class="buttons-reports">
     <button id="show-page-report1" class="report-button">
-      <a href="reports/reporte-cheques-circulacion-general.html">Reporte Cheques en Circulación</a>
+      <a href="reports/reporte-cheques-circulacion-general.html"><i class="fa-solid fa-money-bill icon-cheques"></i>
+        Cheques en Circulación</a>
     </button>
     <button id="show-page-report3" class="report-button">
-      <a href="reports/reporte-libro-de-compras.html">Reporte Libro de Compras</a>
+      <a href="reports/reporte-libro-de-compras.html"><i class="fa-solid fa-bag-shopping icon-compras"></i> Libro de
+        Compras</a>
     </button>
     <button id="show-page-report4" class="report-button">
-      <a href="reports/reporte-recepcion-documentos.html">Reporte Recepción de Documentos</a>
+      <a href="reports/reporte-recepcion-documentos.html"><i class="fa-solid fa-file-invoice-dollar icon-recepcion"></i>
+        Recepción de Documentos</a>
     </button>
     <button id="show-page-report5" class="report-button">
-      <a href="reports/reporte-nova-tickets.html">Reporte Tickets</a>
+      <a href="reports/reporte-nova-tickets.html"><i class="fa-solid fa-ticket icon-tickets"></i> Tickets</a>
     </button>
     <button id="show-page-report6" class="report-button">
-      <a href="reports/reporte-nova-tickets - general.html">Reporte Tickets - General</a>
+      <a href="reports/reporte-nova-tickets - general.html"><i class="fa-solid fa-ticket icon-tickets-general"></i>
+        Tickets - General</a>
     </button>
     <button id="show-page-report7" class="report-button">
-      <a href="reports/reporte-levantamientos.html">Reporte Levantamientos</a>
+      <a href="reports/reporte-levantamientos.html"><i class="fa-solid fa-layer-group icon-levantamientos"></i>
+        Levantamientos</a>
     </button>
     <button id="show-page-report8" class="report-button">
-      <a href="reports/reporte-nova-quejas.html">Reporte Quejas</a>
+      <a href="reports/reporte-nova-quejas.html"><i class="fa-regular fa-face-sad-tear icon-quejas"></i> Quejas</a>
+    </button>
+    <button id="show-page-report9" class="report-button">
+      <a href="reports/reporte-compras-odc.html"><i class="fa-solid fa-cart-shopping icon-odc"></i> Compras ODC</a>
+    </button>
+    <button id="show-page-report10" class="report-button">
+      <a href="reports/reporte-marcaje.html"><i class="fa-solid fa-fingerprint icon-marcaje"></i> Marcaje</a>
+    </button>
+    <button id="show-page-report11" class="report-button">
+      <a href="reports/reporte-gestiones-azteca.html"><i class="fa-solid fa-piggy-bank icon-azteca"></i> Gestiones
+        Azteca</a>
     </button>
   </div>
   <script src="app.js"></script>

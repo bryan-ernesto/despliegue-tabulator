@@ -1,9 +1,15 @@
+window.onpageshow = function (event) {
+  if (event.persisted) {
+    window.location.reload();
+  }
+};
+
 document.addEventListener("DOMContentLoaded", (event) => {
   const username = localStorage.getItem("username");
 
   if (!username) {
-    window.location.href = "/index.html"; // Reemplaza con la URL de tu página de inicio de sesión
-    return; // Esto es importante para que el código después de esto no se ejecute si el usuario no está autenticado
+    window.location.href = "/index.html";
+    return;
   }
 
   const usernameElement = document.getElementById("username");
@@ -96,17 +102,17 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 const recordCountText =
                   document.getElementById("record-count-text");
                 recordCountText.textContent = `Cantidad de registros: ${data.length}`;
-                recordCountText.style.display = "block"; // Mostrar el elemento
+                recordCountText.style.display = "block";
               } else {
                 Swal.fire({
                   icon: "warning",
                   title: "Advertencia",
                   text: "No se encontró información acorde a los filtros seleccionados.",
                 });
-                // Ocultar el texto cuando no hay registros
+
                 const recordCountText =
                   document.getElementById("record-count-text");
-                recordCountText.style.display = "none"; // Ocultar el elemento
+                recordCountText.style.display = "none";
               }
             })
             .catch((error) => {
@@ -253,7 +259,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       });
     }
   }
-  
+
   document
     .getElementById("export-table")
     .addEventListener("click", function () {
@@ -266,4 +272,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
     window.location.href = "/index.html";
     document.body.innerHTML = "<h1>Error: Acceso no autorizado</h1>";
   });
+});
+
+window.addEventListener('popstate', function (event) {
+  location.reload(true);
 });

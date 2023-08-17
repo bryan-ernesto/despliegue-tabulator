@@ -1,3 +1,9 @@
+window.onpageshow = function (event) {
+  if (event.persisted) {
+    window.location.reload();
+  }
+};
+
 document.addEventListener("DOMContentLoaded", (event) => {
   const username = localStorage.getItem("username");
 
@@ -430,4 +436,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
       window.location.href = targetPage;
     });
   });
+});
+
+window.addEventListener('popstate', function (event) {
+  location.reload(true);
 });

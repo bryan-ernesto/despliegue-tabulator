@@ -8,6 +8,8 @@ body {
   font-family: 'Poppins', sans-serif;
   overflow: hidden;
   position: relative;
+  background: rgb(247,246,246);
+  background: linear-gradient(90deg, rgba(232,237,247,1) 0%, rgba(253,255,254,1) 35%, rgba(232,237,247,1) 100%);
 }
 
 body::before {
@@ -17,11 +19,11 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url("../img/Logo_Input.png");
+  background-image: url("../img/Logo-vector-bottom.png");
   background-repeat: no-repeat;
-  background-size: 60%; 
+  background-size: 15%; 
   background-position: bottom; 
-  filter: blur(7px);
+  filter: blur(2px);
   z-index: -1;
 }
 
@@ -33,6 +35,7 @@ button {
   font-weight: bold;
   cursor: pointer;
   font-size: 25px;
+  transition: background-color 0.3s;
 }
 
 button:hover {
@@ -49,9 +52,16 @@ button:hover {
   align-items: center;
 }
 
+.img-userbar {
+  width: 310px;
+  height: 60px;
+}
+
 .user-info {
   display: flex;
   align-items: center;
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
 }
 
 .user-info span {
@@ -67,9 +77,11 @@ span {
   width: 300px;
   height: 100px;
   color: black;
-  font-size: 20px;
-  margin-top: 30px;
+  margin-top: 60px;
   margin-left: 30px;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 18px;
 }
 
 .empresa-option {
@@ -90,10 +102,14 @@ span {
 #show-page-report5,
 #show-page-report6,
 #show-page-report7,
-#show-page-report8 {
-  margin-top: 20px;
+#show-page-report8,
+#show-page-report9, 
+#show-page-report10,
+#show-page-report11 {
+  margin-top: 60px;
   display: block;
   text-align: center;
+  border-radius: 10%;
 }
 
 #show-page-report1 a,
@@ -103,30 +119,20 @@ span {
 #show-page-report5 a,
 #show-page-report6 a,
 #show-page-report7 a,
-#show-page-report8 a{
+#show-page-report8 a,
+#show-page-report9 a,
+#show-page-report10 a,
+#show-page-report11 a{
   display: block;
   padding: 10px 20px;
-  background-color: rgba(90, 84, 104, 1);
   color: white;
   font-weight: bold;
   text-decoration: none;
 }
 
-#show-page-report1 a:hover,
-#show-page-report2 a:hover,
-#show-page-report3 a:hover,
-#show-page-report4 a:hover,
-#show-page-report5 a:hover,
-#show-page-report6 a:hover,
-#show-page-report7 a:hover,
-#show-page-report8 a:hover {
-  background-color: rgba(26, 21, 32, 1);
-  transition: 0.3s;
-  border-radius: 20%;
-}
-
 .buttons-reports {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   margin-top: 20px;
@@ -139,7 +145,10 @@ span {
 #show-page-report5 button,
 #show-page-report6 button,
 #show-page-report7 button,
-#show-page-report8 button {
+#show-page-report8 button,
+#show-page-report9 button,
+#show-page-report10 button,
+#show-page-report11 button{
   display: block;
   padding: 10px 20px;
   background-color: rgba(90, 84, 104, 1);
@@ -156,7 +165,10 @@ span {
 #show-page-report5 button:hover,
 #show-page-report6 button:hover,
 #show-page-report7 button:hover,
-#show-page-report8 button:hover {
+#show-page-report8 button:hover, 
+#show-page-report9 button:hover, 
+#show-page-report10 button:hover,
+#show-page-report11 button:hover {
   background-color: rgba(26, 21, 32, 1);
   transition: 0.3s;
   border-radius: 20%;
@@ -165,11 +177,109 @@ span {
 #clear-button,
 #clear-button-d,
 #clear-button-e {
-  margin-bottom: 25px;
+  margin-bottom: 10px;
+  width: 2%;
+  font-size: 15px;
   background-color: #aa4655;
 }
 
 .report-button {
   margin-left: 10px;
   margin-right: 10px;
+}
+
+.buttons-reports button {
+  width: 300px;
+  height: 150px;
+}
+
+.buttons-reports button a i,
+.buttons-reports button a {
+  display: block;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.icon-cheques {
+  color: rgb(113, 197, 221);
+  font-size: 45px;
+}
+
+.icon-compras {
+  color: rgb(146, 197, 182);
+  font-size: 45px;
+}
+
+.icon-recepcion {
+  color: rgb(154, 167, 230);
+  font-size: 45px;
+}
+
+.icon-logout {
+  color: #EAEAEA;
+}
+
+.icon-tickets {
+  color: rgb(180, 224, 115);
+  font-size: 45px;
+}
+
+.icon-tickets-general {
+  color: rgb(218, 112, 112);
+  font-size: 45px;
+}
+
+.icon-levantamientos {
+  color: rgb(79, 156, 80);
+  font-size: 45px;
+}
+
+.icon-quejas {
+  color: rgb(85, 173, 205);
+  font-size: 45px;
+}
+
+.icon-odc {
+  color: rgb(212, 157, 212);
+  font-size: 45px;
+}
+
+.icon-marcaje {
+  color: rgb(202, 145, 112);
+  font-size: 45px;
+}
+
+.icon-azteca {
+  color: rgb(206, 226, 136);
+  font-size: 45px;
+}
+
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdowns {
+  animation: fadeInDown 1s ease-out;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.buttons-reports {
+  animation: fadeInUp 1s ease-out;
 }

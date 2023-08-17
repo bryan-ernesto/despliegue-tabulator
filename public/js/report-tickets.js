@@ -1,3 +1,9 @@
+window.onpageshow = function (event) {
+  if (event.persisted) {
+    window.location.reload();
+  }
+};
+
 document.addEventListener("DOMContentLoaded", (event) => {
   const username = localStorage.getItem("username");
   if (!username) {
@@ -380,4 +386,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
       return palabrasCapitalizadas.join(" ");
     }
   }
+});
+
+window.addEventListener('popstate', function (event) {
+  location.reload(true);
 });

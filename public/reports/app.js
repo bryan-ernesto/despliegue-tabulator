@@ -1,3 +1,9 @@
+window.onpageshow = function (event) {
+  if (event.persisted) {
+    window.location.reload();
+  }
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   const username = localStorage.getItem("username");
 
@@ -22,6 +28,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const showPageButton6 = document.getElementById("show-page-report6");
   const showPageButton7 = document.getElementById("show-page-report7");
   const showPageButton8 = document.getElementById("show-page-report8");
+  const showPageButton9 = document.getElementById("show-page-report9");
+  const showPageButton10 = document.getElementById("show-page-report10");
+  const showPageButton11 = document.getElementById("show-page-report11");
 
   showPageButton1.style.display = "none";
   showPageButton3.style.display = "none";
@@ -30,6 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
   showPageButton6.style.display = "none";
   showPageButton7.style.display = "none";
   showPageButton8.style.display = "none";
+  showPageButton9.style.display = "none";
+  showPageButton10.style.display = "none";
+  showPageButton11.style.display = "none";
 
   let empresasData;
 
@@ -46,18 +58,9 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton6.style.display = "block";
     showPageButton7.style.display = "block";
     showPageButton8.style.display = "block";
-  } else if (username === "egalvez") {
-    showPageButton1.style.display = "block";
-    showPageButton3.style.display = "block";
-    showPageButton4.style.display = "block";
-  } else if (username === "hescobar") {
-    showPageButton1.style.display = "block";
-    showPageButton3.style.display = "block";
-    showPageButton4.style.display = "block";
-  } else if (username === "rsales") {
-    showPageButton1.style.display = "block";
-    showPageButton3.style.display = "block";
-    showPageButton4.style.display = "block";
+    showPageButton9.style.display = "block";
+    showPageButton10.style.display = "block";
+    showPageButton11.style.display = "block";
   } else if (username === "bgamez") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
@@ -66,7 +69,10 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton6.style.display = "block";
     showPageButton7.style.display = "block";
     showPageButton8.style.display = "block";
-  } else if (username === "olopez" || username === "cpcifuentes" || username === "jatorres") {
+    showPageButton9.style.display = "block";
+    showPageButton10.style.display = "block";
+    showPageButton11.style.display = "block";
+  } else if (username === "olopez" || username === "cpcifuentes" || username === "egalvez" || username === "hescobar" || username === "rsales") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
     showPageButton4.style.display = "block";
@@ -84,6 +90,9 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton6.style.display = "none";
     showPageButton7.style.display = "none";
     showPageButton8.style.display = "none";
+    showPageButton9.style.display = "none";
+    showPageButton10.style.display = "none";
+    showPageButton11.style.display = "none";
   }
 
   fetch("http://192.168.0.8:3000/api/reporteador/Get_Usuarios_Reporteador", {
@@ -126,7 +135,6 @@ document.addEventListener("DOMContentLoaded", () => {
     departmentSelect.innerHTML = "";
     equipmentSelect.innerHTML = "";
     showPageButton1.style.display = "none";
-    showPageButton2.style.display = "none";
     showPageButton3.style.display = "none";
     showPageButton4.style.display = "none";
     showPageButton5.style.display = "none";
@@ -149,15 +157,10 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedEquipment) === 19
     ) {
       showPageButton3.style.display = "block";
-    } else {
-      showPageButton3.style.display = "none";
-    }
-    if (
-      selectedEmpresa &&
+    } else if (selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 9 &&
-      parseInt(selectedEquipment) === 18
-    ) {
+      parseInt(selectedEquipment) === 18) {
       showPageButton3.style.display = "block";
     } else {
       showPageButton3.style.display = "none";
@@ -270,11 +273,14 @@ document.addEventListener("DOMContentLoaded", () => {
       departmentSelect.innerHTML = "";
       equipmentSelect.innerHTML = "";
       showPageButton1.style.display = "none";
-      showPageButton2.style.display = "none";
       showPageButton3.style.display = "none";
       showPageButton4.style.display = "none";
       showPageButton5.style.display = "none";
       showPageButton6.style.display = "none";
+      showPageButton7.style.display = "none";
+      showPageButton8.style.display = "none";
+      showPageButton9.style.display = "none";
+      showPageButton10.style.display = "none";
     }
   });
 
@@ -329,11 +335,14 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         equipmentSelect.innerHTML = "";
         showPageButton1.style.display = "none";
-        showPageButton2.style.display = "none";
         showPageButton3.style.display = "none";
         showPageButton4.style.display = "none";
         showPageButton5.style.display = "none";
         showPageButton6.style.display = "none";
+        showPageButton7.style.display = "none";
+        showPageButton8.style.display = "none";
+        showPageButton9.style.display = "none";
+        showPageButton10.style.display = "none";
       }
     }
   });
@@ -347,21 +356,27 @@ document.addEventListener("DOMContentLoaded", () => {
     departmentSelect.value = "";
     equipmentSelect.innerHTML = "";
     showPageButton1.style.display = "none";
-    showPageButton2.style.display = "none";
     showPageButton3.style.display = "none";
     showPageButton4.style.display = "none";
     showPageButton5.style.display = "none";
     showPageButton6.style.display = "none";
+    showPageButton7.style.display = "none";
+    showPageButton8.style.display = "none";
+    showPageButton9.style.display = "none";
+    showPageButton10.style.display = "none";
   });
 
   clearButtonE.addEventListener("click", () => {
     equipmentSelect.value = "";
     showPageButton1.style.display = "none";
-    showPageButton2.style.display = "none";
     showPageButton3.style.display = "none";
     showPageButton4.style.display = "none";
     showPageButton5.style.display = "none";
     showPageButton6.style.display = "none";
+    showPageButton7.style.display = "none";
+    showPageButton8.style.display = "none";
+    showPageButton9.style.display = "none";
+    showPageButton10.style.display = "none";
   });
 
   companySelect.addEventListener("change", checkSelections);
@@ -392,3 +407,7 @@ function capitalizarCadena(cadena) {
     return palabrasCapitalizadas.join(" ");
   }
 }
+
+window.addEventListener('popstate', function (event) {
+  location.reload(true);
+});

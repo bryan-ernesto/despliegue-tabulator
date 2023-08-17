@@ -129,3 +129,42 @@ function clearStatusMessage() {
 }
 
 loginForm.addEventListener("submit", validateForm);
+
+function initializeCarousel() {
+  let images = document.querySelectorAll('.carousel-images img');
+  
+  let currentIndex = localStorage.getItem('carouselIndex');
+  
+  if (currentIndex === null) {
+      currentIndex = 0;
+  } else {
+      currentIndex = (parseInt(currentIndex, 10) + 1) % images.length;
+  }
+
+  localStorage.setItem('carouselIndex', currentIndex.toString());
+  
+  images[currentIndex].style.display = 'block';
+  
+  document.getElementById('prev').addEventListener('click', function() {
+      images[currentIndex].style.display = 'none';
+      currentIndex = (currentIndex - 1 + images.length) % images.length;
+      images[currentIndex].style.display = 'block';
+  });
+
+  document.getElementById('next').addEventListener('click', function() {
+      images[currentIndex].style.display = 'none';
+      currentIndex = (currentIndex + 1) % images.length;
+      images[currentIndex].style.display = 'block';
+  });
+}
+
+initializeCarousel();
+
+function handleAutoFocus() {
+  if (usernameInput === document.activeElement) { 
+      let parent = usernameInput.parentNode.parentNode;
+      parent.classList.add("focus");
+  }
+}
+
+handleAutoFocus();
