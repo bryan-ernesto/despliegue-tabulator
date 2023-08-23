@@ -22,7 +22,9 @@ inputs.forEach((input) => {
 });
 
 function validateForm(event) {
+  console.log("Función validateForm llamada");
   event.preventDefault();
+  loginForm.removeEventListener("submit", validateForm);
 
   const username = usernameInput.value;
   const password = passwordInput.value;
@@ -48,7 +50,6 @@ function validateForm(event) {
         if (data.authenticated) {
           showStatusMessage("Credenciales válidas, iniciando sesión...", true);
           console.log("Credenciales correctas");
-          // Obtener el ID del usuario del API "Get_Usuarios_Reporteador"
           fetch(
             `http://192.168.0.8:3000/api/reporteador/Get_Usuarios_Reporteador`,
             {
@@ -57,7 +58,7 @@ function validateForm(event) {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                str_usuario_nombre: "", // Reemplaza con el valor correcto
+                str_usuario_nombre: "",
                 str_username: username,
                 int_empresa: 0,
                 int_departamento: 0,
@@ -86,6 +87,8 @@ function validateForm(event) {
                 .then((response) => response.json())
                 .then((result) => {
                   console.log("Registro de bitácora exitoso", result);
+                  window.location.href = "reports/dropDowns.html";
+                  localStorage.setItem("username", username);
                 })
                 .catch((error) => {
                   console.error(
@@ -97,9 +100,6 @@ function validateForm(event) {
             .catch((error) => {
               console.error("Error al obtener el ID de usuario:", error);
             });
-
-          window.location.href = "reports/dropDowns.html";
-          localStorage.setItem("username", username);
         } else {
           showStatusMessage(
             "Credenciales inválidas, intente nuevamente",
@@ -132,38 +132,42 @@ loginForm.addEventListener("submit", validateForm);
 
 function initializeCarousel() {
   let images = document.querySelectorAll('.carousel-images img');
-  
+
   let currentIndex = localStorage.getItem('carouselIndex');
-  
+
   if (currentIndex === null) {
-      currentIndex = 0;
+    currentIndex = 0;
   } else {
-      currentIndex = (parseInt(currentIndex, 10) + 1) % images.length;
+    currentIndex = (parseInt(currentIndex, 10) + 1) % images.length;
   }
 
   localStorage.setItem('carouselIndex', currentIndex.toString());
-  
   images[currentIndex].style.display = 'block';
-  
-  document.getElementById('prev').addEventListener('click', function() {
-      images[currentIndex].style.display = 'none';
-      currentIndex = (currentIndex - 1 + images.length) % images.length;
-      images[currentIndex].style.display = 'block';
+
+  function showNextImage() {
+    images[currentIndex].style.display = 'none';
+    currentIndex = (currentIndex + 1) % images.length;
+    images[currentIndex].style.display = 'block';
+  }
+
+  document.getElementById('prev').addEventListener('click', function () {
+    images[currentIndex].style.display = 'none';
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    images[currentIndex].style.display = 'block';
   });
 
-  document.getElementById('next').addEventListener('click', function() {
-      images[currentIndex].style.display = 'none';
-      currentIndex = (currentIndex + 1) % images.length;
-      images[currentIndex].style.display = 'block';
-  });
+  document.getElementById('next').addEventListener('click', showNextImage);
+
+  setInterval(showNextImage, 15000);
 }
 
 initializeCarousel();
 
+
 function handleAutoFocus() {
-  if (usernameInput === document.activeElement) { 
-      let parent = usernameInput.parentNode.parentNode;
-      parent.classList.add("focus");
+  if (usernameInput === document.activeElement) {
+    let parent = usernameInput.parentNode.parentNode;
+    parent.classList.add("focus");
   }
 }
 

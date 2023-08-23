@@ -232,6 +232,7 @@ button {
   background-color: rgba(90, 84, 104, 1);
   color: white;
   border: none;
+  outline: none;
   padding: 8px 16px;
   font-weight: bold;
   cursor: pointer;
@@ -379,7 +380,7 @@ button:hover {
 
 .count-text {
   position: absolute;
-  top: -40px; /* Ajusta este valor según necesites */
+  top: -40px; 
   width: 100%;
   text-align: center;
 }

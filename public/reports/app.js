@@ -5,7 +5,7 @@ window.onpageshow = function (event) {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  const username = localStorage.getItem("username");
+  const username = (localStorage.getItem("username") || "").toLowerCase();
 
   if (!username) {
     window.location.href = "/index.html";
@@ -82,7 +82,21 @@ document.addEventListener("DOMContentLoaded", () => {
     username === "rixim"
   ) {
     showPageButton7.style.display = "block";
-  } else {
+  } else if (
+    username === "jizquierdo" ||
+    username === "acazun" ||
+    username === "sflores" ||
+    username === "jyaxon"
+  ) {
+    showPageButton11.style.display = "block";
+  } else if (
+    username === "ajvillatoro" ||
+    username === "vvargas" ||
+    username === "cnovales"
+  ) {
+    showPageButton9.style.display = "block";
+  }
+  else {
     showPageButton1.style.display = "none";
     showPageButton3.style.display = "none";
     showPageButton4.style.display = "none";
@@ -111,6 +125,11 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((response) => response.json())
     .then((data) => {
       empresasData = data;
+
+      if (data && data.length > 0 && data[0].hasOwnProperty("id_cat_usuario")) {
+        localStorage.setItem("id_cat_usuario", data[0].id_cat_usuario);
+      }
+
       const initialOption = document.createElement("option");
       initialOption.value = "";
       initialOption.text = "Seleccione Empresa";
@@ -222,7 +241,34 @@ document.addEventListener("DOMContentLoaded", () => {
       showPageButton6.style.display = "block";
     } else {
       showPageButton6.style.display = "none";
+    } 
+    if (
+      selectedEmpresa &&
+      parseInt(selectedCompany) === 1 &&
+      parseInt(selectedDepartment) === 22 &&
+      parseInt(selectedEquipment) === 30
+    ) {
+      showPageButton9.style.display = "block";
+    } else if(
+      selectedEmpresa &&
+      parseInt(selectedCompany) === 1 &&
+      parseInt(selectedDepartment) === 14 &&
+      parseInt(selectedEquipment) === 36
+    ) {
+      showPageButton9.style.display = "block";
+    } else if (
+      selectedEmpresa &&
+      parseInt(selectedCompany) === 1 &&
+      parseInt(selectedDepartment) === 13 &&
+      parseInt(selectedEquipment) === 37
+    ) {
+      showPageButton9.style.display = "block";
+      showPageButton6.style.display = "none";
     }
+    else {
+      showPageButton9.style.display = "none";
+      showPageButton6.style.display = "none";
+    } 
   }
 
   companySelect.addEventListener("change", () => {
@@ -393,6 +439,58 @@ document.addEventListener("DOMContentLoaded", () => {
   history.replaceState(null, null, location.href);
   window.addEventListener("popstate", () => {
     history.pushState(null, null, location.href);
+  });
+
+
+  function handleButtonClick(event) {
+    event.preventDefault();
+    const anchor = event.currentTarget;
+    const button = anchor.parentElement;
+    const appId = button.getAttribute('data-app-id');
+
+    fetch("http://192.168.0.8:3000/api/reporteador/Get_Usuarios_Reporteador", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        str_usuario_nombre: "",
+        str_username: username,
+        int_empresa: 0,
+        int_departamento: 0,
+        int_equipo: 0,
+      }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        const userId = data[0].id_cat_usuario;
+
+        return fetch("http://192.168.0.8:3000/api/recepciones_documento/Post_Documento_BitacoraLogin", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            int_id_cat_aplicativo: appId,
+            int_id_cat_usuario: userId,
+            int_id_creador: userId
+          }),
+        });
+      })
+      .then(response => response.json())
+      .then(result => {
+        console.log("Registro exitoso:", result);
+        window.location.href = anchor.href;
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        window.location.href = anchor.href;
+      });
+  }
+
+  const anchorsInsideButtons = document.querySelectorAll('button.report-button a');
+  anchorsInsideButtons.forEach(anchor => {
+    anchor.addEventListener('click', handleButtonClick);
   });
 });
 

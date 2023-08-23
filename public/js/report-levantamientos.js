@@ -6,6 +6,7 @@ window.onpageshow = function (event) {
 
 document.addEventListener("DOMContentLoaded", (event) => {
   const username = localStorage.getItem("username");
+  const id_cat_usuario = localStorage.getItem("id_cat_usuario");
 
   if (!username) {
     window.location.href = "/index.html";
@@ -23,76 +24,89 @@ document.addEventListener("DOMContentLoaded", (event) => {
   document
     .getElementById("actualizar-button")
     .addEventListener("click", function () {
-      const fechaInicial = fechaInicialInput.value;
-      const fechaFinal = fechaFinalInput.value;
+      fetch("http://192.168.0.8:3000/api/recepciones_documento/Post_Documento_BitacoraLogin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          "int_id_cat_aplicativo": 13,
+          "int_id_cat_usuario": parseInt(id_cat_usuario),
+          "int_id_creador": parseInt(id_cat_usuario)
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          const fechaInicial = fechaInicialInput.value;
+          const fechaFinal = fechaFinalInput.value;
 
-      if (fechaInicial && fechaFinal) {
-        Swal.fire({
-          title: "Validando que exista información",
-          text: "Esto puede durar varios minutos",
-          allowOutsideClick: false,
-          didOpen: () => {
-            Swal.showLoading();
-          },
-        });
-        fetch(
-          "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Levantamientos",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              date_fecha_inicial: "",
-              date_fecha_final: "",
-            }),
-          }
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            if (data && data.length > 0) {
-              Swal.update({
-                title: "Enviando parámetros...",
-                text: "Esto puede durar varios minutos",
-              });
-              initializeTable(fechaInicial, fechaFinal);
-              Swal.close();
-              const recordCountText =
-                document.getElementById("record-count-text");
-              recordCountText.textContent = `Cantidad de registros: ${data.length}`;
-              recordCountText.style.display = "block";
+          if (fechaInicial && fechaFinal) {
+            Swal.fire({
+              title: "Validando que exista información",
+              text: "Esto puede durar varios minutos",
+              allowOutsideClick: false,
+              didOpen: () => {
+                Swal.showLoading();
+              },
+            });
+            fetch(
+              "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Levantamientos",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  date_fecha_inicial: "",
+                  date_fecha_final: "",
+                }),
+              }
+            )
+              .then((response) => response.json())
+              .then((data) => {
+                if (data && data.length > 0) {
+                  Swal.update({
+                    title: "Enviando parámetros...",
+                    text: "Esto puede durar varios minutos",
+                  });
+                  initializeTable(fechaInicial, fechaFinal);
+                  Swal.close();
+                  const recordCountText =
+                    document.getElementById("record-count-text");
+                  recordCountText.textContent = `Cantidad de registros: ${data.length}`;
+                  recordCountText.style.display = "block";
 
-              let tableElement = document.getElementById("example-table");
-              let tablePosition = tableElement.offsetTop;
-              recordCountText.style.top = `${
-                tablePosition - recordCountText.offsetHeight + 20
-              }px`;
-            } else {
-              Swal.fire({
-                icon: "warning",
-                title: "Advertencia",
-                text: "No se encontró información acorde a los filtros seleccionados.",
+                  let tableElement = document.getElementById("example-table");
+                  let tablePosition = tableElement.offsetTop;
+                  recordCountText.style.top = `${tablePosition - recordCountText.offsetHeight + 20
+                    }px`;
+                } else {
+                  Swal.fire({
+                    icon: "warning",
+                    title: "Advertencia",
+                    text: "No se encontró información acorde a los filtros seleccionados.",
+                  });
+                  const recordCountText =
+                    document.getElementById("record-count-text");
+                  recordCountText.style.display = "none";
+                }
+              })
+              .catch((error) => {
+                console.error("Error al obtener los datos:", error);
+                Swal.fire({
+                  icon: "error",
+                  title: "Error",
+                  text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+                });
               });
-              const recordCountText =
-                document.getElementById("record-count-text");
-              recordCountText.style.display = "none";
-            }
-          })
-          .catch((error) => {
-            console.error("Error al obtener los datos:", error);
+          } else {
             Swal.fire({
               icon: "error",
               title: "Error",
-              text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+              text: "Debes seleccionar una fecha inicial y una fecha final.",
             });
-          });
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Debes seleccionar una fecha inicial y una fecha final.",
-        });
-      }
+          }
+        })
     });
 
   function initializeTable(fechaInicial, fechaFinal) {

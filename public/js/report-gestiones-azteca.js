@@ -6,6 +6,7 @@ window.onpageshow = function (event) {
 
 document.addEventListener("DOMContentLoaded", (event) => {
   const username = localStorage.getItem("username");
+  const id_cat_usuario = localStorage.getItem("id_cat_usuario");
 
   if (!username) {
     window.location.href = "/index.html";
@@ -20,65 +21,79 @@ document.addEventListener("DOMContentLoaded", (event) => {
   let table;
 
   document.getElementById("actualizar-button").addEventListener("click", function () {
-    const fechaInicial = fechaInicialInput.value;
-    const fechaFinal = fechaFinalInput.value;
+    fetch("http://192.168.0.8:3000/api/recepciones_documento/Post_Documento_BitacoraLogin", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        "int_id_cat_aplicativo": 21,
+        "int_id_cat_usuario": parseInt(id_cat_usuario), 
+        "int_id_creador": parseInt(id_cat_usuario)
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Respuesta de la petición POST:", data);
+        const fechaInicial = fechaInicialInput.value;
+        const fechaFinal = fechaFinalInput.value;
 
-    if (fechaInicial && fechaFinal) {
-      Swal.fire({
-        title: "Validando que exista información",
-        text: "Esto puede durar varios minutos",
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
-      });
+        if (fechaInicial && fechaFinal) {
+          Swal.fire({
+            title: "Validando que exista información",
+            text: "Esto puede durar varios minutos",
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
 
-      const apiUrl = `http://192.168.0.8:3000/api/reporteador/Get_Reporte_GestionesAzteca?fechainicio=${fechaInicial}&fechafin=${fechaFinal}&bearer=5bgrduHXsCZx8QTU2rGwXhQPu1igSn2nq7TX1StK/3gZObWNBt60yHQX5IjzAApXSkAuPFiKCwfKuiPuAAAAAAAAAAAAAAAAAAAAAAznYtNOPBnb3Daj+RvVWExXVm57okwSHWy4z0rETvZpI1XeShfy/WqTzPNLI9k0EQ==`;
+          const apiUrl = `http://192.168.0.8:3000/api/reporteador/Get_Reporte_GestionesAzteca?fechainicio=${fechaInicial}&fechafin=${fechaFinal}&bearer=5bgrduHXsCZx8QTU2rGwXhQPu1igSn2nq7TX1StK/3gZObWNBt60yHQX5IjzAApXSkAuPFiKCwfKuiPuAAAAAAAAAAAAAAAAAAAAAAznYtNOPBnb3Daj+RvVWExXVm57okwSHWy4z0rETvZpI1XeShfy/WqTzPNLI9k0EQ==`;
 
-      fetch(apiUrl)
-        .then((response) => response.json())
-        .then((data) => {
-          if (data && data.length > 0) {
-            Swal.update({
-              title: "Enviando parámetros...",
-              text: "Esto puede durar varios minutos",
+          fetch(apiUrl)
+            .then((response) => response.json())
+            .then((data) => {
+              if (data && data.length > 0) {
+                Swal.update({
+                  title: "Enviando parámetros...",
+                  text: "Esto puede durar varios minutos",
+                });
+                initializeTable(fechaInicial, fechaFinal);
+                Swal.close();
+
+                const recordCountText = document.getElementById("record-count-text");
+                recordCountText.textContent = `Cantidad de registros: ${data.length}`;
+                recordCountText.style.display = "block";
+
+                let tableElement = document.getElementById("example-table");
+                let tablePosition = tableElement.offsetTop;
+                recordCountText.style.top = `${tablePosition - recordCountText.offsetHeight - 25}px`;
+              } else {
+                Swal.fire({
+                  icon: "warning",
+                  title: "Advertencia",
+                  text: "No se encontró información acorde a los filtros seleccionados.",
+                });
+                const recordCountText = document.getElementById("record-count-text");
+                recordCountText.style.display = "none";
+              }
+            })
+            .catch((error) => {
+              console.error("Error al obtener los datos:", error);
+              Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+              });
             });
-            initializeTable(fechaInicial, fechaFinal);
-            Swal.close();
-
-            const recordCountText = document.getElementById("record-count-text");
-            recordCountText.textContent = `Cantidad de registros: ${data.length}`;
-            recordCountText.style.display = "block";
-
-            let tableElement = document.getElementById("example-table");
-            let tablePosition = tableElement.offsetTop;
-            recordCountText.style.top = `${tablePosition - recordCountText.offsetHeight + 20}px`;
-
-          } else {
-            Swal.fire({
-              icon: "warning",
-              title: "Advertencia",
-              text: "No se encontró información acorde a los filtros seleccionados.",
-            });
-            const recordCountText = document.getElementById("record-count-text");
-            recordCountText.style.display = "none";
-          }
-        })
-        .catch((error) => {
-          console.error("Error al obtener los datos:", error);
+        } else {
           Swal.fire({
             icon: "error",
             title: "Error",
-            text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+            text: "Debes seleccionar una fecha inicial y una fecha final.",
           });
-        });
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Debes seleccionar una fecha inicial y una fecha final.",
+        }
       });
-    }
   });
 
   function initializeTable(fechaInicial, fechaFinal) {
@@ -164,6 +179,34 @@ document.addEventListener("DOMContentLoaded", (event) => {
       window.location.href = targetPage;
     });
   });
+
+  // function createChart(data) {
+  //   const ctx = document.getElementById('myChart').getContext('2d');
+
+  //   const fechas = data.map(item => item.GESTION_FECHA); 
+  //   const cantidades = data.map(item => item.EXP_ID);
+
+  //   const myChart = new Chart(ctx, {
+  //     type: 'line',
+  //     data: {
+  //       labels: fechas,
+  //       datasets: [{
+  //         label: '# de Registros por Fecha',
+  //         data: cantidades,
+  //         backgroundColor: 'rgba(75, 192, 192, 0.2)',
+  //         borderColor: 'rgba(75, 192, 192, 1)',
+  //         borderWidth: 1
+  //       }]
+  //     },
+  //     options: {
+  //       scales: {
+  //         y: {
+  //           beginAtZero: true
+  //         }
+  //       }
+  //     }
+  //   });
+  // }
 });
 
 window.addEventListener('popstate', function (event) {

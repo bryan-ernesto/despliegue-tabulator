@@ -6,10 +6,11 @@ window.onpageshow = function (event) {
 
 document.addEventListener("DOMContentLoaded", (event) => {
   const username = localStorage.getItem("username");
+  const id_cat_usuario = localStorage.getItem("id_cat_usuario");
 
   if (!username) {
-    window.location.href = "/index.html"; // Reemplaza con la URL de tu página de inicio de sesión
-    return; // Esto es importante para que el código después de esto no se ejecute si el usuario no está autenticado
+    window.location.href = "/index.html"; 
+    return; 
   }
 
   const usernameElement = document.getElementById("username");
@@ -100,7 +101,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
           data.forEach((departamento) => {
             const option = document.createElement("option");
             option.value = departamento.departamento_id_cat_departamento;
-            option.text = departamento.departamento_nombre;
+            option.text = capitalizarCadena(departamento.departamento_nombre);
             departamentoSelect.appendChild(option);
           });
         })
@@ -158,7 +159,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
           data.forEach((equipo) => {
             const option = document.createElement("option");
             option.value = equipo.equipo_id_cat_equipo;
-            option.text = equipo.equipo_nombre;
+            option.text = capitalizarCadena(equipo.equipo_nombre);
             equipoSelect.appendChild(option);
           });
         })
@@ -194,116 +195,130 @@ document.addEventListener("DOMContentLoaded", (event) => {
   document
     .getElementById("actualizar-button")
     .addEventListener("click", function () {
-      const selectedEmpresa = empresaSelect.value;
-      const selectedDepartamento = departamentoSelect.value;
-      const selectedEquipo = equipoSelect.value;
-      console.log(selectedEquipo, selectedDepartamento, selectedEmpresa);
-      if (selectedEmpresa) {
-        if (selectedDepartamento) {
-          if (selectedEquipo) {
-            Swal.fire({
-              title: "Validando que exista información",
-              text: "Esto puede durar varios minutos",
-              allowOutsideClick: false,
-              didOpen: () => {
-                Swal.showLoading();
-              },
-            });
-            fetch(
-              "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_1",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  int_id_equipo: selectedEquipo,
-                  int_id_departamento: selectedDepartamento,
-                  int_id_empresa: selectedEmpresa,
-                  string_nombre_referencia: "",
-                  int_id_prioridad: 0,
-                  int_estado_resolucion: 0,
-                  int_id_proceso: 0,
-                  int_id_cat_tipo: 0,
-                  int_id_cat_canal: 0,
-                  int_id_cat_seguimiento: 0,
-                  int_id_cat_responsable: 0,
-                  int_id_cat_solicitante: 0,
-                  int_id_cat_creado_por: 0,
-                  date_asignacion_inicio: "",
-                  date_asignacion_fin: "",
-                  date_resolucion_inicio: "",
-                  date_resolucion_fin: "",
-                  date_ultima_vista_inicio: "",
-                  date_ultima_vista_fin: "",
-                  date_vencimiento_inicio: "",
-                  date_vencimiento_fin: "",
-                  date_primera_respuesta_inicio: "",
-                  date_primera_respuesta_fin: "",
-                  date_creacion_inicio: "",
-                  date_creacion_fin: "",
-                  date_actualizacion_inicio: "",
-                  date_actualizacion_fin: "",
-                }),
-              }
-            )
-              .then((response) => response.json())
-              .then((data) => {
-                if (data && data.length > 0) {
-                  Swal.update({
-                    title: "Enviando parámetros...",
-                    text: "Esto puede durar varios minutos",
+      fetch("http://192.168.0.8:3000/api/recepciones_documento/Post_Documento_BitacoraLogin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          "int_id_cat_aplicativo": 25,
+          "int_id_cat_usuario": parseInt(id_cat_usuario),
+          "int_id_creador": parseInt(id_cat_usuario)
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          const selectedEmpresa = empresaSelect.value;
+          const selectedDepartamento = departamentoSelect.value;
+          const selectedEquipo = equipoSelect.value;
+          console.log(selectedEquipo, selectedDepartamento, selectedEmpresa);
+          if (selectedEmpresa) {
+            if (selectedDepartamento) {
+              if (selectedEquipo) {
+                Swal.fire({
+                  title: "Validando que exista información",
+                  text: "Esto puede durar varios minutos",
+                  allowOutsideClick: false,
+                  didOpen: () => {
+                    Swal.showLoading();
+                  },
+                });
+                fetch(
+                  "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_1",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      int_id_equipo: selectedEquipo,
+                      int_id_departamento: selectedDepartamento,
+                      int_id_empresa: selectedEmpresa,
+                      string_nombre_referencia: "",
+                      int_id_prioridad: 0,
+                      int_estado_resolucion: 0,
+                      int_id_proceso: 0,
+                      int_id_cat_tipo: 0,
+                      int_id_cat_canal: 0,
+                      int_id_cat_seguimiento: 0,
+                      int_id_cat_responsable: 0,
+                      int_id_cat_solicitante: 0,
+                      int_id_cat_creado_por: 0,
+                      date_asignacion_inicio: "",
+                      date_asignacion_fin: "",
+                      date_resolucion_inicio: "",
+                      date_resolucion_fin: "",
+                      date_ultima_vista_inicio: "",
+                      date_ultima_vista_fin: "",
+                      date_vencimiento_inicio: "",
+                      date_vencimiento_fin: "",
+                      date_primera_respuesta_inicio: "",
+                      date_primera_respuesta_fin: "",
+                      date_creacion_inicio: "",
+                      date_creacion_fin: "",
+                      date_actualizacion_inicio: "",
+                      date_actualizacion_fin: "",
+                    }),
+                  }
+                )
+                  .then((response) => response.json())
+                  .then((data) => {
+                    if (data && data.length > 0) {
+                      Swal.update({
+                        title: "Enviando parámetros...",
+                        text: "Esto puede durar varios minutos",
+                      });
+                      initializeTable(
+                        selectedEquipo,
+                        selectedDepartamento,
+                        selectedEmpresa
+                      );
+                      Swal.close();
+                      const recordCountText =
+                        document.getElementById("record-count-text");
+                      recordCountText.textContent = `Cantidad de registros: ${data.length}`;
+                      recordCountText.style.display = "block"; // Mostrar el elemento
+                    } else {
+                      Swal.fire({
+                        icon: "warning",
+                        title: "Advertencia",
+                        text: "No se encontró información acorde a los filtros seleccionados.",
+                      });
+                      const recordCountText =
+                        document.getElementById("record-count-text");
+                      recordCountText.style.display = "none"; // Ocultar el elemento
+                    }
+                  })
+                  .catch((error) => {
+                    console.error("Error al obtener los datos:", error);
+                    Swal.fire({
+                      icon: "error",
+                      title: "Error",
+                      text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+                    });
                   });
-                  initializeTable(
-                    selectedEquipo,
-                    selectedDepartamento,
-                    selectedEmpresa
-                  );
-                  Swal.close();
-                  const recordCountText =
-                    document.getElementById("record-count-text");
-                  recordCountText.textContent = `Cantidad de registros: ${data.length}`;
-                  recordCountText.style.display = "block"; // Mostrar el elemento
-                } else {
-                  Swal.fire({
-                    icon: "warning",
-                    title: "Advertencia",
-                    text: "No se encontró información acorde a los filtros seleccionados.",
-                  });
-                  const recordCountText =
-                    document.getElementById("record-count-text");
-                  recordCountText.style.display = "none"; // Ocultar el elemento
-                }
-              })
-              .catch((error) => {
-                console.error("Error al obtener los datos:", error);
+              } else {
                 Swal.fire({
                   icon: "error",
                   title: "Error",
-                  text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+                  text: "Debes seleccionar un equipo.",
                 });
+              }
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Debes seleccionar un departamento.",
               });
+            }
           } else {
             Swal.fire({
               icon: "error",
               title: "Error",
-              text: "Debes seleccionar un equipo.",
+              text: "Debes seleccionar una empresa.",
             });
           }
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "Debes seleccionar un departamento.",
-          });
-        }
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Debes seleccionar una empresa.",
-        });
-      }
+        })
     });
 
   function initializeTable(equipo, departamento, empresa) {
@@ -437,6 +452,18 @@ document.addEventListener("DOMContentLoaded", (event) => {
     });
   });
 });
+
+function capitalizarCadena(cadena) {
+  if (cadena.length <= 4) {
+    return cadena.toUpperCase();
+  } else {
+    const palabras = cadena.split(" ");
+    const palabrasCapitalizadas = palabras.map((palabra) => {
+      return palabra.charAt(0).toUpperCase() + palabra.slice(1).toLowerCase();
+    });
+    return palabrasCapitalizadas.join(" ");
+  }
+}
 
 window.addEventListener('popstate', function (event) {
   location.reload(true);

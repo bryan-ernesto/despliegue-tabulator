@@ -6,6 +6,7 @@ window.onpageshow = function (event) {
 
 document.addEventListener("DOMContentLoaded", (event) => {
   const username = localStorage.getItem("username");
+  const id_cat_usuario = localStorage.getItem("id_cat_usuario");
 
   if (!username) {
     window.location.href = "/index.html";
@@ -62,81 +63,95 @@ document.addEventListener("DOMContentLoaded", (event) => {
   document
     .getElementById("actualizar-button")
     .addEventListener("click", function () {
-      const selectedEmpresa = empresaSelect.value;
-      const fechaInicial = fechaInicialInput.value;
-      const fechaFinal = fechaFinalInput.value;
+      fetch("http://192.168.0.8:3000/api/recepciones_documento/Post_Documento_BitacoraLogin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          "int_id_cat_aplicativo": 19,
+          "int_id_cat_usuario": parseInt(id_cat_usuario),
+          "int_id_creador": parseInt(id_cat_usuario)
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          const selectedEmpresa = empresaSelect.value;
+          const fechaInicial = fechaInicialInput.value;
+          const fechaFinal = fechaFinalInput.value;
 
-      if (selectedEmpresa) {
-        if (fechaInicial && fechaFinal) {
-          Swal.fire({
-            title: "Validando que exista información",
-            text: "Esto puede durar varios minutos",
-            allowOutsideClick: false,
-            didOpen: () => {
-              Swal.showLoading();
-            },
-          });
-          fetch(
-            "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Libro_Compras_1",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                int_numero_empresa: selectedEmpresa,
-                date_fecha_inicial: fechaInicial,
-                date_fecha_final: fechaFinal,
-              }),
-            }
-          )
-            .then((response) => response.json())
-            .then((data) => {
-              if (data && data.length > 0) {
-                Swal.update({
-                  title: "Enviando parámetros...",
-                  text: "Esto puede durar varios minutos",
-                });
-                initializeTable(selectedEmpresa, fechaInicial, fechaFinal);
-                Swal.close();
-                const recordCountText =
-                  document.getElementById("record-count-text");
-                recordCountText.textContent = `Cantidad de registros: ${data.length}`;
-                recordCountText.style.display = "block";
-              } else {
-                Swal.fire({
-                  icon: "warning",
-                  title: "Advertencia",
-                  text: "No se encontró información acorde a los filtros seleccionados.",
-                });
+          if (selectedEmpresa) {
+            if (fechaInicial && fechaFinal) {
+              Swal.fire({
+                title: "Validando que exista información",
+                text: "Esto puede durar varios minutos",
+                allowOutsideClick: false,
+                didOpen: () => {
+                  Swal.showLoading();
+                },
+              });
+              fetch(
+                "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Libro_Compras_1",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    int_numero_empresa: selectedEmpresa,
+                    date_fecha_inicial: fechaInicial,
+                    date_fecha_final: fechaFinal,
+                  }),
+                }
+              )
+                .then((response) => response.json())
+                .then((data) => {
+                  if (data && data.length > 0) {
+                    Swal.update({
+                      title: "Enviando parámetros...",
+                      text: "Esto puede durar varios minutos",
+                    });
+                    initializeTable(selectedEmpresa, fechaInicial, fechaFinal);
+                    Swal.close();
+                    const recordCountText =
+                      document.getElementById("record-count-text");
+                    recordCountText.textContent = `Cantidad de registros: ${data.length}`;
+                    recordCountText.style.display = "block";
+                  } else {
+                    Swal.fire({
+                      icon: "warning",
+                      title: "Advertencia",
+                      text: "No se encontró información acorde a los filtros seleccionados.",
+                    });
 
-                const recordCountText =
-                  document.getElementById("record-count-text");
-                recordCountText.style.display = "none";
-              }
-            })
-            .catch((error) => {
-              console.error("Error al obtener los datos:", error);
+                    const recordCountText =
+                      document.getElementById("record-count-text");
+                    recordCountText.style.display = "none";
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error al obtener los datos:", error);
+                  Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+                  });
+                });
+            } else {
               Swal.fire({
                 icon: "error",
                 title: "Error",
-                text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+                text: "Debes seleccionar una fecha inicial y una fecha final.",
               });
+            }
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Debes seleccionar una empresa.",
             });
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "Debes seleccionar una fecha inicial y una fecha final.",
-          });
-        }
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Debes seleccionar una empresa.",
-        });
-      }
+          }
+        })
     });
 
   function initializeTable(nombreEmpresa, fechaInicial, fechaFinal) {
