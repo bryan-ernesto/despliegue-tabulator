@@ -121,6 +121,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   });
 
   departamentoSelect.addEventListener("change", () => {
+    const selectedDepartment = departamentoSelect.value; // Obtenemos el departamento seleccionado
     const selectedCompany = empresaSelect.value;
 
     if (selectedCompany !== "") {
@@ -140,8 +141,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
         body: JSON.stringify({
           int_id_cat_equipo: 0,
           str_equipo_nombre: "",
-          int_id_cat_departamento: 0,
-          int_id_cat_empresa: companyId,
+          int_id_cat_departamento: parseInt(selectedDepartment),
+          int_id_cat_empresa: parseInt(selectedCompany),
           int_creado_por: 0,
           int_actualizado_por: 0,
         }),

@@ -286,6 +286,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   clearButton.addEventListener("click", () => {
     empresaSelect.value = "";
+    cuentaSelect.value = "";
+    table.clearData();
+  });
+
+  clearButtonE.addEventListener("click", () => {
+    cuentaSelect.value = "";
     table.clearData();
   });
 

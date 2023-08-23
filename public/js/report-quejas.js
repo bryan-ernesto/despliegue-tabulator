@@ -288,6 +288,11 @@ document.addEventListener("DOMContentLoaded", (event) => {
   document
     .getElementById("descargar-universo-button")
     .addEventListener("click", function () {
+      tipoSelect.value = "";
+      empresaSelect.value = "";
+      estadoSelect.value = "";
+      fechaInicialInput.value = "";
+      fechaFinalInput.value = "";
       Swal.fire({
         title: "Validando que exista información",
         text: "Esto puede durar varios minutos",

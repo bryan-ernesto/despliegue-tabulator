@@ -200,9 +200,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   }
 
   clearButton.addEventListener("click", () => {
-    empresaSelect.value = "";
-    fechaInicialInput.value = "";
-    fechaFinalInput.value = "";
+    usuarioSelect.value = "";
     table.clearData();
   });
 

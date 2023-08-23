@@ -362,12 +362,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
     });
 
   clearButton.addEventListener("click", () => {
-    procesoSelect.value = "";
+    estadoSelect.value = "";
     table.clearData();
   });
 
   clearButtonE.addEventListener("click", () => {
-    usuarioSelect.value = "";
+    empresaSelect.value = "";
     table.clearData();
   });
 
