@@ -1,15 +1,16 @@
-window.onpageshow = function(event) {
+window.onpageshow = function (event) {
   if (event.persisted) {
-      window.location.reload();
+    window.location.reload();
   }
 };
 
 document.addEventListener("DOMContentLoaded", (event) => {
-  const username = localStorage.getItem("username");
+  const username = (localStorage.getItem("username") || "").toLowerCase();
+  const id_cat_usuario = localStorage.getItem("id_cat_usuario");
 
   if (!username) {
-    window.location.href = "/index.html"; // Reemplaza con la URL de tu página de inicio de sesión
-    return; // Esto es importante para que el código después de esto no se ejecute si el usuario no está autenticado
+    window.location.href = "/index.html";
+    return;
   }
 
   const usernameElement = document.getElementById("username");
@@ -67,83 +68,97 @@ document.addEventListener("DOMContentLoaded", (event) => {
   document
     .getElementById("actualizar-button")
     .addEventListener("click", function () {
-      const selectedUsuario = usuarioSelect.value;
-      const fechaInicial = fechaInicialInput.value;
-      const fechaFinal = fechaFinalInput.value;
+      fetch("http://192.168.0.8:3000/api/recepciones_documento/Post_Documento_BitacoraLogin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          "int_id_cat_aplicativo": 22,
+          "int_id_cat_usuario": parseInt(id_cat_usuario),
+          "int_id_creador": parseInt(id_cat_usuario)
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          const selectedUsuario = usuarioSelect.value;
+          const fechaInicial = fechaInicialInput.value;
+          const fechaFinal = fechaFinalInput.value;
 
-      console.log(selectedUsuario)
+          console.log(selectedUsuario)
 
-      if (selectedUsuario !== undefined && selectedUsuario !== null) {
-        if (fechaInicial && fechaFinal) {
-          Swal.fire({
-            title: "Validando que exista información",
-            text: "Esto puede durar varios minutos",
-            allowOutsideClick: false,
-            didOpen: () => {
-              Swal.showLoading();
-            },
-          });
-          fetch(
-            "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Marcaje",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                str_username: selectedUsuario,
-                date_fecha_inicial: fechaInicial,
-                date_fecha_final: fechaFinal,
-              }),
-            }
-          )
-            .then((response) => response.json())
-            .then((data) => {
-              if (data && data.length > 0) {
-                Swal.update({
-                  title: "Enviando parámetros...",
-                  text: "Esto puede durar varios minutos",
+          if (selectedUsuario !== undefined && selectedUsuario !== null) {
+            if (fechaInicial && fechaFinal) {
+              Swal.fire({
+                title: "Validando que exista información",
+                text: "Esto puede durar varios minutos",
+                allowOutsideClick: false,
+                didOpen: () => {
+                  Swal.showLoading();
+                },
+              });
+              fetch(
+                "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Marcaje",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    str_username: selectedUsuario,
+                    date_fecha_inicial: fechaInicial,
+                    date_fecha_final: fechaFinal,
+                  }),
+                }
+              )
+                .then((response) => response.json())
+                .then((data) => {
+                  if (data && data.length > 0) {
+                    Swal.update({
+                      title: "Enviando parámetros...",
+                      text: "Esto puede durar varios minutos",
+                    });
+                    initializeTable(selectedUsuario, fechaInicial, fechaFinal);
+                    Swal.close();
+                    const recordCountText =
+                      document.getElementById("record-count-text");
+                    recordCountText.textContent = `Cantidad de registros: ${data.length}`;
+                    recordCountText.style.display = "block"; // Mostrar el elemento
+                  } else {
+                    Swal.fire({
+                      icon: "warning",
+                      title: "Advertencia",
+                      text: "No se encontró información acorde a los filtros seleccionados.",
+                    });
+                    // Ocultar el texto cuando no hay registros
+                    const recordCountText =
+                      document.getElementById("record-count-text");
+                    recordCountText.style.display = "none"; // Ocultar el elemento
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error al obtener los datos:", error);
+                  Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+                  });
                 });
-                initializeTable(selectedUsuario, fechaInicial, fechaFinal);
-                Swal.close();
-                const recordCountText =
-                  document.getElementById("record-count-text");
-                recordCountText.textContent = `Cantidad de registros: ${data.length}`;
-                recordCountText.style.display = "block"; // Mostrar el elemento
-              } else {
-                Swal.fire({
-                  icon: "warning",
-                  title: "Advertencia",
-                  text: "No se encontró información acorde a los filtros seleccionados.",
-                });
-                // Ocultar el texto cuando no hay registros
-                const recordCountText =
-                  document.getElementById("record-count-text");
-                recordCountText.style.display = "none"; // Ocultar el elemento
-              }
-            })
-            .catch((error) => {
-              console.error("Error al obtener los datos:", error);
+            } else {
               Swal.fire({
                 icon: "error",
                 title: "Error",
-                text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+                text: "Debes seleccionar una fecha inicial y una fecha final.",
               });
+            }
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Debes seleccionar un usuario.",
             });
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "Debes seleccionar una fecha inicial y una fecha final.",
-          });
-        }
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Debes seleccionar un usuario.",
-        });
-      }
+          }
+        })
     });
 
   function initializeTable(selectedUsuario, fechaInicial, fechaFinal) {

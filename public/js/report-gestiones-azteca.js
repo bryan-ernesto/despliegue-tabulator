@@ -5,7 +5,7 @@ window.onpageshow = function (event) {
 };
 
 document.addEventListener("DOMContentLoaded", (event) => {
-  const username = localStorage.getItem("username");
+  const username = (localStorage.getItem("username") || "").toLowerCase();
   const id_cat_usuario = localStorage.getItem("id_cat_usuario");
 
   if (!username) {
@@ -34,7 +34,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Respuesta de la petición POST:", data);
         const fechaInicial = fechaInicialInput.value;
         const fechaFinal = fechaFinalInput.value;
 

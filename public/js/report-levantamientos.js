@@ -5,7 +5,7 @@ window.onpageshow = function (event) {
 };
 
 document.addEventListener("DOMContentLoaded", (event) => {
-  const username = localStorage.getItem("username");
+  const username = (localStorage.getItem("username") || "").toLowerCase();
   const id_cat_usuario = localStorage.getItem("id_cat_usuario");
 
   if (!username) {
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          "int_id_cat_aplicativo": 13,
+          "int_id_cat_aplicativo": 24,
           "int_id_cat_usuario": parseInt(id_cat_usuario),
           "int_id_creador": parseInt(id_cat_usuario)
         }),

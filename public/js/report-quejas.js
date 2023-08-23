@@ -5,7 +5,9 @@ window.onpageshow = function (event) {
 };
 
 document.addEventListener("DOMContentLoaded", (event) => {
-  const username = localStorage.getItem("username");
+  const username = (localStorage.getItem("username") || "").toLowerCase();
+  const id_cat_usuario = localStorage.getItem("id_cat_usuario");
+
   if (!username) {
     window.location.href = "/index.html";
     return;
@@ -74,7 +76,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       selectAllOption.value = "";
       selectAllOption.text = "Seleccionar todas las empresas";
       empresaSelect.appendChild(selectAllOption);
-      
+
       estadosData.forEach((empresa) => {
         const option = document.createElement("option");
         option.value = empresa.Empresa;
@@ -106,7 +108,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       const selectAllOption = document.createElement("option");
       selectAllOption.value = "";
       selectAllOption.text = "Seleccionar todos los estados";
-      estadoSelect.appendChild(selectAllOption);     
+      estadoSelect.appendChild(selectAllOption);
 
       estadosData.forEach((estado) => {
         const option = document.createElement("option");
@@ -125,105 +127,119 @@ document.addEventListener("DOMContentLoaded", (event) => {
   document
     .getElementById("actualizar-button")
     .addEventListener("click", function () {
-      const selectedTipo = tipoSelect.value;
-      const selectedEmpresa = empresaSelect.value;
-      const selectedEstado = estadoSelect.value;
-      const fechaInicial = fechaInicialInput.value;
-      const fechaFinal = fechaFinalInput.value;
-      if (selectedTipo !== undefined && selectedTipo !== null) {
-        if (selectedEmpresa !== undefined && selectedEmpresa !== null) {
-          if (selectedEstado !== undefined && selectedEstado !== null) {
-            if (fechaInicial && fechaFinal) {
-              Swal.fire({
-                title: "Validando que exista información",
-                text: "Esto puede durar varios minutos",
-                allowOutsideClick: false,
-                didOpen: () => {
-                  Swal.showLoading();
-                },
-              });
-              fetch(
-                "http://192.168.0.8:3000/api/sharepoint/Get_Sharepoint_Quejas",
-                {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                    str_tipo: selectedTipo,
-                    str_empresa: selectedEmpresa,
-                    str_estado: selectedEstado,
-                    fecha_inicio: fechaInicial,
-                    fecha_final: fechaFinal,
-                  }),
-                }
-              )
-                .then((response) => response.json())
-                .then((data) => {
-                  if (data && data.length > 0) {
-                    Swal.update({
-                      title: "Enviando parámetros...",
-                      text: "Esto puede durar varios minutos",
+      fetch("http://192.168.0.8:3000/api/recepciones_documento/Post_Documento_BitacoraLogin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          "int_id_cat_aplicativo": 23,
+          "int_id_cat_usuario": parseInt(id_cat_usuario),
+          "int_id_creador": parseInt(id_cat_usuario)
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          const selectedTipo = tipoSelect.value;
+          const selectedEmpresa = empresaSelect.value;
+          const selectedEstado = estadoSelect.value;
+          const fechaInicial = fechaInicialInput.value;
+          const fechaFinal = fechaFinalInput.value;
+          if (selectedTipo !== undefined && selectedTipo !== null) {
+            if (selectedEmpresa !== undefined && selectedEmpresa !== null) {
+              if (selectedEstado !== undefined && selectedEstado !== null) {
+                if (fechaInicial && fechaFinal) {
+                  Swal.fire({
+                    title: "Validando que exista información",
+                    text: "Esto puede durar varios minutos",
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                      Swal.showLoading();
+                    },
+                  });
+                  fetch(
+                    "http://192.168.0.8:3000/api/sharepoint/Get_Sharepoint_Quejas",
+                    {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
+                        str_tipo: selectedTipo,
+                        str_empresa: selectedEmpresa,
+                        str_estado: selectedEstado,
+                        fecha_inicio: fechaInicial,
+                        fecha_final: fechaFinal,
+                      }),
+                    }
+                  )
+                    .then((response) => response.json())
+                    .then((data) => {
+                      if (data && data.length > 0) {
+                        Swal.update({
+                          title: "Enviando parámetros...",
+                          text: "Esto puede durar varios minutos",
+                        });
+                        initializeTable(
+                          selectedTipo,
+                          selectedEmpresa,
+                          selectedEstado,
+                          fechaInicial,
+                          fechaFinal
+                        );
+                        Swal.close();
+                        const recordCountText =
+                          document.getElementById("record-count-text");
+                        recordCountText.textContent = `Cantidad de registros: ${data.length}`;
+                        recordCountText.style.display = "block";
+                      } else {
+                        Swal.fire({
+                          icon: "warning",
+                          title: "Advertencia",
+                          text: "No se encontró información acorde a los filtros seleccionados.",
+                        });
+                        const recordCountText =
+                          document.getElementById("record-count-text");
+                        recordCountText.style.display = "none";
+                      }
+                    })
+                    .catch((error) => {
+                      console.error("Error al obtener los datos:", error);
+                      Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+                      });
                     });
-                    initializeTable(
-                      selectedTipo,
-                      selectedEmpresa,
-                      selectedEstado,
-                      fechaInicial,
-                      fechaFinal
-                    );
-                    Swal.close();
-                    const recordCountText =
-                      document.getElementById("record-count-text");
-                    recordCountText.textContent = `Cantidad de registros: ${data.length}`;
-                    recordCountText.style.display = "block"; 
-                  } else {
-                    Swal.fire({
-                      icon: "warning",
-                      title: "Advertencia",
-                      text: "No se encontró información acorde a los filtros seleccionados.",
-                    });
-                    const recordCountText =
-                      document.getElementById("record-count-text");
-                    recordCountText.style.display = "none";
-                  }
-                })
-                .catch((error) => {
-                  console.error("Error al obtener los datos:", error);
+                } else {
                   Swal.fire({
                     icon: "error",
                     title: "Error",
-                    text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+                    text: "Debes seleccionar una fecha inicial y una fecha final.",
                   });
+                }
+              } else {
+                Swal.fire({
+                  icon: "error",
+                  title: "Error",
+                  text: "Debes seleccionar un estado.",
                 });
+              }
             } else {
               Swal.fire({
                 icon: "error",
                 title: "Error",
-                text: "Debes seleccionar una fecha inicial y una fecha final.",
+                text: "Debes seleccionar una empresa.",
               });
             }
           } else {
             Swal.fire({
               icon: "error",
               title: "Error",
-              text: "Debes seleccionar un estado.",
+              text: "Debes seleccionar un tipo.",
             });
           }
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "Debes seleccionar una empresa.",
-          });
-        }
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Debes seleccionar un tipo.",
-        });
-      }
+        })
     });
 
   function initializeTable(

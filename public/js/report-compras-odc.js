@@ -5,7 +5,9 @@ window.onpageshow = function (event) {
 };
 
 document.addEventListener("DOMContentLoaded", (event) => {
-  const username = localStorage.getItem("username");
+  const username = (localStorage.getItem("username") || "").toLowerCase();
+  const id_cat_usuario = localStorage.getItem("id_cat_usuario");
+
   if (!username) {
     window.location.href = "/index.html";
     return;
@@ -130,119 +132,133 @@ document.addEventListener("DOMContentLoaded", (event) => {
   document
     .getElementById("actualizar-button")
     .addEventListener("click", function () {
-      const selectedEstado = estadoSelect.value;
-      const selectedEmpresa = empresaSelect.value;
-      const fechaInicial = fechaInicialInput.value;
-      const fechaFinal = fechaFinalInput.value;
+      fetch("http://192.168.0.8:3000/api/recepciones_documento/Post_Documento_BitacoraLogin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          "int_id_cat_aplicativo": 18,
+          "int_id_cat_usuario": parseInt(id_cat_usuario),
+          "int_id_creador": parseInt(id_cat_usuario)
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          const selectedEstado = estadoSelect.value;
+          const selectedEmpresa = empresaSelect.value;
+          const fechaInicial = fechaInicialInput.value;
+          const fechaFinal = fechaFinalInput.value;
 
-      console.log(selectedEstado, selectedEmpresa, fechaInicial, fechaFinal)
+          console.log(selectedEstado, selectedEmpresa, fechaInicial, fechaFinal)
 
-      if (selectedEstado) {
-        if (selectedEmpresa) {
-          if (fechaInicial && fechaFinal) {
-            Swal.fire({
-              title: "Validando que exista información",
-              text: "Esto puede durar varios minutos",
-              allowOutsideClick: false,
-              didOpen: () => {
-                Swal.showLoading();
-              },
-            });
-            fetch(
-              "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Compras_Odc",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  int_id_cat_empresa: selectedEmpresa,
-                  str_nombre_empresa: "",
-                  int_id_cat_usuario: 0,
-                  str_nombre_usuario: "",
-                  int_id_odc_estado: selectedEstado,
-                  str_nombre_odc_estado: "",
-                  str_nombre_proveedor: "",
-                  str_nit_proveedor: "",
-                  str_forma_pago: "",
-                  int_id_categoria: "",
-                  str_nombre_categoria: "",
-                  str_estado_presupuesto: "",
-                  str_tipo: "",
-                  int_id_moneda: 0,
-                  str_nombre_moneda: "",
-                  int_apro1_id_usuario: 0,
-                  str_apro1_nombre: "",
-                  int_apro2_id_usuario: 0,
-                  str_apro2_nombre: "",
-                  int_apro3_id_usuario: 0,
-                  str_apro3_nombre: "",
-                  int_apro4_id_usuario: 0,
-                  str_apro4_nombre: "",
-                  int_estado: 2,
-                  date_fecha_inicial: fechaInicial,
-                  date_fecha_final: fechaFinal,
-                }),
-              }
-            )
-              .then((response) => response.json())
-              .then((data) => {
-                if (data && data.length > 0) {
-                  Swal.update({
-                    title: "Enviando parámetros...",
-                    text: "Esto puede durar varios minutos",
+          if (selectedEstado) {
+            if (selectedEmpresa) {
+              if (fechaInicial && fechaFinal) {
+                Swal.fire({
+                  title: "Validando que exista información",
+                  text: "Esto puede durar varios minutos",
+                  allowOutsideClick: false,
+                  didOpen: () => {
+                    Swal.showLoading();
+                  },
+                });
+                fetch(
+                  "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Compras_Odc",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      int_id_cat_empresa: selectedEmpresa,
+                      str_nombre_empresa: "",
+                      int_id_cat_usuario: 0,
+                      str_nombre_usuario: "",
+                      int_id_odc_estado: selectedEstado,
+                      str_nombre_odc_estado: "",
+                      str_nombre_proveedor: "",
+                      str_nit_proveedor: "",
+                      str_forma_pago: "",
+                      int_id_categoria: "",
+                      str_nombre_categoria: "",
+                      str_estado_presupuesto: "",
+                      str_tipo: "",
+                      int_id_moneda: 0,
+                      str_nombre_moneda: "",
+                      int_apro1_id_usuario: 0,
+                      str_apro1_nombre: "",
+                      int_apro2_id_usuario: 0,
+                      str_apro2_nombre: "",
+                      int_apro3_id_usuario: 0,
+                      str_apro3_nombre: "",
+                      int_apro4_id_usuario: 0,
+                      str_apro4_nombre: "",
+                      int_estado: 2,
+                      date_fecha_inicial: fechaInicial,
+                      date_fecha_final: fechaFinal,
+                    }),
+                  }
+                )
+                  .then((response) => response.json())
+                  .then((data) => {
+                    if (data && data.length > 0) {
+                      Swal.update({
+                        title: "Enviando parámetros...",
+                        text: "Esto puede durar varios minutos",
+                      });
+                      initializeTable(
+                        selectedEstado,
+                        selectedEmpresa,
+                        fechaInicial,
+                        fechaFinal
+                      );
+                      Swal.close();
+                      const recordCountText =
+                        document.getElementById("record-count-text");
+                      recordCountText.textContent = `Cantidad de registros: ${data.length}`;
+                      recordCountText.style.display = "block"; // Mostrar el elemento
+                    } else {
+                      Swal.fire({
+                        icon: "warning",
+                        title: "Advertencia",
+                        text: "No se encontró información acorde a los filtros seleccionados.",
+                      });
+                      const recordCountText =
+                        document.getElementById("record-count-text");
+                      recordCountText.style.display = "none"; // Ocultar el elemento
+                    }
+                  })
+                  .catch((error) => {
+                    console.error("Error al obtener los datos:", error);
+                    Swal.fire({
+                      icon: "error",
+                      title: "Error",
+                      text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+                    });
                   });
-                  initializeTable(
-                    selectedEstado,
-                    selectedEmpresa,
-                    fechaInicial,
-                    fechaFinal
-                  );
-                  Swal.close();
-                  const recordCountText =
-                    document.getElementById("record-count-text");
-                  recordCountText.textContent = `Cantidad de registros: ${data.length}`;
-                  recordCountText.style.display = "block"; // Mostrar el elemento
-                } else {
-                  Swal.fire({
-                    icon: "warning",
-                    title: "Advertencia",
-                    text: "No se encontró información acorde a los filtros seleccionados.",
-                  });
-                  const recordCountText =
-                    document.getElementById("record-count-text");
-                  recordCountText.style.display = "none"; // Ocultar el elemento
-                }
-              })
-              .catch((error) => {
-                console.error("Error al obtener los datos:", error);
+              } else {
                 Swal.fire({
                   icon: "error",
                   title: "Error",
-                  text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+                  text: "Debes seleccionar una fecha inicial y una fecha final.",
                 });
+              }
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Debes seleccionar un usuario.",
               });
+            }
           } else {
             Swal.fire({
               icon: "error",
               title: "Error",
-              text: "Debes seleccionar una fecha inicial y una fecha final.",
+              text: "Debes seleccionar un proceso.",
             });
           }
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "Debes seleccionar un usuario.",
-          });
-        }
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Debes seleccionar un proceso.",
-        });
-      }
+        })
     });
 
   function initializeTable(

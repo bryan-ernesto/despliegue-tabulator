@@ -5,7 +5,7 @@ window.onpageshow = function (event) {
 };
 
 document.addEventListener("DOMContentLoaded", (event) => {
-  const username = localStorage.getItem("username");
+  const username = (localStorage.getItem("username") || "").toLowerCase();
   const id_cat_usuario = localStorage.getItem("id_cat_usuario");
 
   if (!username) {
