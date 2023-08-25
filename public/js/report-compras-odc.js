@@ -121,12 +121,88 @@ document.addEventListener("DOMContentLoaded", (event) => {
       empresaSelect.value = "";
       fechaInicialInput.value = "";
       fechaFinalInput.value = "";
-      initializeTable(
-        selectedEstado,
-        selectedEmpresa,
-        fechaInicial,
-        fechaFinal
-      );
+      Swal.fire({
+        title: "Validando que exista información",
+        text: "Esto puede durar varios minutos",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+      fetch(
+        "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Compras_Odc",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            int_id_cat_empresa: selectedEmpresa,
+            str_nombre_empresa: "",
+            int_id_cat_usuario: 0,
+            str_nombre_usuario: "",
+            int_id_odc_estado: selectedEstado,
+            str_nombre_odc_estado: "",
+            str_nombre_proveedor: "",
+            str_nit_proveedor: "",
+            str_forma_pago: "",
+            int_id_categoria: "",
+            str_nombre_categoria: "",
+            str_estado_presupuesto: "",
+            str_tipo: "",
+            int_id_moneda: 0,
+            str_nombre_moneda: "",
+            int_apro1_id_usuario: 0,
+            str_apro1_nombre: "",
+            int_apro2_id_usuario: 0,
+            str_apro2_nombre: "",
+            int_apro3_id_usuario: 0,
+            str_apro3_nombre: "",
+            int_apro4_id_usuario: 0,
+            str_apro4_nombre: "",
+            int_estado: 2,
+            date_fecha_inicial: fechaInicial,
+            date_fecha_final: fechaFinal,
+          }),
+        }
+      )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data && data.length > 0) {
+          Swal.update({
+            title: "Enviando parámetros...",
+            text: "Esto puede durar varios minutos",
+          });
+          initializeTable(
+            selectedEstado,
+            selectedEmpresa,
+            fechaInicial,
+            fechaFinal
+          );
+          Swal.close();
+          const recordCountText =
+            document.getElementById("record-count-text");
+          recordCountText.textContent = `Cantidad de registros: ${data.length}`;
+          recordCountText.style.display = "block"; 
+        } else {
+          Swal.fire({
+            icon: "warning",
+            title: "Advertencia",
+            text: "No se encontró información acorde a los filtros seleccionados.",
+          });
+          const recordCountText =
+            document.getElementById("record-count-text");
+          recordCountText.style.display = "none"; 
+        }
+      })
+      .catch((error) => {
+        console.error("Error al obtener los datos:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+        });
+      });
     });
 
   document
@@ -324,34 +400,35 @@ document.addEventListener("DOMContentLoaded", (event) => {
     table.setData();
   }
 
-  function exportTable() {
+  async function exportTable() {
     if (table) {
-      const customHeader = {
-        v: "REPORTE DE COMPRAS ODC",
-        s: { font: { sz: 30 } },
-      };
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("ODC");
 
-      const worksheet = XLSX.utils.aoa_to_sheet([]);
-      worksheet["A1"] = { ...customHeader };
+      worksheet.getCell("A1").value = "REPORTE DE COMPRAS ODC";
+      worksheet.getCell("A1").font = { size: 30 };
 
       const columns = table.getColumns();
       const headers = columns.map((column) => column.getField());
-      const dataT = [
-        headers,
-        ...table.getData().map((row) => Object.values(row)),
-      ];
-      XLSX.utils.sheet_add_aoa(worksheet, dataT, { origin: "A5" });
+      const data = table.getData().map((row) => Object.values(row));
 
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "ODC");
-
-      XLSX.writeFile(workbook, "reporte-compras-odc.xlsx", {
-        bookType: "xlsx",
-        bookSST: true,
-        type: "binary",
-        cellStyles: true,
+      let currentRow = worksheet.getRow(5);
+      headers.forEach((header, index) => {
+        currentRow.getCell(index + 1).value = header;
       });
-    } else {
+
+      data.forEach((rowData, rowIndex) => {
+        currentRow = worksheet.getRow(rowIndex + 6); 
+        rowData.forEach((cellValue, cellIndex) => {
+          currentRow.getCell(cellIndex + 1).value = isNaN(cellValue) ? cellValue : Number(cellValue);
+        });
+      });
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      });
+      saveAs(blob, "reporte-compras-odc.xlsx");
     }
   }
 

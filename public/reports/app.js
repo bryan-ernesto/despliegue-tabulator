@@ -158,6 +158,11 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton4.style.display = "none";
     showPageButton5.style.display = "none";
     showPageButton6.style.display = "none";
+    showPageButton7.style.display = "none";
+    showPageButton8.style.display = "none";
+    showPageButton9.style.display = "none";
+    showPageButton10.style.display = "none";
+    showPageButton11.style.display = "none";
   });
 
   function checkSelections() {
@@ -203,13 +208,6 @@ document.addEventListener("DOMContentLoaded", () => {
       showPageButton5.style.display = "block";
     } else if (
       selectedEmpresa &&
-      parseInt(selectedCompany) === 4 &&
-      parseInt(selectedDepartment) === 2 &&
-      parseInt(selectedEquipment) === 25
-    ) {
-      showPageButton5.style.display = "block";
-    } else if (
-      selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 18 &&
       parseInt(selectedEquipment) === 24
@@ -241,7 +239,7 @@ document.addEventListener("DOMContentLoaded", () => {
       showPageButton6.style.display = "block";
     } else {
       showPageButton6.style.display = "none";
-    } 
+    }
     if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
@@ -249,7 +247,7 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedEquipment) === 30
     ) {
       showPageButton9.style.display = "block";
-    } else if(
+    } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 14 &&
@@ -268,7 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
     else {
       showPageButton9.style.display = "none";
       showPageButton6.style.display = "none";
-    } 
+    }
   }
 
   companySelect.addEventListener("change", () => {

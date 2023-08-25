@@ -6,7 +6,7 @@
 
 body {
   font-family: 'Poppins', sans-serif;
-  overflow: hidden;
+  overflow: auto;
   position: relative;
   background: rgb(247,246,246);
   background: linear-gradient(90deg, rgba(232,237,247,1) 0%, rgba(253,255,254,1) 35%, rgba(232,237,247,1) 100%);
@@ -109,7 +109,8 @@ span {
   margin-top: 60px;
   display: block;
   text-align: center;
-  border-radius: 10%;
+  border-radius: 25%;
+  border-style: double;
 }
 
 #show-page-report1 a,
@@ -171,7 +172,6 @@ span {
 #show-page-report11 button:hover {
   background-color: rgba(26, 21, 32, 1);
   transition: 0.3s;
-  border-radius: 20%;
 }
 
 #clear-button,

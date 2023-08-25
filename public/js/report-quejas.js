@@ -35,13 +35,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
       const tipoData = data;
       const initialOption = document.createElement("option");
       initialOption.value = "";
-      initialOption.text = "Seleccione Tipo";
+      initialOption.text = "Seleccione Canal";
       initialOption.hidden = true;
       tipoSelect.appendChild(initialOption);
 
       const selectAllOption = document.createElement("option");
       selectAllOption.value = "";
-      selectAllOption.text = "Seleccionar todos los tipos";
+      selectAllOption.text = "Seleccionar todos los canales";
       tipoSelect.appendChild(selectAllOption);
 
       tipoData.forEach((tipo) => {
