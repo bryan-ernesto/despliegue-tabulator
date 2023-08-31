@@ -16,51 +16,45 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const usernameElement = document.getElementById("username");
   usernameElement.textContent = username;
 
-  const usuarioSelect = document.getElementById("usuario-select");
+  const aplicativoSelect = document.getElementById("aplicativo-select");
   const clearButton = document.getElementById("clear-button");
   const fechaInicialInput = document.getElementById("fecha-inicial");
   const fechaFinalInput = document.getElementById("fecha-final");
 
-  fetch("http://192.168.0.8:3000/api/usuarios/Get_usuarios", {
+  fetch("http://192.168.0.8:3000/api/reporteador/Get_Reporte_Documento_Aplicativo", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      str_usuario_nombre: "",
-      int_creado_por: 0,
-      int_actualizado_por: 0,
-      str_username: "",
-      int_empresa: 4,
-      int_departamento: 0,
-      int_equipo: 0
+      int_id_aplicativo: 0
     }),
   })
     .then((response) => response.json())
     .then((data) => {
-      const usuariosData = data;
+      const aplicativoData = data;
 
       const initialOption = document.createElement("option");
       initialOption.value = "";
-      initialOption.text = "Seleccione Usuario";
+      initialOption.text = "Seleccione Aplicativo";
       initialOption.hidden = true;
-      usuarioSelect.appendChild(initialOption);
+      aplicativoSelect.appendChild(initialOption);
 
       const selectAllOption = document.createElement("option");
-      selectAllOption.value = "";
-      selectAllOption.text = "Seleccionar todos los usuarios";
-      usuarioSelect.appendChild(selectAllOption);
+      selectAllOption.value = "0";
+      selectAllOption.text = "Seleccionar todos los aplicativos";
+      aplicativoSelect.appendChild(selectAllOption);
 
-      usuariosData.forEach((usuario) => {
+      aplicativoData.forEach((aplicativo) => {
         const option = document.createElement("option");
-        option.value = usuario.username;
-        option.text = usuario.nombre;
-        option.classList.add("usuario-option");
-        usuarioSelect.appendChild(option);
+        option.value = aplicativo.id_cat_aplicativo;
+        option.text = aplicativo.nombre;
+        option.classList.add("aplicativo-option");
+        aplicativoSelect.appendChild(option);
       });
     })
     .catch((error) => {
-      console.error("Error al obtener las empresas:", error);
+      console.error("Error al obtener los aplicativos:", error);
     });
 
   let table;
@@ -74,20 +68,18 @@ document.addEventListener("DOMContentLoaded", (event) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          "int_id_cat_aplicativo": 22,
+          "int_id_cat_aplicativo": 27,
           "int_id_cat_usuario": parseInt(id_cat_usuario),
           "int_id_creador": parseInt(id_cat_usuario)
         }),
       })
         .then((response) => response.json())
         .then((data) => {
-          const selectedUsuario = usuarioSelect.value;
+          const selectedAplicativo = aplicativoSelect.value;
           const fechaInicial = fechaInicialInput.value;
           const fechaFinal = fechaFinalInput.value;
 
-          console.log(selectedUsuario)
-
-          if (selectedUsuario !== undefined && selectedUsuario !== null) {
+          if (selectedAplicativo) {
             if (fechaInicial && fechaFinal) {
               Swal.fire({
                 title: "Validando que exista información",
@@ -98,16 +90,16 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 },
               });
               fetch(
-                "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Marcaje",
+                "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Documento_Login",
                 {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify({
-                    str_username: selectedUsuario,
-                    date_fecha_inicial: fechaInicial,
-                    date_fecha_final: fechaFinal,
+                    int_id_aplicativo: selectedAplicativo,
+                    date_creacion_inicio: fechaInicial,
+                    date_creacion_fin: fechaFinal,
                   }),
                 }
               )
@@ -118,23 +110,24 @@ document.addEventListener("DOMContentLoaded", (event) => {
                       title: "Enviando parámetros...",
                       text: "Esto puede durar varios minutos",
                     });
-                    initializeTable(selectedUsuario, fechaInicial, fechaFinal);
+                    initializeTable(selectedAplicativo, fechaInicial, fechaFinal);
                     Swal.close();
                     const recordCountText =
                       document.getElementById("record-count-text");
                     recordCountText.textContent = `Cantidad de registros: ${data.length}`;
-                    recordCountText.style.display = "block"; // Mostrar el elemento
+                    recordCountText.style.display = "block";
                   } else {
                     Swal.fire({
                       icon: "warning",
                       title: "Advertencia",
                       text: "No se encontró información acorde a los filtros seleccionados.",
                     });
-                    // Ocultar el texto cuando no hay registros
+
                     const recordCountText =
                       document.getElementById("record-count-text");
-                    recordCountText.style.display = "none"; // Ocultar el elemento
+                    recordCountText.style.display = "none";
                   }
+                  console.log(selectedAplicativo)
                 })
                 .catch((error) => {
                   console.error("Error al obtener los datos:", error);
@@ -155,32 +148,32 @@ document.addEventListener("DOMContentLoaded", (event) => {
             Swal.fire({
               icon: "error",
               title: "Error",
-              text: "Debes seleccionar un usuario.",
+              text: "Debes seleccionar un aplicativo.",
             });
           }
         })
     });
 
-  function initializeTable(selectedUsuario, fechaInicial, fechaFinal) {
+  function initializeTable(selectedAplicativo, fechaInicial, fechaFinal) {
     table = new Tabulator("#example-table", {
-      layout: "fitColumns",
+      layout: "fitData",
       columns: [],
       pagination: "local",
       paginationSize: 25,
       paginationSizeSelector: [10, 25, 50, 100],
       ajaxURL:
-        "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Marcaje",
-      ajaxConfig: {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+        "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Documento_Login",
+        ajaxConfig: {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
-      },
       ajaxParams: function (params) {
         return {
-          str_username: selectedUsuario,
-          date_fecha_inicial: fechaInicial,
-          date_fecha_final: fechaFinal,
+          int_id_aplicativo: selectedAplicativo,
+          date_creacion_inicio: fechaInicial,
+          date_creacion_fin: fechaFinal,
         };
       },
       ajaxContentType: "json",
@@ -200,14 +193,16 @@ document.addEventListener("DOMContentLoaded", (event) => {
   }
 
   clearButton.addEventListener("click", () => {
-    usuarioSelect.value = "";
+    empresaSelect.value = "";
+    fechaInicialInput.value = "";
+    fechaFinalInput.value = "";
     table.clearData();
   });
 
   function exportTable() {
     if (table) {
       const customHeader = {
-        v: "REPORTE MARCAJE",
+        v: "REPORTE LOGIN APLICATIVO",
         s: { font: { sz: 30 } },
       };
 
@@ -225,7 +220,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Registros");
 
-      XLSX.writeFile(workbook, "reporte-marcaje.xlsx", {
+      XLSX.writeFile(workbook, "reporte-aplicativo.login.xlsx", {
         bookType: "xlsx",
         bookSST: true,
         type: "binary",

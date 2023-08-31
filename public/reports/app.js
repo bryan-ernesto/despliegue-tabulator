@@ -31,6 +31,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const showPageButton9 = document.getElementById("show-page-report9");
   const showPageButton10 = document.getElementById("show-page-report10");
   const showPageButton11 = document.getElementById("show-page-report11");
+  const showPageButton12 = document.getElementById("show-page-report12");
+  const showPageButton13 = document.getElementById("show-page-report13");
 
   showPageButton1.style.display = "none";
   showPageButton3.style.display = "none";
@@ -42,6 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
   showPageButton9.style.display = "none";
   showPageButton10.style.display = "none";
   showPageButton11.style.display = "none";
+  showPageButton12.style.display = "none"
+  showPageButton13.style.display = "none"
 
   let empresasData;
 
@@ -61,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton9.style.display = "block";
     showPageButton10.style.display = "block";
     showPageButton11.style.display = "block";
+    showPageButton12.style.display = "block";
   } else if (username === "bgamez") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
@@ -72,6 +77,8 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton9.style.display = "block";
     showPageButton10.style.display = "block";
     showPageButton11.style.display = "block";
+    showPageButton12.style.display = "block";
+    showPageButton13.style.display = "block";
   } else if (username === "olopez" || username === "cpcifuentes" || username === "egalvez" || username === "hescobar" || username === "rsales") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
@@ -82,6 +89,12 @@ document.addEventListener("DOMContentLoaded", () => {
     username === "rixim"
   ) {
     showPageButton7.style.display = "block";
+  } else if (
+    username === 'acastillo'
+  ) {
+    showPageButton8.style.display = "block";
+    showPageButton6.style.display = "block";
+    showPageButton9.style.display = "block";
   } else if (
     username === "jizquierdo" ||
     username === "acazun" ||
@@ -227,9 +240,24 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedEquipment) === 7
     ) {
       showPageButton5.style.display = "block";
+    } else if (
+      selectedEmpresa &&
+      parseInt(selectedCompany) === 1 &&
+      parseInt(selectedDepartment) === 15 &&
+      parseInt(selectedEquipment) === 23
+    ) {
+      showPageButton5.style.display = "block";
+    } else if (
+      selectedEmpresa &&
+      parseInt(selectedCompany) === 1 &&
+      parseInt(selectedDepartment) === 9 &&
+      parseInt(selectedEquipment) === 38
+    ) {
+      showPageButton13.style.display = "block";
     }
     else {
       showPageButton5.style.display = "none";
+      showPageButton1.style.display = "none";
     }
     if (
       selectedEmpresa &&
