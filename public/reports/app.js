@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const showPageButton11 = document.getElementById("show-page-report11");
   const showPageButton12 = document.getElementById("show-page-report12");
   const showPageButton13 = document.getElementById("show-page-report13");
+  const showPageButton14 = document.getElementById("show-page-report14");
 
   showPageButton1.style.display = "none";
   showPageButton3.style.display = "none";
@@ -44,8 +45,9 @@ document.addEventListener("DOMContentLoaded", () => {
   showPageButton9.style.display = "none";
   showPageButton10.style.display = "none";
   showPageButton11.style.display = "none";
-  showPageButton12.style.display = "none"
-  showPageButton13.style.display = "none"
+  showPageButton12.style.display = "none";
+  showPageButton13.style.display = "none";
+  showPageButton14.style.display = "none";
 
   let empresasData;
 
@@ -66,6 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton10.style.display = "block";
     showPageButton11.style.display = "block";
     showPageButton12.style.display = "block";
+    showPageButton14.style.display = "block";
   } else if (username === "bgamez") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
@@ -79,6 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton11.style.display = "block";
     showPageButton12.style.display = "block";
     showPageButton13.style.display = "block";
+    showPageButton14.style.display = "block";
   } else if (username === "olopez" || username === "cpcifuentes" || username === "egalvez" || username === "hescobar" || username === "rsales") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
@@ -108,6 +112,8 @@ document.addEventListener("DOMContentLoaded", () => {
     username === "cnovales"
   ) {
     showPageButton9.style.display = "block";
+  } else if (username === "jortiz" || username === "avega") {
+    showPageButton14.style.display = "block";
   }
   else {
     showPageButton1.style.display = "none";
@@ -120,6 +126,9 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton9.style.display = "none";
     showPageButton10.style.display = "none";
     showPageButton11.style.display = "none";
+    showPageButton12.style.display = "none";
+    showPageButton13.style.display = "none";
+    showPageButton14.style.display = "none";
   }
 
   fetch("http://192.168.0.8:3000/api/reporteador/Get_Usuarios_Reporteador", {
@@ -194,23 +203,16 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedEquipment) === 19
     ) {
       showPageButton3.style.display = "block";
+      showPageButton3.classList.add('fade-in-up');
     } else if (selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 9 &&
       parseInt(selectedEquipment) === 18) {
+      showPageButton3.classList.add('fade-in-up');
       showPageButton3.style.display = "block";
     } else {
       showPageButton3.style.display = "none";
-    }
-    if (
-      selectedEmpresa &&
-      parseInt(selectedCompany) === 4 &&
-      parseInt(selectedDepartment) === 2 &&
-      parseInt(selectedEquipment) === 25
-    ) {
-      showPageButton4.style.display = "block";
-    } else {
-      showPageButton4.style.display = "none";
+      showPageButton3.classList.remove('fade-in-up');
     }
     if (
       selectedEmpresa &&
@@ -218,6 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedDepartment) === 7 &&
       parseInt(selectedEquipment) === 27
     ) {
+      showPageButton5.classList.add('fade-in-up'); 
       showPageButton5.style.display = "block";
     } else if (
       selectedEmpresa &&
@@ -225,6 +228,7 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedDepartment) === 18 &&
       parseInt(selectedEquipment) === 24
     ) {
+      showPageButton5.classList.add('fade-in-up'); 
       showPageButton5.style.display = "block";
     } else if (
       selectedEmpresa &&
@@ -232,6 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedDepartment) === 2 &&
       parseInt(selectedEquipment) === 29
     ) {
+      showPageButton5.classList.add('fade-in-up'); 
       showPageButton5.style.display = "block";
     } else if (
       selectedEmpresa &&
@@ -239,6 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedDepartment) === 4 &&
       parseInt(selectedEquipment) === 7
     ) {
+      showPageButton5.classList.add('fade-in-up'); 
       showPageButton5.style.display = "block";
     } else if (
       selectedEmpresa &&

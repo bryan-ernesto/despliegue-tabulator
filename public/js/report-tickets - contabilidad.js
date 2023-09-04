@@ -117,15 +117,92 @@ document.addEventListener("DOMContentLoaded", (event) => {
       usuarioSelect.value = "";
       fechaInicialInput.value = "";
       fechaFinalInput.value = "";
-      initializeTable(
-        selectEquipo,
-        selectDepartamento,
-        selectEmpresa,
-        selectProceso,
-        selectUsuario,
-        fechaInicial,
-        fechaFinal
-      );
+      Swal.fire({
+        title: "Validando que exista información",
+        text: "Esto puede durar varios minutos",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+      fetch(
+        "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_Contabilidad",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            int_id_equipo: equipo,
+            int_id_departamento: departamento,
+            int_id_empresa: empresa,
+            string_nombre_referencia: "",
+            int_id_prioridad: 0,
+            int_estado_resolucion: 0,
+            int_id_proceso: selectProceso,
+            int_id_cat_tipo: 0,
+            int_id_cat_canal: 0,
+            int_id_cat_seguimiento: 0,
+            int_id_cat_responsable: selectUsuario,
+            int_id_cat_solicitante: 0,
+            int_id_cat_creado_por: 0,
+            date_asignacion_inicio: "",
+            date_asignacion_fin: "",
+            date_resolucion_inicio: "",
+            date_resolucion_fin: "",
+            date_ultima_vista_inicio: "",
+            date_ultima_vista_fin: "",
+            date_vencimiento_inicio: "",
+            date_vencimiento_fin: "",
+            date_primera_respuesta_inicio: "",
+            date_primera_respuesta_fin: "",
+            date_creacion_inicio: fechaInicial,
+            date_creacion_fin: fechaFinal,
+            date_actualizacion_inicio: "",
+            date_actualizacion_fin: "",
+          }),
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          if (data && data.length > 0) {
+            Swal.update({
+              title: "Enviando parámetros...",
+              text: "Esto puede durar varios minutos",
+            });
+            initializeTable(
+              selectEquipo,
+              selectDepartamento,
+              selectEmpresa,
+              selectProceso,
+              selectUsuario,
+              fechaInicial,
+              fechaFinal
+            );
+            Swal.close();
+            const recordCountText =
+              document.getElementById("record-count-text");
+            recordCountText.textContent = `Cantidad de registros: ${data.length}`;
+            recordCountText.style.display = "block"; 
+          } else {
+            Swal.fire({
+              icon: "warning",
+              title: "Advertencia",
+              text: "No se encontró información acorde a los filtros seleccionados.",
+            });
+            const recordCountText =
+              document.getElementById("record-count-text");
+            recordCountText.style.display = "none"; 
+          }
+        })
+        .catch((error) => {
+          console.error("Error al obtener los datos:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+          });
+        });
     });
 
   document

@@ -20,8 +20,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   const procesoSelect = document.getElementById("proceso-select");
   const clearButton = document.getElementById("clear-button");
-  const usuarioSelect = document.getElementById("usuario-select");
-  const clearButtonE = document.getElementById("clear-button-e");
   const fechaInicialInput = document.getElementById("fecha-inicial");
   const fechaFinalInput = document.getElementById("fecha-final");
 
@@ -62,59 +60,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
       console.error("Error al obtener los estados:", error);
     });
 
-  fetch(
-    "http://192.168.0.8:3000/api/reporteador/Get_Usuarios_Reporte_Tickets",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        int_id_equipo: equipo,
-      }),
-    }
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      const usuariosData = data;
-
-      const initialOption = document.createElement("option");
-      initialOption.value = "";
-      initialOption.text = "Seleccione Usuario";
-      initialOption.hidden = true;
-      usuarioSelect.appendChild(initialOption);
-
-      const selectAllOption = document.createElement("option");
-      selectAllOption.value = "0";
-      selectAllOption.text = "Seleccionar todos los usuarios";
-      usuarioSelect.appendChild(selectAllOption);
-
-      usuariosData.forEach((usuario) => {
-        const option = document.createElement("option");
-        option.value = usuario.usuario_responsable;
-        option.text = capitalizarCadena(usuario.nombre);
-        option.classList.add("usuario-option");
-        usuarioSelect.appendChild(option);
-      });
-    })
-    .catch((error) => {
-      console.error("Error al obtener los usuarios:", error);
-    });
-
   let table;
 
   document
     .getElementById("descargar-universo-button")
     .addEventListener("click", function () {
-      const selectEquipo = equipo;
-      const selectDepartamento = departamento;
-      const selectEmpresa = empresa;
       const selectProceso = "0";
-      const selectUsuario = "0";
       const fechaInicial = "" ?? "";
       const fechaFinal = "" ?? "";
       procesoSelect.value = "";
-      usuarioSelect.value = "";
       fechaInicialInput.value = "";
       fechaFinalInput.value = "";
       Swal.fire({
@@ -126,16 +80,16 @@ document.addEventListener("DOMContentLoaded", (event) => {
         },
       });
       fetch(
-        "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_1",
+        "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_Contabilidad",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            int_id_equipo: equipo,
-            int_id_departamento: departamento,
-            int_id_empresa: empresa,
+            int_id_equipo: 0,
+            int_id_departamento: 0,
+            int_id_empresa: 0,
             string_nombre_referencia: "",
             int_id_prioridad: 0,
             int_estado_resolucion: 0,
@@ -143,8 +97,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
             int_id_cat_tipo: 0,
             int_id_cat_canal: 0,
             int_id_cat_seguimiento: 0,
-            int_id_cat_responsable: selectUsuario,
-            int_id_cat_solicitante: 0,
+            int_id_cat_responsable: 0,
+            int_id_cat_solicitante: id_cat_usuario,
             int_id_cat_creado_por: 0,
             date_asignacion_inicio: "",
             date_asignacion_fin: "",
@@ -171,11 +125,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
               text: "Esto puede durar varios minutos",
             });
             initializeTable(
-              selectEquipo,
-              selectDepartamento,
-              selectEmpresa,
               selectProceso,
-              selectUsuario,
               fechaInicial,
               fechaFinal
             );
@@ -183,7 +133,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             const recordCountText =
               document.getElementById("record-count-text");
             recordCountText.textContent = `Cantidad de registros: ${data.length}`;
-            recordCountText.style.display = "block"; 
+            recordCountText.style.display = "block";
           } else {
             Swal.fire({
               icon: "warning",
@@ -192,7 +142,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             });
             const recordCountText =
               document.getElementById("record-count-text");
-            recordCountText.style.display = "none"; 
+            recordCountText.style.display = "none";
           }
         })
         .catch((error) => {
@@ -222,111 +172,98 @@ document.addEventListener("DOMContentLoaded", (event) => {
         .then((response) => response.json())
         .then((data) => {
           const selectedProceso = procesoSelect.value;
-          const selectedUsuario = usuarioSelect.value;
           const fechaInicial = fechaInicialInput.value;
           const fechaFinal = fechaFinalInput.value;
 
-          if (selectedProceso) {
-            if (selectedUsuario) {
-              if (fechaInicial && fechaFinal) {
-                Swal.fire({
-                  title: "Validando que exista información",
-                  text: "Esto puede durar varios minutos",
-                  allowOutsideClick: false,
-                  didOpen: () => {
-                    Swal.showLoading();
+          if (selectedProceso !== undefined && selectedProceso !== null) {
+            if (fechaInicial && fechaFinal) {
+              Swal.fire({
+                title: "Validando que exista información",
+                text: "Esto puede durar varios minutos",
+                allowOutsideClick: false,
+                didOpen: () => {
+                  Swal.showLoading();
+                },
+              });
+              fetch(
+                "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_Contabilidad",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
                   },
-                });
-                fetch(
-                  "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_1",
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      int_id_equipo: equipo,
-                      int_id_departamento: departamento,
-                      int_id_empresa: empresa,
-                      string_nombre_referencia: "",
-                      int_id_prioridad: 0,
-                      int_estado_resolucion: 0,
-                      int_id_proceso: selectedProceso,
-                      int_id_cat_tipo: 0,
-                      int_id_cat_canal: 0,
-                      int_id_cat_seguimiento: 0,
-                      int_id_cat_responsable: selectedUsuario,
-                      int_id_cat_solicitante: 0,
-                      int_id_cat_creado_por: 0,
-                      date_asignacion_inicio: "",
-                      date_asignacion_fin: "",
-                      date_resolucion_inicio: "",
-                      date_resolucion_fin: "",
-                      date_ultima_vista_inicio: "",
-                      date_ultima_vista_fin: "",
-                      date_vencimiento_inicio: "",
-                      date_vencimiento_fin: "",
-                      date_primera_respuesta_inicio: "",
-                      date_primera_respuesta_fin: "",
-                      date_creacion_inicio: fechaInicial,
-                      date_creacion_fin: fechaFinal,
-                      date_actualizacion_inicio: "",
-                      date_actualizacion_fin: "",
-                    }),
-                  }
-                )
-                  .then((response) => response.json())
-                  .then((data) => {
-                    if (data && data.length > 0) {
-                      Swal.update({
-                        title: "Enviando parámetros...",
-                        text: "Esto puede durar varios minutos",
-                      });
-                      initializeTable(
-                        equipo,
-                        departamento,
-                        empresa,
-                        selectedProceso,
-                        selectedUsuario,
-                        fechaInicial,
-                        fechaFinal
-                      );
-                      Swal.close();
-                      const recordCountText =
-                        document.getElementById("record-count-text");
-                      recordCountText.textContent = `Cantidad de registros: ${data.length}`;
-                      recordCountText.style.display = "block"; // Mostrar el elemento
-                    } else {
-                      Swal.fire({
-                        icon: "warning",
-                        title: "Advertencia",
-                        text: "No se encontró información acorde a los filtros seleccionados.",
-                      });
-                      const recordCountText =
-                        document.getElementById("record-count-text");
-                      recordCountText.style.display = "none"; // Ocultar el elemento
-                    }
-                  })
-                  .catch((error) => {
-                    console.error("Error al obtener los datos:", error);
-                    Swal.fire({
-                      icon: "error",
-                      title: "Error",
-                      text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
+                  body: JSON.stringify({
+                    int_id_equipo: 0,
+                    int_id_departamento: 0,
+                    int_id_empresa: 0,
+                    string_nombre_referencia: "",
+                    int_id_prioridad: 0,
+                    int_estado_resolucion: 0,
+                    int_id_proceso: selectedProceso,
+                    int_id_cat_tipo: 0,
+                    int_id_cat_canal: 0,
+                    int_id_cat_seguimiento: 0,
+                    int_id_cat_responsable: 0,
+                    int_id_cat_solicitante: id_cat_usuario,
+                    int_id_cat_creado_por: 0,
+                    date_asignacion_inicio: "",
+                    date_asignacion_fin: "",
+                    date_resolucion_inicio: "",
+                    date_resolucion_fin: "",
+                    date_ultima_vista_inicio: "",
+                    date_ultima_vista_fin: "",
+                    date_vencimiento_inicio: "",
+                    date_vencimiento_fin: "",
+                    date_primera_respuesta_inicio: "",
+                    date_primera_respuesta_fin: "",
+                    date_creacion_inicio: fechaInicial,
+                    date_creacion_fin: fechaFinal,
+                    date_actualizacion_inicio: "",
+                    date_actualizacion_fin: "",
+                  }),
+                }
+              )
+                .then((response) => response.json())
+                .then((data) => {
+                  if (data && data.length > 0) {
+                    Swal.update({
+                      title: "Enviando parámetros...",
+                      text: "Esto puede durar varios minutos",
                     });
+                    initializeTable(
+                      selectedProceso,
+                      fechaInicial,
+                      fechaFinal
+                    );
+                    Swal.close();
+                    const recordCountText =
+                      document.getElementById("record-count-text");
+                    recordCountText.textContent = `Cantidad de registros: ${data.length}`;
+                    recordCountText.style.display = "block"; 
+                  } else {
+                    Swal.fire({
+                      icon: "warning",
+                      title: "Advertencia",
+                      text: "No se encontró información acorde a los filtros seleccionados.",
+                    });
+                    const recordCountText =
+                      document.getElementById("record-count-text");
+                    recordCountText.style.display = "none";
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error al obtener los datos:", error);
+                  Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
                   });
-              } else {
-                Swal.fire({
-                  icon: "error",
-                  title: "Error",
-                  text: "Debes seleccionar una fecha inicial y una fecha final.",
                 });
-              }
             } else {
               Swal.fire({
                 icon: "error",
                 title: "Error",
-                text: "Debes seleccionar un usuario.",
+                text: "Debes seleccionar una fecha inicial y una fecha final.",
               });
             }
           } else {
@@ -340,11 +277,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     });
 
   function initializeTable(
-    equipo,
-    departamento,
-    empresa,
     selectedProceso,
-    selectedUsuario,
     fechaInicial,
     fechaFinal
   ) {
@@ -354,12 +287,18 @@ document.addEventListener("DOMContentLoaded", (event) => {
       pagination: "local",
       paginationSize: 25,
       paginationSizeSelector: [10, 25, 50, 100],
-      ajaxURL: "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets",
+      ajaxURL: "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_Contabilidad",
+      ajaxConfig: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
       ajaxParams: function (params) {
         return {
-          int_id_equipo: equipo,
-          int_id_departamento: departamento,
-          int_id_empresa: empresa,
+          int_id_equipo: 0,
+          int_id_departamento: 0,
+          int_id_empresa: 0,
           string_nombre_referencia: "",
           int_id_prioridad: 0,
           int_estado_resolucion: 0,
@@ -367,8 +306,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
           int_id_cat_tipo: 0,
           int_id_cat_canal: 0,
           int_id_cat_seguimiento: 0,
-          int_id_cat_responsable: selectedUsuario,
-          int_id_cat_solicitante: 0,
+          int_id_cat_responsable: 0,
+          int_id_cat_solicitante: id_cat_usuario,
           int_id_cat_creado_por: 0,
           date_asignacion_inicio: "",
           date_asignacion_fin: "",
@@ -439,11 +378,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   clearButton.addEventListener("click", () => {
     procesoSelect.value = "";
-    table.clearData();
-  });
-
-  clearButtonE.addEventListener("click", () => {
-    usuarioSelect.value = "";
     table.clearData();
   });
 
