@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" href="../../img/Logo.png" type="image/x-icon" />
+  <link rel="icon" href="../../img/LOGO-MC-FINAL.ico" type="image/x-icon" />
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.2/css/all.css">
   <title>Lista de Reportes</title>
   <link rel="stylesheet" href="/css/drop.css" />
@@ -15,6 +15,14 @@
 </head>
 
 <body>
+  <div id="info-popup" style="display: none;">
+    Si necesitas ver algún reporte por area (tickets), selecciona tu empresa, departamento y equipo
+    <button class="close-btn" onclick="closePopup()">×</button>
+  </div>
+  <div id="info-popup-2" style="display: none;">
+    Si no tienes acceso a un reporte, solita los permisos necesarios enviando un correo a <a href="mailto:soportemejoracontinua@servinova.com.gt?subject=Solicitud de Permisos&body=Necesito que se me asignen permisos para el reporte de ">soportemejoracontinua@servinova.com.gt</a>
+    <button class="close-btn" onclick="closePopup()">×</button>
+  </div>
   <div class="user-bar">
     <div class="user-info">
       <span id="welcome-message" class="welcome-message-nav">Bienvenido,</span>
@@ -67,16 +75,20 @@
       <a href="reports/reporte-marcaje.html"><i class="fa-solid fa-fingerprint icon-marcaje"></i> Marcaje</a>
     </button>
     <button id="show-page-report11" class="report-button" data-app-id="6">
-      <a href="reports/reporte-gestiones-azteca.html"><i class="fa-solid fa-building-columns icon-azteca"></i> Gestiones Azteca</a>
+      <a href="reports/reporte-gestiones-azteca.html"><i class="fa-solid fa-building-columns icon-azteca"></i> Gestiones
+        Azteca</a>
     </button>
     <button id="show-page-report12" class="report-button" data-app-id="26">
-      <a href="reports/reporte-aplicativo-login.html"><i class="fa-solid fa-right-to-bracket icon-login"></i> Login Aplicativos</a>
+      <a href="reports/reporte-aplicativo-login.html"><i class="fa-solid fa-right-to-bracket icon-login"></i> Login
+        Aplicativos</a>
     </button>
-    <button id="show-page-report13" class="report-button" data-app-id="6">
-      <a href="reports/reporte-nova-tickets -contabilidad.html"><i class="fa-solid fa-ticket icon-tickets-conta"></i> Tickets</a>
+    <button id="show-page-report13" class="report-button" data-app-id="11">
+      <a href="reports/reporte-nova-tickets -contabilidad.html"><i class="fa-solid fa-ticket icon-tickets-conta"></i>
+        Tickets</a>
     </button>
-    <button id="show-page-report14" class="report-button" data-app-id="6">
-      <a href="reports/reporte-nova-tickets-solicitante.html"><i class="fa-solid fa-ticket icon-tickets-solicitante"></i> Tickets</a>
+    <button id="show-page-report14" class="report-button" data-app-id="11">
+      <a href="reports/reporte-nova-tickets-solicitante.html"><i
+          class="fa-solid fa-ticket icon-tickets-solicitante"></i> Tickets</a>
     </button>
   </div>
   <script src="app.js"></script>

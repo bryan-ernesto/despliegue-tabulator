@@ -163,12 +163,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
       paginationSizeSelector: [10, 25, 50, 100],
       ajaxURL:
         "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Documento_Login",
-        ajaxConfig: {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+      ajaxConfig: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
+      },
       ajaxParams: function (params) {
         return {
           int_id_aplicativo: selectedAplicativo,
@@ -252,3 +252,4 @@ document.addEventListener("DOMContentLoaded", (event) => {
 window.addEventListener('popstate', function (event) {
   location.reload(true);
 });
+

@@ -307,10 +307,88 @@ span {
   }
 }
 
+
 .buttons-reports {
   animation: fadeInUp 1s ease-out;
 }
 
 .fade-in-up {
   animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+#info-popup {
+  background-color: rgba(26, 21, 32, 1);
+  color: #fff;
+  padding: 40px 30px;  
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  position: fixed;
+  top: 100px; 
+  left: 10%;
+  transform: none; 
+  z-index: 1000;
+  border-radius: 10px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 300px;  
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+}
+
+#info-popup-2 {
+  background-color: rgba(26, 21, 32, 1);
+  color: #fff;
+  padding: 40px 30px;  
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  position: fixed;
+  top: 100px; 
+  right: 5%;
+  transform: none; 
+  z-index: 1000;
+  border-radius: 10px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 450px;  
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+}
+
+#info-popup-2 a {
+  text-decoration: none;
+  color: #EAEAEA; 
+}
+
+#info-popup-2 a:hover {
+  text-decoration: underline; 
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #d99f8f;
+  padding: 5px;
 }

@@ -1,10 +1,36 @@
-window.onpageshow = function (event) {
-  if (event.persisted) {
-    window.location.reload();
-  }
-};
 
 document.addEventListener("DOMContentLoaded", () => {
+  const popup = document.getElementById('info-popup');
+  const popup2 = document.getElementById('info-popup-2');
+  const closeBtn = document.querySelector('.close-btn');
+  
+  if (!sessionStorage.getItem('popupShown')) {
+    popup.style.display = 'block';
+    popup2.style.display = 'block';
+    
+    setTimeout(function() {
+        popup.style.opacity = '1';
+        popup2.style.opacity = '1';
+    }, 10);
+    
+    // Establecer el valor en sessionStorage para indicar que el popup ya ha sido mostrado
+    sessionStorage.setItem('popupShown', 'true');
+  }
+  
+  function closePopup() {
+      popup.style.opacity = '0';
+      popup2.style.opacity = '0';
+    
+      setTimeout(function() {
+          popup.style.display = 'none';
+          popup2.style.display = 'none';
+      }, 400);
+  }
+  
+  setTimeout(closePopup, 5000);
+  
+  closeBtn.addEventListener('click', closePopup);   
+
   const username = (localStorage.getItem("username") || "").toLowerCase();
 
   if (!username) {
@@ -35,6 +61,56 @@ document.addEventListener("DOMContentLoaded", () => {
   const showPageButton13 = document.getElementById("show-page-report13");
   const showPageButton14 = document.getElementById("show-page-report14");
 
+  function guardarEstadoBotones() {
+    const botones = [
+      showPageButton1,
+      showPageButton3,
+      showPageButton4,
+      showPageButton5,
+      showPageButton6,
+      showPageButton7,
+      showPageButton8,
+      showPageButton9,
+      showPageButton10,
+      showPageButton11,
+      showPageButton12,
+      showPageButton13,
+      showPageButton14,
+    ];
+
+    const estadoBotones = botones.map(btn => btn.style.display === "block");
+
+    localStorage.setItem("estadoBotones", JSON.stringify(estadoBotones));
+  }
+
+  function recuperarEstadoBotones() {
+    const botones = [
+      showPageButton1,
+      showPageButton3,
+      showPageButton4,
+      showPageButton5,
+      showPageButton6,
+      showPageButton7,
+      showPageButton8,
+      showPageButton9,
+      showPageButton10,
+      showPageButton11,
+      showPageButton12,
+      showPageButton13,
+      showPageButton14,
+    ];
+
+    const estadoBotones = JSON.parse(localStorage.getItem("estadoBotones") || "[]");
+
+    if (estadoBotones.length === botones.length) {
+      botones.forEach((btn, index) => {
+        btn.style.display = estadoBotones[index] ? "block" : "none";
+      });
+    }
+  }
+
+  recuperarEstadoBotones();
+
   showPageButton1.style.display = "none";
   showPageButton3.style.display = "none";
   showPageButton4.style.display = "none";
@@ -48,6 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
   showPageButton12.style.display = "none";
   showPageButton13.style.display = "none";
   showPageButton14.style.display = "none";
+  guardarEstadoBotones()
 
   let empresasData;
 
@@ -69,6 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton11.style.display = "block";
     showPageButton12.style.display = "block";
     showPageButton14.style.display = "block";
+    guardarEstadoBotones()
   } else if (username === "bgamez") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
@@ -83,22 +161,26 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton12.style.display = "block";
     showPageButton13.style.display = "block";
     showPageButton14.style.display = "block";
-  } else if (username === "olopez" || username === "cpcifuentes" || username === "egalvez" || username === "hescobar" || username === "rsales") {
+    guardarEstadoBotones()
+  } else if (username === "olopez" || username === "cpcifuentes" || username === "egalvez" || username === "hescobar" || username === "rsales" || username === "syrodas") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
     showPageButton4.style.display = "block";
+    guardarEstadoBotones()
   } else if (
     username === "msolano" ||
     username === "sorellana" ||
     username === "rixim"
   ) {
     showPageButton7.style.display = "block";
+    guardarEstadoBotones()
   } else if (
     username === 'acastillo'
   ) {
     showPageButton8.style.display = "block";
     showPageButton6.style.display = "block";
     showPageButton9.style.display = "block";
+    guardarEstadoBotones()
   } else if (
     username === "jizquierdo" ||
     username === "acazun" ||
@@ -106,14 +188,17 @@ document.addEventListener("DOMContentLoaded", () => {
     username === "jyaxon"
   ) {
     showPageButton11.style.display = "block";
+    guardarEstadoBotones()
   } else if (
     username === "ajvillatoro" ||
     username === "vvargas" ||
     username === "cnovales"
   ) {
     showPageButton9.style.display = "block";
+    guardarEstadoBotones()
   } else if (username === "jortiz" || username === "avega") {
     showPageButton14.style.display = "block";
+    guardarEstadoBotones()
   }
   else {
     showPageButton1.style.display = "none";
@@ -129,6 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton12.style.display = "none";
     showPageButton13.style.display = "none";
     showPageButton14.style.display = "none";
+    guardarEstadoBotones()
   }
 
   fetch("http://192.168.0.8:3000/api/reporteador/Get_Usuarios_Reporteador", {
@@ -185,6 +271,12 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton9.style.display = "none";
     showPageButton10.style.display = "none";
     showPageButton11.style.display = "none";
+    showPageButton12.style.display = "none";
+    showPageButton13.style.display = "none";
+    showPageButton14.style.display = "none";
+    localStorage.removeItem("selectedCompany");
+    guardarEstadoBotones()
+    location.reload();
   });
 
   function checkSelections() {
@@ -203,6 +295,7 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedEquipment) === 19
     ) {
       showPageButton3.style.display = "block";
+      guardarEstadoBotones()
       showPageButton3.classList.add('fade-in-up');
     } else if (selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
@@ -210,8 +303,17 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedEquipment) === 18) {
       showPageButton3.classList.add('fade-in-up');
       showPageButton3.style.display = "block";
+      guardarEstadoBotones()
     } else {
       showPageButton3.style.display = "none";
+      showPageButton7.style.display = "none";
+      showPageButton8.style.display = "none";
+      showPageButton10.style.display = "none";
+      showPageButton11.style.display = "none";
+      showPageButton12.style.display = "none";
+      showPageButton13.style.display = "none";
+      showPageButton14.style.display = "none";
+      guardarEstadoBotones()
       showPageButton3.classList.remove('fade-in-up');
     }
     if (
@@ -220,59 +322,76 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedDepartment) === 7 &&
       parseInt(selectedEquipment) === 27
     ) {
-      showPageButton5.classList.add('fade-in-up'); 
+      showPageButton5.classList.add('fade-in-up');
       showPageButton5.style.display = "block";
+      guardarEstadoBotones()
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 18 &&
       parseInt(selectedEquipment) === 24
     ) {
-      showPageButton5.classList.add('fade-in-up'); 
+      showPageButton5.classList.add('fade-in-up');
       showPageButton5.style.display = "block";
+      guardarEstadoBotones()
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 4 &&
       parseInt(selectedDepartment) === 2 &&
       parseInt(selectedEquipment) === 29
     ) {
-      showPageButton5.classList.add('fade-in-up'); 
+      showPageButton5.classList.add('fade-in-up');
       showPageButton5.style.display = "block";
+      guardarEstadoBotones()
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 4 &&
       parseInt(selectedEquipment) === 7
     ) {
-      showPageButton5.classList.add('fade-in-up'); 
+      showPageButton5.classList.add('fade-in-up');
       showPageButton5.style.display = "block";
+      guardarEstadoBotones()
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 15 &&
       parseInt(selectedEquipment) === 23
     ) {
+      showPageButton5.classList.add('fade-in-up');
       showPageButton5.style.display = "block";
+      guardarEstadoBotones()
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 9 &&
-      parseInt(selectedEquipment) === 38
+      parseInt(selectedEquipment) === 16
     ) {
+      showPageButton13.classList.add('fade-in-up');
       showPageButton13.style.display = "block";
+      guardarEstadoBotones()
     }
     else {
+      showPageButton5.classList.remove('fade-in-up');
+      showPageButton1.classList.remove('fade-in-up');
+      showPageButton4.classList.remove('fade-in-up');
       showPageButton5.style.display = "none";
       showPageButton1.style.display = "none";
+      showPageButton4.style.display = "none";
+      guardarEstadoBotones()
     }
     if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 13
     ) {
+      showPageButton6.classList.add('fade-in-up');
       showPageButton6.style.display = "block";
+      guardarEstadoBotones()
     } else {
+      showPageButton6.classList.remove('fade-in-up');
       showPageButton6.style.display = "none";
+      guardarEstadoBotones()
     }
     if (
       selectedEmpresa &&
@@ -280,26 +399,36 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedDepartment) === 22 &&
       parseInt(selectedEquipment) === 30
     ) {
+      showPageButton9.classList.add('fade-in-up');
       showPageButton9.style.display = "block";
+      guardarEstadoBotones()
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 14 &&
       parseInt(selectedEquipment) === 36
     ) {
+      showPageButton9.classList.add('fade-in-up');
       showPageButton9.style.display = "block";
+      guardarEstadoBotones()
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 13 &&
       parseInt(selectedEquipment) === 37
     ) {
+      showPageButton9.classList.add('fade-in-up');
       showPageButton9.style.display = "block";
+      showPageButton6.classList.remove('fade-in-up');
       showPageButton6.style.display = "none";
+      guardarEstadoBotones()
     }
     else {
+      showPageButton9.classList.remove('fade-in-up');
+      showPageButton6.classList.remove('fade-in-up');
       showPageButton9.style.display = "none";
       showPageButton6.style.display = "none";
+      guardarEstadoBotones()
     }
   }
 
@@ -359,6 +488,10 @@ document.addEventListener("DOMContentLoaded", () => {
       showPageButton8.style.display = "none";
       showPageButton9.style.display = "none";
       showPageButton10.style.display = "none";
+      showPageButton11.style.display = "none";
+      showPageButton12.style.display = "none";
+      showPageButton13.style.display = "none";
+      showPageButton14.style.display = "none";
     }
   });
 
@@ -421,6 +554,10 @@ document.addEventListener("DOMContentLoaded", () => {
         showPageButton8.style.display = "none";
         showPageButton9.style.display = "none";
         showPageButton10.style.display = "none";
+        showPageButton11.style.display = "none";
+        showPageButton12.style.display = "none";
+        showPageButton13.style.display = "none";
+        showPageButton14.style.display = "none";
       }
     }
   });
@@ -442,6 +579,11 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton8.style.display = "none";
     showPageButton9.style.display = "none";
     showPageButton10.style.display = "none";
+    showPageButton11.style.display = "none";
+    showPageButton12.style.display = "none";
+    showPageButton13.style.display = "none";
+    showPageButton14.style.display = "none";
+    localStorage.removeItem("selectedDepartment");
   });
 
   clearButtonE.addEventListener("click", () => {
@@ -455,6 +597,11 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton8.style.display = "none";
     showPageButton9.style.display = "none";
     showPageButton10.style.display = "none";
+    showPageButton11.style.display = "none";
+    showPageButton12.style.display = "none";
+    showPageButton13.style.display = "none";
+    showPageButton14.style.display = "none";
+    localStorage.removeItem("selectedEquipment");
   });
 
   companySelect.addEventListener("change", checkSelections);
@@ -464,6 +611,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const logoutButton = document.getElementById("logout-button");
   logoutButton.addEventListener("click", () => {
     localStorage.removeItem("username");
+    sessionStorage.removeItem("popupShown");
     window.location.href = "/index.html";
     document.body.innerHTML = "<h1>Error: Acceso no autorizado</h1>";
   });

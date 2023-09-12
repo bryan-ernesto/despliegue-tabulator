@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        int_id_equipo: equipo,
+        int_id_equipo: 38,
       }),
     }
   )
@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            int_id_equipo: equipo,
+            int_id_equipo: 38,
             int_id_departamento: departamento,
             int_id_empresa: empresa,
             string_nombre_referencia: "",
@@ -245,7 +245,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                       "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                      int_id_equipo: equipo,
+                      int_id_equipo: 38,
                       int_id_departamento: departamento,
                       int_id_empresa: empresa,
                       string_nombre_referencia: "",
@@ -363,7 +363,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       },
       ajaxParams: function (params) {
         return {
-          int_id_equipo: equipo,
+          int_id_equipo: 38,
           int_id_departamento: departamento,
           int_id_empresa: empresa,
           string_nombre_referencia: "",
