@@ -108,6 +108,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
       console.error("Error al obtener los usuarios:", error);
     });
 
+  fechaInicialInput.addEventListener("change", function () {
+    fechaFinalInput.min = this.value;
+  });
+
+  fechaFinalInput.addEventListener("change", function () {
+    fechaInicialInput.max = this.value;
+  });
+
   let table;
 
   document
@@ -166,43 +174,43 @@ document.addEventListener("DOMContentLoaded", (event) => {
           }),
         }
       )
-      .then((response) => response.json())
-      .then((data) => {
-        if (data && data.length > 0) {
-          Swal.update({
-            title: "Enviando parámetros...",
-            text: "Esto puede durar varios minutos",
-          });
-          initializeTable(
-            selectedEstado,
-            selectedEmpresa,
-            fechaInicial,
-            fechaFinal
-          );
-          Swal.close();
-          const recordCountText =
-            document.getElementById("record-count-text");
-          recordCountText.textContent = `Cantidad de registros: ${data.length}`;
-          recordCountText.style.display = "block"; 
-        } else {
+        .then((response) => response.json())
+        .then((data) => {
+          if (data && data.length > 0) {
+            Swal.update({
+              title: "Enviando parámetros...",
+              text: "Esto puede durar varios minutos",
+            });
+            initializeTable(
+              selectedEstado,
+              selectedEmpresa,
+              fechaInicial,
+              fechaFinal
+            );
+            Swal.close();
+            const recordCountText =
+              document.getElementById("record-count-text");
+            recordCountText.textContent = `Cantidad de registros: ${data.length}`;
+            recordCountText.style.display = "block";
+          } else {
+            Swal.fire({
+              icon: "warning",
+              title: "Advertencia",
+              text: "No se encontró información acorde a los filtros seleccionados.",
+            });
+            const recordCountText =
+              document.getElementById("record-count-text");
+            recordCountText.style.display = "none";
+          }
+        })
+        .catch((error) => {
+          console.error("Error al obtener los datos:", error);
           Swal.fire({
-            icon: "warning",
-            title: "Advertencia",
-            text: "No se encontró información acorde a los filtros seleccionados.",
+            icon: "error",
+            title: "Error",
+            text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
           });
-          const recordCountText =
-            document.getElementById("record-count-text");
-          recordCountText.style.display = "none"; 
-        }
-      })
-      .catch((error) => {
-        console.error("Error al obtener los datos:", error);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
         });
-      });
     });
 
   document
@@ -418,7 +426,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       });
 
       data.forEach((rowData, rowIndex) => {
-        currentRow = worksheet.getRow(rowIndex + 6); 
+        currentRow = worksheet.getRow(rowIndex + 6);
         rowData.forEach((cellValue, cellIndex) => {
           currentRow.getCell(cellIndex + 1).value = isNaN(cellValue) ? cellValue : Number(cellValue);
         });

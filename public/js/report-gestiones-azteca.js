@@ -18,6 +18,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   const fechaInicialInput = document.getElementById("fecha-inicial");
   const fechaFinalInput = document.getElementById("fecha-final");
+
+  fechaInicialInput.addEventListener("change", function () {
+    fechaFinalInput.min = this.value;
+  });
+
+  fechaFinalInput.addEventListener("change", function () {
+    fechaInicialInput.max = this.value;
+  });
+
   let table;
 
   document.getElementById("actualizar-button").addEventListener("click", function () {

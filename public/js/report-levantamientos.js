@@ -21,6 +21,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   let table;
 
+  fechaInicialInput.addEventListener("change", function () {
+    fechaFinalInput.min = this.value;
+  });
+
+  fechaFinalInput.addEventListener("change", function () {
+    fechaInicialInput.max = this.value;
+  });
+
+
   document
     .getElementById("actualizar-button")
     .addEventListener("click", function () {
@@ -78,7 +87,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
                   let tableElement = document.getElementById("example-table");
                   let tablePosition = tableElement.offsetTop;
-                  recordCountText.style.top = `${tablePosition - recordCountText.offsetHeight + 20
+                  recordCountText.style.top = `${tablePosition - recordCountText.offsetHeight - 30
                     }px`;
                 } else {
                   Swal.fire({

@@ -59,6 +59,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   let table;
 
+  fechaInicialInput.addEventListener("change", function () {
+    fechaFinalInput.min = this.value;
+  });
+
+  fechaFinalInput.addEventListener("change", function () {
+    fechaInicialInput.max = this.value;
+  });
+
   document
     .getElementById("actualizar-button")
     .addEventListener("click", function () {

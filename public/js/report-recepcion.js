@@ -106,6 +106,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   let table;
 
+  fechaInicialInput.addEventListener("change", function () {
+    fechaFinalInput.min = this.value;
+  });
+
+  fechaFinalInput.addEventListener("change", function () {
+    fechaInicialInput.max = this.value;
+  });
+
   function initializeTable(nombreEmpresa, idEstado, fechaInicial, fechaFinal) {
     table = new Tabulator("#example-table", {
       layout: "fitData",

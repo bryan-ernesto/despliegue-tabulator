@@ -124,6 +124,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   let table;
 
+  fechaInicialInput.addEventListener("change", function () {
+    fechaFinalInput.min = this.value;
+  });
+
+  fechaFinalInput.addEventListener("change", function () {
+    fechaInicialInput.max = this.value;
+  });
+
   document
     .getElementById("actualizar-button")
     .addEventListener("click", function () {
@@ -255,7 +263,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       pagination: "local",
       paginationSize: 25,
       paginationSizeSelector: [10, 25, 50, 100],
-      ajaxURL: "http://192.168.0.8:3000/api/sharepoint/Get_Sharepoint_Quejas_1",
+      ajaxURL: "http://192.168.0.8:3000/api/sharepoint/Get_Sharepoint_Quejas",
       ajaxConfig: {
         method: "POST", // Cambia a POST
         headers: {

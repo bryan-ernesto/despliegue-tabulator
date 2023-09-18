@@ -63,6 +63,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
       console.error("Error al obtener las empresas:", error);
     });
 
+  fechaInicialInput.addEventListener("change", function () {
+    fechaFinalInput.min = this.value;
+  });
+
+  fechaFinalInput.addEventListener("change", function () {
+    fechaInicialInput.max = this.value;
+  });
+
   let table;
 
   document

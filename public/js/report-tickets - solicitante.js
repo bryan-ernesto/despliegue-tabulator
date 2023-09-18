@@ -62,6 +62,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   let table;
 
+  fechaInicialInput.addEventListener("change", function () {
+    fechaFinalInput.min = this.value;
+  });
+
+  fechaFinalInput.addEventListener("change", function () {
+    fechaInicialInput.max = this.value;
+  });
+
   document
     .getElementById("descargar-universo-button")
     .addEventListener("click", function () {
@@ -239,7 +247,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                     const recordCountText =
                       document.getElementById("record-count-text");
                     recordCountText.textContent = `Cantidad de registros: ${data.length}`;
-                    recordCountText.style.display = "block"; 
+                    recordCountText.style.display = "block";
                   } else {
                     Swal.fire({
                       icon: "warning",
