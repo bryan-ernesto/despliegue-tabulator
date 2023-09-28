@@ -158,7 +158,7 @@ function initializeCarousel() {
 
   document.getElementById('next').addEventListener('click', showNextImage);
 
-  setInterval(showNextImage, 15000);
+  setInterval(showNextImage, 35000);
 }
 
 initializeCarousel();

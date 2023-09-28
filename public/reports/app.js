@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
         popup2.style.opacity = '1';
     }, 10);
     
-    // Establecer el valor en sessionStorage para indicar que el popup ya ha sido mostrado
     sessionStorage.setItem('popupShown', 'true');
   }
   
@@ -60,6 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const showPageButton12 = document.getElementById("show-page-report12");
   const showPageButton13 = document.getElementById("show-page-report13");
   const showPageButton14 = document.getElementById("show-page-report14");
+  const showPageButton15 = document.getElementById("show-page-report15");
 
   function guardarEstadoBotones() {
     const botones = [
@@ -76,6 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
       showPageButton12,
       showPageButton13,
       showPageButton14,
+      showPageButton15,
     ];
 
     const estadoBotones = botones.map(btn => btn.style.display === "block");
@@ -98,6 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
       showPageButton12,
       showPageButton13,
       showPageButton14,
+      showPageButton15,
     ];
 
     const estadoBotones = JSON.parse(localStorage.getItem("estadoBotones") || "[]");
@@ -124,6 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
   showPageButton12.style.display = "none";
   showPageButton13.style.display = "none";
   showPageButton14.style.display = "none";
+  showPageButton15.style.display = "none";
   guardarEstadoBotones()
 
   let empresasData;
@@ -146,6 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton11.style.display = "block";
     showPageButton12.style.display = "block";
     showPageButton14.style.display = "block";
+    showPageButton15.style.display = "block";
     guardarEstadoBotones()
   } else if (username === "bgamez") {
     showPageButton1.style.display = "block";
@@ -161,8 +165,19 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton12.style.display = "block";
     showPageButton13.style.display = "block";
     showPageButton14.style.display = "block";
+    showPageButton15.style.display = "block";
     guardarEstadoBotones()
-  } else if (username === "olopez" || username === "cpcifuentes" || username === "egalvez" || username === "hescobar" || username === "rsales" || username === "syrodas") {
+  } else if ( username === "hescobar") {
+    showPageButton1.style.display = "block";
+    showPageButton4.style.display = "block";   
+    showPageButton3.style.display = "block";
+    showPageButton9.style.display = "block";
+    showPageButton6.style.display = "block";
+    showPageButton7.style.display = "block";
+    showPageButton8.style.display = "block";
+    showPageButton11.style.display = "block";
+    showPageButton14.style.display = "block";
+  } else if (username === "olopez" || username === "cpcifuentes" || username === "egalvez" || username === "rsales" || username === "syrodas") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
     showPageButton4.style.display = "block";
@@ -689,3 +704,35 @@ function capitalizarCadena(cadena) {
 window.addEventListener('popstate', function (event) {
   location.reload(true);
 });
+
+function autoLogout() {
+  Swal.fire({
+    icon: 'warning',
+    title: 'Tiempo de espera terminado',
+    text: 'Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.',
+    confirmButtonText: 'Aceptar',
+    allowOutsideClick: false
+  }).then((result) => {
+    if (result.isConfirmed) {
+      console.log("Sesión expirada, cerrando...");
+      localStorage.removeItem("username");
+      window.location.href = "/index.html";
+    }
+  });
+}
+
+let logoutTimer;
+
+function resetLogoutTimer() {
+    if (logoutTimer) {
+        clearTimeout(logoutTimer);
+    }
+    logoutTimer = setTimeout(autoLogout, 1800000);
+}
+
+resetLogoutTimer();
+
+document.addEventListener('mousemove', resetLogoutTimer);
+document.addEventListener('keydown', resetLogoutTimer);
+document.addEventListener('wheel', resetLogoutTimer);
+document.addEventListener('touchmove', resetLogoutTimer);

@@ -425,3 +425,25 @@ document.addEventListener("DOMContentLoaded", (event) => {
 window.addEventListener('popstate', function (event) {
   location.reload(true);
 });
+
+function autoLogout() {
+  console.log("Sesión expirada, cerrando...");
+  window.location.href = "/index.html";
+  localStorage.removeItem("username");
+}
+
+let logoutTimer;
+
+function resetLogoutTimer() {
+  if (logoutTimer) {
+    clearTimeout(logoutTimer);
+  }
+  logoutTimer = setTimeout(autoLogout, 1800000);
+}
+
+resetLogoutTimer();
+
+document.addEventListener('mousemove', resetLogoutTimer);
+document.addEventListener('keydown', resetLogoutTimer);
+document.addEventListener('wheel', resetLogoutTimer);
+document.addEventListener('touchmove', resetLogoutTimer);

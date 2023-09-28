@@ -274,3 +274,35 @@ document.addEventListener("DOMContentLoaded", (event) => {
 window.addEventListener('popstate', function (event) {
   location.reload(true);
 });
+
+function autoLogout() {
+  Swal.fire({
+      icon: 'warning',
+      title: 'Tiempo de espera terminado',
+      text: 'Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.',
+      confirmButtonText: 'Aceptar',
+      allowOutsideClick: false
+  }).then((result) => {
+      if (result.isConfirmed) {
+          console.log("Sesión expirada, cerrando...");
+          localStorage.removeItem("username");
+          window.location.href = "/index.html";
+      }
+  });
+}
+
+let logoutTimer;
+
+function resetLogoutTimer() {
+    if (logoutTimer) {
+        clearTimeout(logoutTimer);
+    }
+    logoutTimer = setTimeout(autoLogout, 1800000);
+}
+
+resetLogoutTimer();
+
+document.addEventListener('mousemove', resetLogoutTimer);
+document.addEventListener('keydown', resetLogoutTimer);
+document.addEventListener('wheel', resetLogoutTimer);
+document.addEventListener('touchmove', resetLogoutTimer);

@@ -108,7 +108,8 @@ span {
 #show-page-report11, 
 #show-page-report12,
 #show-page-report13,
-#show-page-report14 {
+#show-page-report14,
+#show-page-report15 {
   margin-top: 60px;
   display: block;
   text-align: center;
@@ -129,7 +130,8 @@ span {
 #show-page-report11 a,
 #show-page-report12 a,
 #show-page-report13 a,
-#show-page-report14 a {
+#show-page-report14 a,
+#show-page-report15 a {
   display: block;
   padding: 10px 20px;
   color: white;
@@ -158,7 +160,8 @@ span {
 #show-page-report11 button,
 #show-page-report12 button,
 #show-page-report13 button, 
-#show-page-report14 button {
+#show-page-report14 button,
+#show-page-report15 button {
   display: block;
   padding: 10px 20px;
   background-color: rgba(90, 84, 104, 1);
@@ -181,7 +184,8 @@ span {
 #show-page-report11 button:hover, 
 #show-page-report12 button:hover,
 #show-page-report13 button:hover,
-#show-page-report14 button:hover {
+#show-page-report14 button:hover,
+#show-page-report15 button:hover {
   background-color: rgba(26, 21, 32, 1);
   transition: 0.3s;
 }
@@ -278,6 +282,11 @@ span {
 
 .icon-tickets-solicitante {
   color: rgb(73, 193, 214);
+  font-size: 45px;
+}
+
+.icon-sat-delta {
+  color: rgb(189, 149, 133);
   font-size: 45px;
 }
 
@@ -391,4 +400,15 @@ span {
   cursor: pointer;
   color: #d99f8f;
   padding: 5px;
+}
+
+.logo-footter {
+	position: fixed;      
+	bottom: 0;            
+	left: 0;              
+	z-index: 10;          
+	opacity: 0.5;
+	width: 150px;
+	height: 169px;
+	object-fit: cover;
 }
