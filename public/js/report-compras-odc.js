@@ -524,3 +524,18 @@ document.addEventListener('mousemove', resetLogoutTimer);
 document.addEventListener('keydown', resetLogoutTimer);
 document.addEventListener('wheel', resetLogoutTimer);
 document.addEventListener('touchmove', resetLogoutTimer);
+
+document.getElementById("aprobador-button").addEventListener("click", function () {
+  // Muestra la ventana emergente utilizando SweetAlert2
+  Swal.fire({
+    title: 'Título de la ventana emergente',
+    html: document.getElementById('aprobador-modal').innerHTML,
+    showCloseButton: true,
+    showConfirmButton: false,
+  });
+});
+
+// Puedes ocultar la ventana emergente manualmente si es necesario
+function ocultarVentanaEmergente() {
+  Swal.close();
+}

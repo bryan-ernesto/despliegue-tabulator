@@ -18,25 +18,19 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   const fechaActual = new Date();
   const primerDiaDelMes = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 1);
-  const ultimoDiaDelMes = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 0); // Añadir 1 al mes y usar el día 0 nos da el último día del mes anterior, que es el último día del mes actual
-  
+  const ultimoDiaDelMes = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 0);
+
   const fechaInicialInput = document.getElementById("fecha-inicial");
   const fechaFinalInput = document.getElementById("fecha-final");
-  
-  // Establecer los valores iniciales de min y max para restringir la selección al mes actual
-  fechaInicialInput.min = primerDiaDelMes.toISOString().split("T")[0];
-  fechaInicialInput.max = ultimoDiaDelMes.toISOString().split("T")[0];
-  fechaFinalInput.min = primerDiaDelMes.toISOString().split("T")[0];
-  fechaFinalInput.max = ultimoDiaDelMes.toISOString().split("T")[0];
-  
+
   fechaInicialInput.addEventListener("change", function () {
-      fechaFinalInput.min = this.value;
+    fechaFinalInput.min = this.value;
   });
-  
+
   fechaFinalInput.addEventListener("change", function () {
-      fechaInicialInput.max = this.value;
+    fechaInicialInput.max = this.value;
   });
-  
+
 
   let table;
 
@@ -168,7 +162,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                   const recordCountText =
                     document.getElementById("record-count-text");
                   recordCountText.textContent = `Cantidad de registros: ${data.length}`;
-                  recordCountText.style.display = "block"; // Mostrar el elemento
+                  recordCountText.style.display = "block";
                 } else {
                   Swal.fire({
                     icon: "warning",
@@ -177,7 +171,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                   });
                   const recordCountText =
                     document.getElementById("record-count-text");
-                  recordCountText.style.display = "none"; // Ocultar el elemento
+                  recordCountText.style.display = "none";
                 }
               })
               .catch((error) => {
@@ -242,6 +236,45 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
       worksheet.getCell("A1").value = "REPORTE SAT-DELTA-RECEPCIÓN";
       worksheet.getCell("A1").font = { size: 30 };
+
+      worksheet.mergeCells('A4', 'AB4');
+      let cellA = worksheet.getCell('A4');
+      cellA.value = "Reporte SAT";
+      cellA.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+      worksheet.mergeCells('AC4', 'BC4');
+      let cellB = worksheet.getCell('AC4');
+      cellB.value = "Reporte de Recepción de Documentos";
+      cellB.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+      worksheet.mergeCells('BD4', 'BG4');
+      let cellC = worksheet.getCell('BG4');
+      cellC.value = "Validaciones";
+      cellC.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+      cellA.font = { bold: true, size: 12 };
+      cellA.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+      cellA.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFD9E1F2' } 
+      };
+
+      cellB.font = { bold: true, size: 12 };
+      cellB.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+      cellB.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: '14fb78' }
+      };
+
+      cellC.font = { bold: true, size: 12 };
+      cellC.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+      cellC.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'd7ef05' }
+      };
 
       const columns = table.getColumns();
       const headers = columns.map((column) => column.getField());

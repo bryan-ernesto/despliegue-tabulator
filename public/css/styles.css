@@ -335,6 +335,11 @@ button:hover {
   margin-right: 10px;
 }
 
+#aprobador-button {
+  margin-left: 10px;
+  margin-top: 30px;
+}
+
 #actualizar-button {
   margin-left: 10px;
   margin-top: 30px;

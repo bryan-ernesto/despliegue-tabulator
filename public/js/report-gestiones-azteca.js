@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       },
       body: JSON.stringify({
         "int_id_cat_aplicativo": 21,
-        "int_id_cat_usuario": parseInt(id_cat_usuario), 
+        "int_id_cat_usuario": parseInt(id_cat_usuario),
         "int_id_creador": parseInt(id_cat_usuario)
       }),
     })
@@ -69,21 +69,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 initializeTable(fechaInicial, fechaFinal);
                 Swal.close();
 
-                const recordCountText = document.getElementById("record-count-text");
-                recordCountText.textContent = `Cantidad de registros: ${data.length}`;
-                recordCountText.style.display = "block";
-
-                let tableElement = document.getElementById("example-table");
-                let tablePosition = tableElement.offsetTop;
-                recordCountText.style.top = `${tablePosition - recordCountText.offsetHeight - 25}px`;
               } else {
                 Swal.fire({
                   icon: "warning",
                   title: "Advertencia",
                   text: "No se encontró información acorde a los filtros seleccionados.",
                 });
-                const recordCountText = document.getElementById("record-count-text");
-                recordCountText.style.display = "none";
               }
             })
             .catch((error) => {
@@ -108,21 +99,25 @@ document.addEventListener("DOMContentLoaded", (event) => {
     const apiUrl = `http://192.168.0.8:3000/api/reporteador/Get_Reporte_GestionesAzteca?fechainicio=${fechaInicial}&fechafin=${fechaFinal}&bearer=5bgrduHXsCZx8QTU2rGwXhQPu1igSn2nq7TX1StK/3gZObWNBt60yHQX5IjzAApXSkAuPFiKCwfKuiPuAAAAAAAAAAAAAAAAAAAAAAznYtNOPBnb3Daj+RvVWExXVm57okwSHWy4z0rETvZpI1XeShfy/WqTzPNLI9k0EQ==`;
 
     table = new Tabulator("#example-table", {
-      layout: "fitData",
+      layout: "fitColumns",
       columns: [],
       pagination: "local",
       paginationSize: 25,
       paginationSizeSelector: [10, 25, 50, 100],
       ajaxURL: apiUrl,
       ajaxContentType: "json",
+      dataFiltered: function (filters, rows) {
+        updateRecordCount(rows.length);
+        console.log(rows.length)
+      },
       ajaxResponse: function (url, params, response) {
-        console.log(response);
         var columns = [];
         var headers = response.length > 0 ? Object.keys(response[0]) : [];
         headers.forEach((header) => {
           columns.push({ title: header, field: header, headerFilter: "input" });
         });
         table.setColumns(columns);
+        updateRecordCount(response.length);
         return response;
       },
     });
@@ -187,34 +182,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
       window.location.href = targetPage;
     });
   });
-
-  // function createChart(data) {
-  //   const ctx = document.getElementById('myChart').getContext('2d');
-
-  //   const fechas = data.map(item => item.GESTION_FECHA); 
-  //   const cantidades = data.map(item => item.EXP_ID);
-
-  //   const myChart = new Chart(ctx, {
-  //     type: 'line',
-  //     data: {
-  //       labels: fechas,
-  //       datasets: [{
-  //         label: '# de Registros por Fecha',
-  //         data: cantidades,
-  //         backgroundColor: 'rgba(75, 192, 192, 0.2)',
-  //         borderColor: 'rgba(75, 192, 192, 1)',
-  //         borderWidth: 1
-  //       }]
-  //     },
-  //     options: {
-  //       scales: {
-  //         y: {
-  //           beginAtZero: true
-  //         }
-  //       }
-  //     }
-  //   });
-  // }
 });
 
 window.addEventListener('popstate', function (event) {
@@ -240,10 +207,10 @@ function autoLogout() {
 let logoutTimer;
 
 function resetLogoutTimer() {
-    if (logoutTimer) {
-        clearTimeout(logoutTimer);
-    }
-    logoutTimer = setTimeout(autoLogout, 1800000);
+  if (logoutTimer) {
+    clearTimeout(logoutTimer);
+  }
+  logoutTimer = setTimeout(autoLogout, 1800000);
 }
 
 resetLogoutTimer();
@@ -252,3 +219,13 @@ document.addEventListener('mousemove', resetLogoutTimer);
 document.addEventListener('keydown', resetLogoutTimer);
 document.addEventListener('wheel', resetLogoutTimer);
 document.addEventListener('touchmove', resetLogoutTimer);
+
+function updateRecordCount(count) {
+  const recordCountText = document.getElementById("record-count-text");
+  recordCountText.textContent = `Cantidad de registros: ${count}`;
+  recordCountText.style.display = "block";
+
+  let tableElement = document.getElementById("example-table");
+  let tablePosition = tableElement.offsetTop;
+  recordCountText.style.top = `${tablePosition - recordCountText.offsetHeight - 25}px`;
+}
