@@ -294,10 +294,14 @@ function autoLogout() {
 let logoutTimer;
 
 function resetLogoutTimer() {
-    if (logoutTimer) {
-        clearTimeout(logoutTimer);
-    }
-    logoutTimer = setTimeout(autoLogout, 1800000);
+  if (logoutTimer) {
+    clearTimeout(logoutTimer);
+  }
+  logoutTimer = setTimeout(function () {
+    // Eliminar el username del localStorage al expirar el tiempo
+    localStorage.removeItem("username");
+    autoLogout();
+  }, 1800000);
 }
 
 resetLogoutTimer();

@@ -11,21 +11,17 @@ document.addEventListener("DOMContentLoaded", (event) => {
     window.location.href = "/index.html";
     return;
   }
-  const empresa = localStorage.getItem("selectedCompany");
-  const departamento = localStorage.getItem("selectedDepartment");
-  const equipo = localStorage.getItem("selectedEquipment");
 
   const usernameElement = document.getElementById("username");
   usernameElement.textContent = username;
 
-  const procesoSelect = document.getElementById("proceso-select");
+  const procesoSelect = document.getElementById("estado-select");
   const clearButton = document.getElementById("clear-button");
-  const usuarioSelect = document.getElementById("usuario-select");
   const clearButtonE = document.getElementById("clear-button-e");
   const fechaInicialInput = document.getElementById("fecha-inicial");
   const fechaFinalInput = document.getElementById("fecha-final");
 
-  fetch("http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_EstadoProceso", {
+  fetch("http://192.168.0.8:3000/api/cronograma_pagos/Get_Cronograma_Estado", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -41,64 +37,25 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
       const initialOption = document.createElement("option");
       initialOption.value = "";
-      initialOption.text = "Seleccione Proceso";
+      initialOption.text = "Seleccione Estado";
       initialOption.hidden = true;
       procesoSelect.appendChild(initialOption);
 
       const selectAllOption = document.createElement("option");
       selectAllOption.value = "0";
-      selectAllOption.text = "Seleccionar todas los procesos";
+      selectAllOption.text = "Seleccionar todos los Estados";
       procesoSelect.appendChild(selectAllOption);
 
       procesosData.forEach((proceso) => {
         const option = document.createElement("option");
-        option.value = proceso.id_ticket_estado_proceso;
-        option.text = proceso.nombre;
+        option.value = proceso.id_estado;
+        option.text = proceso.nombre_estado;
         option.classList.add("proceso-option");
         procesoSelect.appendChild(option);
       });
     })
     .catch((error) => {
       console.error("Error al obtener los estados:", error);
-    });
-
-  fetch(
-    "http://192.168.0.8:3000/api/reporteador/Get_Usuarios_Reporte_Tickets",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        int_id_equipo: equipo,
-      }),
-    }
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      const usuariosData = data;
-
-      const initialOption = document.createElement("option");
-      initialOption.value = "";
-      initialOption.text = "Seleccione Usuario";
-      initialOption.hidden = true;
-      usuarioSelect.appendChild(initialOption);
-
-      const selectAllOption = document.createElement("option");
-      selectAllOption.value = "0";
-      selectAllOption.text = "Seleccionar todos los usuarios";
-      usuarioSelect.appendChild(selectAllOption);
-
-      usuariosData.forEach((usuario) => {
-        const option = document.createElement("option");
-        option.value = usuario.usuario_responsable;
-        option.text = capitalizarCadena(usuario.nombre);
-        option.classList.add("usuario-option");
-        usuarioSelect.appendChild(option);
-      });
-    })
-    .catch((error) => {
-      console.error("Error al obtener los usuarios:", error);
     });
 
   let table;
@@ -114,15 +71,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
   document
     .getElementById("descargar-universo-button")
     .addEventListener("click", function () {
-      const selectEquipo = equipo;
-      const selectDepartamento = departamento;
-      const selectEmpresa = empresa;
-      const selectProceso = "0";
-      const selectUsuario = "0";
+      const selectEstado = "0";
       const fechaInicial = "" ?? "";
       const fechaFinal = "" ?? "";
       procesoSelect.value = "";
-      usuarioSelect.value = "";
       fechaInicialInput.value = "";
       fechaFinalInput.value = "";
       Swal.fire({
@@ -134,40 +86,16 @@ document.addEventListener("DOMContentLoaded", (event) => {
         },
       });
       fetch(
-        "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_It",
+        "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Cronograma_Tarea",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            int_id_equipo: equipo,
-            int_id_departamento: departamento,
-            int_id_empresa: empresa,
-            string_nombre_referencia: "",
-            int_id_prioridad: 0,
-            int_estado_resolucion: 0,
-            int_id_proceso: selectProceso,
-            int_id_cat_tipo: 0,
-            int_id_cat_canal: 0,
-            int_id_cat_seguimiento: 0,
-            int_id_cat_responsable: selectUsuario,
-            int_id_cat_solicitante: 0,
-            int_id_cat_creado_por: 0,
-            date_asignacion_inicio: "",
-            date_asignacion_fin: "",
-            date_resolucion_inicio: "",
-            date_resolucion_fin: "",
-            date_ultima_vista_inicio: "",
-            date_ultima_vista_fin: "",
-            date_vencimiento_inicio: "",
-            date_vencimiento_fin: "",
-            date_primera_respuesta_inicio: "",
-            date_primera_respuesta_fin: "",
-            date_creacion_inicio: fechaInicial,
-            date_creacion_fin: fechaFinal,
-            date_actualizacion_inicio: "",
-            date_actualizacion_fin: "",
+            int_id_estado_tarea: selectEstado,
+            date_fecha_inicial: fechaInicial,
+            date_fecha_final: fechaFinal
           }),
         }
       )
@@ -179,11 +107,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
               text: "Esto puede durar varios minutos",
             });
             initializeTable(
-              selectEquipo,
-              selectDepartamento,
-              selectEmpresa,
-              selectProceso,
-              selectUsuario,
+              selectEstado,
               fechaInicial,
               fechaFinal
             );
@@ -222,7 +146,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          "int_id_cat_aplicativo": 16,
+          "int_id_cat_aplicativo": 35,
           "int_id_cat_usuario": parseInt(id_cat_usuario),
           "int_id_creador": parseInt(id_cat_usuario)
         }),
@@ -230,12 +154,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
         .then((response) => response.json())
         .then((data) => {
           const selectedProceso = procesoSelect.value;
-          const selectedUsuario = usuarioSelect.value;
           const fechaInicial = fechaInicialInput.value;
           const fechaFinal = fechaFinalInput.value;
 
           if (selectedProceso) {
-            if (selectedUsuario) {
               if (fechaInicial && fechaFinal) {
                 Swal.fire({
                   title: "Validando que exista información",
@@ -246,40 +168,16 @@ document.addEventListener("DOMContentLoaded", (event) => {
                   },
                 });
                 fetch(
-                  "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_It",
+                  "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Cronograma_Tarea",
                   {
                     method: "POST",
                     headers: {
                       "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                      int_id_equipo: equipo,
-                      int_id_departamento: departamento,
-                      int_id_empresa: empresa,
-                      string_nombre_referencia: "",
-                      int_id_prioridad: 0,
-                      int_estado_resolucion: 0,
-                      int_id_proceso: selectedProceso,
-                      int_id_cat_tipo: 0,
-                      int_id_cat_canal: 0,
-                      int_id_cat_seguimiento: 0,
-                      int_id_cat_responsable: selectedUsuario,
-                      int_id_cat_solicitante: 0,
-                      int_id_cat_creado_por: 0,
-                      date_asignacion_inicio: "",
-                      date_asignacion_fin: "",
-                      date_resolucion_inicio: "",
-                      date_resolucion_fin: "",
-                      date_ultima_vista_inicio: "",
-                      date_ultima_vista_fin: "",
-                      date_vencimiento_inicio: "",
-                      date_vencimiento_fin: "",
-                      date_primera_respuesta_inicio: "",
-                      date_primera_respuesta_fin: "",
-                      date_creacion_inicio: fechaInicial,
-                      date_creacion_fin: fechaFinal,
-                      date_actualizacion_inicio: "",
-                      date_actualizacion_fin: "",
+                      int_id_estado_tarea: selectedProceso,
+                      date_fecha_inicial: fechaInicial,
+                      date_fecha_final: fechaFinal
                     }),
                   }
                 )
@@ -291,11 +189,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                         text: "Esto puede durar varios minutos",
                       });
                       initializeTable(
-                        equipo,
-                        departamento,
-                        empresa,
                         selectedProceso,
-                        selectedUsuario,
                         fechaInicial,
                         fechaFinal
                       );
@@ -330,13 +224,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
                   text: "Debes seleccionar una fecha inicial y una fecha final.",
                 });
               }
-            } else {
-              Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "Debes seleccionar un usuario.",
-              });
-            }
           } else {
             Swal.fire({
               icon: "error",
@@ -348,11 +235,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     });
 
   function initializeTable(
-    equipo,
-    departamento,
-    empresa,
     selectedProceso,
-    selectedUsuario,
     fechaInicial,
     fechaFinal
   ) {
@@ -362,7 +245,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       pagination: "local",
       paginationSize: 25,
       paginationSizeSelector: [10, 25, 50, 100],
-      ajaxURL: "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_It",
+      ajaxURL: "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Cronograma_Tarea",
       ajaxConfig: {
         method: "POST",
         headers: {
@@ -371,33 +254,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
       },
       ajaxParams: function (params) {
         return {
-          int_id_equipo: equipo,
-          int_id_departamento: departamento,
-          int_id_empresa: empresa,
-          string_nombre_referencia: "",
-          int_id_prioridad: 0,
-          int_estado_resolucion: 0,
-          int_id_proceso: selectedProceso,
-          int_id_cat_tipo: 0,
-          int_id_cat_canal: 0,
-          int_id_cat_seguimiento: 0,
-          int_id_cat_responsable: selectedUsuario,
-          int_id_cat_solicitante: 0,
-          int_id_cat_creado_por: 0,
-          date_asignacion_inicio: "",
-          date_asignacion_fin: "",
-          date_resolucion_inicio: "",
-          date_resolucion_fin: "",
-          date_ultima_vista_inicio: "",
-          date_ultima_vista_fin: "",
-          date_vencimiento_inicio: "",
-          date_vencimiento_fin: "",
-          date_primera_respuesta_inicio: "",
-          date_primera_respuesta_fin: "",
-          date_creacion_inicio: fechaInicial,
-          date_creacion_fin: fechaFinal,
-          date_actualizacion_inicio: "",
-          date_actualizacion_fin: "",
+          int_id_estado_tarea: selectedProceso,
+          date_fecha_inicial: fechaInicial,
+          date_fecha_final: fechaFinal
         };
       },
       ajaxContentType: "json",
@@ -417,7 +276,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   function exportTable() {
     if (table) {
       const customHeader = {
-        v: "REPORTE DE TICKETS",
+        v: "REPORTE CRONOGRAMA",
         s: { font: { sz: 30 } },
       };
 
@@ -435,7 +294,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Registros");
 
-      XLSX.writeFile(workbook, "reporte-tickets.xlsx", {
+      XLSX.writeFile(workbook, "reporte-cronograma.xlsx", {
         bookType: "xlsx",
         bookSST: true,
         type: "binary",

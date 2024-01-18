@@ -16,56 +16,47 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const usernameElement = document.getElementById("username");
   usernameElement.textContent = username;
 
-  const aplicativoSelect = document.getElementById("aplicativo-select");
+  const usuarioSelect = document.getElementById("usuario-select");
   const clearButton = document.getElementById("clear-button");
   const fechaInicialInput = document.getElementById("fecha-inicial");
-  const fechaFinalInput = document.getElementById("fecha-final");
 
-  fetch("http://192.168.0.8:3000/api/reporteador/Get_Reporte_Documento_Aplicativo", {
+  fetch("http://192.168.0.8:3000/api/reporteador/Get_Reporte_Clientes_Saldos", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      int_id_aplicativo: 0
+      int_id_cliente: 0
     }),
   })
     .then((response) => response.json())
     .then((data) => {
-      const aplicativoData = data;
+      const usuariosData = data;
 
       const initialOption = document.createElement("option");
       initialOption.value = "";
-      initialOption.text = "Seleccione Aplicativo";
+      initialOption.text = "Seleccione Cliente";
       initialOption.hidden = true;
-      aplicativoSelect.appendChild(initialOption);
+      usuarioSelect.appendChild(initialOption);
 
       const selectAllOption = document.createElement("option");
-      selectAllOption.value = "0";
-      selectAllOption.text = "Seleccionar todos los aplicativos";
-      aplicativoSelect.appendChild(selectAllOption);
+      selectAllOption.value = 0;
+      selectAllOption.text = "Seleccionar todos los clientes";
+      usuarioSelect.appendChild(selectAllOption);
 
-      aplicativoData.forEach((aplicativo) => {
+      usuariosData.forEach((usuario) => {
         const option = document.createElement("option");
-        option.value = aplicativo.id_cat_aplicativo;
-        option.text = aplicativo.nombre;
-        option.classList.add("aplicativo-option");
-        aplicativoSelect.appendChild(option);
+        option.value = usuario.id_cat_cliente;
+        option.text = usuario.nombre;
+        option.classList.add("usuario-option");
+        usuarioSelect.appendChild(option);
       });
     })
     .catch((error) => {
-      console.error("Error al obtener los aplicativos:", error);
+      console.error("Error al obtener los clientes:", error);
     });
 
   let table;
-
-  fechaInicialInput.addEventListener("change", function () {
-    fechaFinalInput.min = this.value;
-  });
-
-  fechaFinalInput.addEventListener("change", function () {
-    fechaInicialInput.max = this.value;
-  });
 
   document
     .getElementById("actualizar-button")
@@ -76,19 +67,20 @@ document.addEventListener("DOMContentLoaded", (event) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          "int_id_cat_aplicativo": 27,
+          "int_id_cat_aplicativo": 32,
           "int_id_cat_usuario": parseInt(id_cat_usuario),
           "int_id_creador": parseInt(id_cat_usuario)
         }),
       })
         .then((response) => response.json())
         .then((data) => {
-          const selectedAplicativo = aplicativoSelect.value;
+          const selectedUsuario = usuarioSelect.value;
           const fechaInicial = fechaInicialInput.value;
-          const fechaFinal = fechaFinalInput.value;
+          const fechaFinal = "";
 
-          if (selectedAplicativo) {
-            if (fechaInicial && fechaFinal) {
+          console.log(selectedUsuario)
+
+          if (selectedUsuario !== undefined && selectedUsuario !== null) {
               Swal.fire({
                 title: "Validando que exista información",
                 text: "Esto puede durar varios minutos",
@@ -98,16 +90,16 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 },
               });
               fetch(
-                "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Documento_Login",
+                "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Actualizacion_Saldos",
                 {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify({
-                    int_id_aplicativo: selectedAplicativo,
-                    date_creacion_inicio: fechaInicial,
-                    date_creacion_fin: fechaFinal,
+                    int_id_cliente: selectedUsuario,
+                    date_fecha_inicial: fechaInicial,
+                    date_fecha_final: fechaFinal,
                   }),
                 }
               )
@@ -118,24 +110,23 @@ document.addEventListener("DOMContentLoaded", (event) => {
                       title: "Enviando parámetros...",
                       text: "Esto puede durar varios minutos",
                     });
-                    initializeTable(selectedAplicativo, fechaInicial, fechaFinal);
+                    initializeTable(selectedUsuario, fechaInicial, fechaFinal);
                     Swal.close();
                     const recordCountText =
                       document.getElementById("record-count-text");
                     recordCountText.textContent = `Cantidad de registros: ${data.length}`;
-                    recordCountText.style.display = "block";
+                    recordCountText.style.display = "block"; // Mostrar el elemento
                   } else {
                     Swal.fire({
                       icon: "warning",
                       title: "Advertencia",
                       text: "No se encontró información acorde a los filtros seleccionados.",
                     });
-
+                    // Ocultar el texto cuando no hay registros
                     const recordCountText =
                       document.getElementById("record-count-text");
-                    recordCountText.style.display = "none";
+                    recordCountText.style.display = "none"; // Ocultar el elemento
                   }
-                  console.log(selectedAplicativo)
                 })
                 .catch((error) => {
                   console.error("Error al obtener los datos:", error);
@@ -145,32 +136,25 @@ document.addEventListener("DOMContentLoaded", (event) => {
                     text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
                   });
                 });
-            } else {
-              Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "Debes seleccionar una fecha inicial y una fecha final.",
-              });
-            }
           } else {
             Swal.fire({
               icon: "error",
               title: "Error",
-              text: "Debes seleccionar un aplicativo.",
+              text: "Debes seleccionar un usuario.",
             });
           }
         })
     });
 
-  function initializeTable(selectedAplicativo, fechaInicial, fechaFinal) {
+  function initializeTable(selectedUsuario, fechaInicial, fechaFinal) {
     table = new Tabulator("#example-table", {
-      layout: "fitData",
+      layout: "fitColumns",
       columns: [],
       pagination: "local",
       paginationSize: 25,
       paginationSizeSelector: [10, 25, 50, 100],
       ajaxURL:
-        "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Documento_Login",
+        "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Actualizacion_Saldos",
       ajaxConfig: {
         method: "POST",
         headers: {
@@ -179,9 +163,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
       },
       ajaxParams: function (params) {
         return {
-          int_id_aplicativo: selectedAplicativo,
-          date_creacion_inicio: fechaInicial,
-          date_creacion_fin: fechaFinal,
+          int_id_cliente: selectedUsuario,
+          date_fecha_inicial: fechaInicial,
+          date_fecha_final: fechaFinal,
         };
       },
       ajaxContentType: "json",
@@ -201,16 +185,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
   }
 
   clearButton.addEventListener("click", () => {
-    empresaSelect.value = "";
-    fechaInicialInput.value = "";
-    fechaFinalInput.value = "";
+    usuarioSelect.value = "";
     table.clearData();
   });
 
   function exportTable() {
     if (table) {
       const customHeader = {
-        v: "REPORTE LOGIN APLICATIVO",
+        v: "REPORTE ACTUALIZADO DE SALDOS",
         s: { font: { sz: 30 } },
       };
 
@@ -228,7 +210,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Registros");
 
-      XLSX.writeFile(workbook, "reporte-aplicativo.login.xlsx", {
+      XLSX.writeFile(workbook, "reporte-saldos.xlsx", {
         bookType: "xlsx",
         bookSST: true,
         type: "binary",
@@ -260,7 +242,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 window.addEventListener('popstate', function (event) {
   location.reload(true);
 });
-
 
 function autoLogout() {
   Swal.fire({
