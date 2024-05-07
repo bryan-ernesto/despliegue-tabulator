@@ -126,62 +126,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
           const fechaFinal = fechaFinalInput.value;
 
           if (fechaInicial && fechaFinal) {
-            Swal.fire({
-              title: "Validando que exista información",
-              text: "Esto puede durar varios minutos",
-              allowOutsideClick: false,
-              didOpen: () => {
-                Swal.showLoading();
-              },
-            });
-            fetch(
-              "http://192.168.0.8:3000/api/reporteador/Get_Reporte_SatRecepcionDelta",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  date_fecha_inicial: fechaInicial,
-                  date_fecha_final: fechaFinal,
-                }),
-              }
-            )
-              .then((response) => response.json())
-              .then((data) => {
-                if (data && data.length > 0) {
-                  Swal.update({
-                    title: "Enviando parámetros...",
-                    text: "Esto puede durar varios minutos",
-                  });
-                  initializeTable(
-                    fechaInicial,
-                    fechaFinal
-                  );
-                  Swal.close();
-                  const recordCountText =
-                    document.getElementById("record-count-text");
-                  recordCountText.textContent = `Cantidad de registros: ${data.length}`;
-                  recordCountText.style.display = "block";
-                } else {
-                  Swal.fire({
-                    icon: "warning",
-                    title: "Advertencia",
-                    text: "No se encontró información acorde a los filtros seleccionados.",
-                  });
-                  const recordCountText =
-                    document.getElementById("record-count-text");
-                  recordCountText.style.display = "none";
-                }
-              })
-              .catch((error) => {
-                console.error("Error al obtener los datos:", error);
-                Swal.fire({
-                  icon: "error",
-                  title: "Error",
-                  text: "Ocurrió un error al obtener los datos. Por favor, intenta nuevamente más tarde.",
-                });
-              });
+            initializeTable(
+              fechaInicial,
+              fechaFinal
+            );
           } else {
             Swal.fire({
               icon: "error",
@@ -247,8 +195,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
       cellB.value = "Reporte de Recepción de Documentos";
       cellB.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
 
-      worksheet.mergeCells('BD4', 'BG4');
-      let cellC = worksheet.getCell('BG4');
+      worksheet.mergeCells('BD4', 'BH4');
+      let cellC = worksheet.getCell('BH4');
       cellC.value = "Validaciones";
       cellC.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
 

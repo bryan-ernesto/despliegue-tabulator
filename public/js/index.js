@@ -163,7 +163,6 @@ function initializeCarousel() {
 
 initializeCarousel();
 
-
 function handleAutoFocus() {
   if (usernameInput === document.activeElement) {
     let parent = usernameInput.parentNode.parentNode;

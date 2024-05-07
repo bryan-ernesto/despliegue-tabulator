@@ -54,15 +54,36 @@
     <select id="equipo-select" class="select-large"></select>
     <button id="clear-button-d">X</button>
 
+    <span class="date-label">Fecha Inicial:</span>
+    <input type="date" id="fecha-inicial" placeholder="Fecha inicial">
+    <span class="date-label">Fecha Final:</span>
+    <input type="date" id="fecha-final" placeholder="Fecha final">
+
     <button id="actualizar-button">Consultar <i class="fa-solid fa-spinner"></i></button>
     <button id="export-table">Exportar a Excel <i class="fa-solid fa-download"></i></button>
     <button id="descargar-universo-button">Ver todos los tickets <i class="fa-solid fa-globe"></i></button>
   </div>
+
+  <div id="card-container"></div>
+  <div id="chart-container">
+    <!-- Contenedores de gráficas -->
+    <canvas id="barGraficaSlaResolucion"></canvas>
+    <canvas id="barGraficaSlaAsignacion"></canvas>
+    <canvas id="barGraficaTopsResponsables"></canvas>
+    <!-- <canvas id="doughnutChart2"></canvas>
+      <canvas id="grafica1"></canvas>
+      <canvas id="grafica2"></canvas> -->
+  </div>
+  </div>
+
   <div class="table-container">
     <div id="record-count-text" class="count-text"></div>
     <div id="example-table"></div>
   </div>
   <div id="example-table"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <script type="text/javascript" src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
   <script src="https://unpkg.com/popper.js@1.16.1/dist/umd/popper.min.js"></script>
   <script src="https://unpkg.com/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

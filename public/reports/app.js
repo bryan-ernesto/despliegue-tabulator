@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const showPageButton6 = document.getElementById("show-page-report6");
   const showPageButton7 = document.getElementById("show-page-report7");
   const showPageButton8 = document.getElementById("show-page-report8");
-  const showPageButton9 = document.getElementById("show-page-report9");
+  const showPageButton9 = document.getElementById("show-page-report9"); // REPORTE COMPRAS
   const showPageButton10 = document.getElementById("show-page-report10");
   const showPageButton11 = document.getElementById("show-page-report11");
   const showPageButton12 = document.getElementById("show-page-report12");
@@ -63,6 +63,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const showPageButton16 = document.getElementById("show-page-report16");
   const showPageButton17 = document.getElementById("show-page-report17");
   const showPageButton18 = document.getElementById("show-page-report18");
+  const showPageButton19 = document.getElementById("show-page-report19");
+  const showPageButton20 = document.getElementById("show-page-report20");
 
   function guardarEstadoBotones() {
     const botones = [
@@ -83,6 +85,8 @@ document.addEventListener("DOMContentLoaded", () => {
       showPageButton16,
       showPageButton17,
       showPageButton18,
+      showPageButton19,
+      showPageButton20,
     ];
 
     const estadoBotones = botones.map(btn => btn.style.display === "block");
@@ -108,7 +112,9 @@ document.addEventListener("DOMContentLoaded", () => {
       showPageButton15,
       showPageButton16,
       showPageButton17,
-      showPageButton18
+      showPageButton18,
+      showPageButton19,
+      showPageButton20,
     ];
 
     const estadoBotones = JSON.parse(localStorage.getItem("estadoBotones") || "[]");
@@ -139,6 +145,8 @@ document.addEventListener("DOMContentLoaded", () => {
   showPageButton16.style.display = "none";
   showPageButton17.style.display = "none";
   showPageButton18.style.display = "none";
+  showPageButton19.style.display = "none";
+  showPageButton20.style.display = "none";
   guardarEstadoBotones()
 
   let empresasData;
@@ -183,6 +191,8 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton16.style.display = "block";
     showPageButton17.style.display = "block";
     showPageButton18.style.display = "block";
+    showPageButton19.style.display = "block";
+    showPageButton20.style.display = "block";
     guardarEstadoBotones()
   } else if (username === "hescobar") {
     showPageButton1.style.display = "block";
@@ -195,6 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton11.style.display = "block";
     showPageButton14.style.display = "block";
     showPageButton15.style.display = "block";
+    showPageButton17.style.display = "block";
     guardarEstadoBotones()
   } else if (username === "syrodas") {
     showPageButton1.style.display = "block";
@@ -206,8 +217,17 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton3.style.display = "block";
     showPageButton4.style.display = "block";
     showPageButton15.style.display = "block";
-  } else if (username === "itelon" || username === "jatorres" || username === "svhernandez" || username === "msipaque" || username === "dagarcia") {
+    showPageButton18.style.display = "block";
+  } else if (username === "aleal") {
+    showPageButton3.style.display = "block";
+    showPageButton4.style.display = "block";
     showPageButton15.style.display = "block";
+    showPageButton18.style.display = "block";
+    showPageButton9.style.display = "block";
+  } else if (username === "itelon" || username === "jatorres" || username === "svhernandez" || username === "msipaque") {
+    showPageButton15.style.display = "block";
+  } else if (username === "aglopez" || username === "memonroy") {
+    showPageButton3.style.display = "block";
   }
   else if (
     username === "msolano" ||
@@ -215,6 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
     username === "rixim"
   ) {
     showPageButton7.style.display = "block";
+    showPageButton17.style.display = "block";
     guardarEstadoBotones()
   } else if (
     username === 'acastillo'
@@ -225,7 +246,6 @@ document.addEventListener("DOMContentLoaded", () => {
     guardarEstadoBotones()
   } else if (
     username === "jizquierdo" ||
-    username === "acazun" ||
     username === "sflores" ||
     username === "jyaxon"
   ) {
@@ -234,14 +254,26 @@ document.addEventListener("DOMContentLoaded", () => {
   } else if (
     username === "ajvillatoro" ||
     username === "vvargas" ||
-    username === "cnovales"
+    username === "cnovales" ||
+    username === "mcifuentes"
   ) {
     showPageButton9.style.display = "block";
     guardarEstadoBotones()
   } else if (username === "jortiz" || username === "avega") {
     showPageButton14.style.display = "block";
     guardarEstadoBotones()
-  }
+  } else if (username === "dagarcia") {
+    showPageButton3.style.display = "block";
+    showPageButton15.style.display = "block";
+    guardarEstadoBotones()
+  } else if (username === "cesquivel" || username === "mchinchilla" || username === "dllopez" || username === "jmelgar" || username === "kxoy" || username === "mzuniga" || username === "jalopez" || username === "emejia" || username === "bpinto" || username === "mperez" || username === "amaldonado" || username === "jegonzalez" || username === "nlopez") {
+    showPageButton17.style.display = "block";
+    guardarEstadoBotones()
+  } else if (username === "acazun") {
+    showPageButton17.style.display = "block";
+    showPageButton11.style.display = "block";
+    guardarEstadoBotones()
+  } 
   else {
     showPageButton1.style.display = "none";
     showPageButton3.style.display = "none";
@@ -261,6 +293,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton16.style.display = "none";
     showPageButton17.style.display = "none";
     showPageButton18.style.display = "none";
+    showPageButton19.style.display = "none";
     guardarEstadoBotones()
   }
 
@@ -325,6 +358,8 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton16.style.display = "none";
     showPageButton17.style.display = "none";
     showPageButton18.style.display = "none";
+    showPageButton19.style.display = "none";
+    showPageButton20.style.display = "none";
     localStorage.removeItem("selectedCompany");
     guardarEstadoBotones()
     location.reload();
@@ -368,6 +403,8 @@ document.addEventListener("DOMContentLoaded", () => {
       showPageButton16.style.display = "none";
       showPageButton17.style.display = "none";
       showPageButton18.style.display = "none";
+      showPageButton19.style.display = "none";
+      showPageButton20.style.display = "none";
       guardarEstadoBotones()
       showPageButton3.classList.remove('fade-in-up');
     }
@@ -383,8 +420,26 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
-      parseInt(selectedDepartment) === 18 &&
-      parseInt(selectedEquipment) === 24
+      parseInt(selectedDepartment) === 24 &&
+      parseInt(selectedEquipment) === 32
+    ) {
+      showPageButton20.classList.add('fade-in-up');
+      showPageButton20.style.display = "block";
+      guardarEstadoBotones()
+    } else if (
+      selectedEmpresa &&
+      parseInt(selectedCompany) === 2 &&
+      parseInt(selectedDepartment) === 28 &&
+      parseInt(selectedEquipment) === 39
+    ) {
+      showPageButton19.classList.add('fade-in-up');
+      showPageButton19.style.display = "block";
+      guardarEstadoBotones()
+    } else if (
+      selectedEmpresa &&
+      parseInt(selectedCompany) === 3 &&
+      parseInt(selectedDepartment) === 8 &&
+      parseInt(selectedEquipment) === 46
     ) {
       showPageButton5.classList.add('fade-in-up');
       showPageButton5.style.display = "block";
@@ -394,6 +449,15 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedCompany) === 4 &&
       parseInt(selectedDepartment) === 2 &&
       parseInt(selectedEquipment) === 29
+    ) {
+      showPageButton5.classList.add('fade-in-up');
+      showPageButton5.style.display = "block";
+      guardarEstadoBotones()
+    } else if (
+      selectedEmpresa &&
+      parseInt(selectedCompany) === 1 &&
+      parseInt(selectedDepartment) === 1 &&
+      parseInt(selectedEquipment) === 2
     ) {
       showPageButton5.classList.add('fade-in-up');
       showPageButton5.style.display = "block";
@@ -490,8 +554,8 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedDepartment) === 13 &&
       parseInt(selectedEquipment) === 37
     ) {
-      showPageButton9.classList.add('fade-in-up');
-      showPageButton9.style.display = "block";
+      showPageButton13.classList.add('fade-in-up');
+      showPageButton13.style.display = "block";
       showPageButton6.classList.remove('fade-in-up');
       showPageButton6.style.display = "none";
       guardarEstadoBotones()

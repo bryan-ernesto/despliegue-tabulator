@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         },
       });
       fetch(
-        "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_It",
+        "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_Programacion",
         {
           method: "POST",
           headers: {
@@ -246,7 +246,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                   },
                 });
                 fetch(
-                  "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_It",
+                  "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_Programacion",
                   {
                     method: "POST",
                     headers: {
@@ -365,7 +365,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       pagination: "local",
       paginationSize: 25,
       paginationSizeSelector: [10, 25, 50, 100],
-      ajaxURL: "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_It",
+      ajaxURL: "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_Programacion",
       ajaxConfig: {
         method: "POST",
         headers: {
@@ -611,6 +611,7 @@ async function fetchDataDoughnutChart1(equipo, selectedProceso, fechaInicial, fe
     console.error('Error al obtener los datos para la gráfica de dona 1:', error);
   }
 }
+
 
 async function fetchDataDoughnutChart2(equipo) {
   try {

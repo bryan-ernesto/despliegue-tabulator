@@ -21,7 +21,7 @@ body::before {
   background-repeat: no-repeat;
   background-size: 50%;
   background-position: bottom;
-  filter: blur(7px);
+  filter: blur(12px);
   z-index: -1;
 }
 
@@ -388,4 +388,56 @@ button:hover {
   top: -40px; 
   width: 100%;
   text-align: center;
+}
+
+#chart-container {
+  display: flex;
+  justify-content: space-around; /* Cambiar space-between a space-around */
+  padding: 20px; /* Agregar un poco de espacio alrededor de las gráficas */
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+#chart-container {
+  margin-top: 50px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+canvas {
+  max-width: 600px;
+  max-height: 500px;
+  margin-bottom: 50px;
+  margin-left: 50px;
+}
+
+#card-container {
+  display: flex;
+  justify-content: center; /* Centrar horizontalmente las tarjetas */
+  margin: 40px 0 40px 0; /* Agregamos margen inferior para separar las tarjetas del resto de los elementos */
+  text-align: center;
+}
+
+.card {
+  flex: 0 0 auto;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin-right: 20px;
+  transition: box-shadow 0.3s ease;
+  height: 200px; /* Establecer el alto deseado */
+}
+
+.card:last-child {
+  margin-right: 0; /* Eliminar el margen derecho de la última tarjeta para evitar espacio adicional */
+}
+
+.card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }

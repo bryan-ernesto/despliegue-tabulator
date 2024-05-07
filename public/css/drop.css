@@ -112,7 +112,9 @@ span {
 #show-page-report15,
 #show-page-report16,
 #show-page-report17,
-#show-page-report18 {
+#show-page-report18,
+#show-page-report19,
+#show-page-report20 {
   margin-top: 60px;
   display: block;
   text-align: center;
@@ -137,7 +139,9 @@ span {
 #show-page-report15 a,
 #show-page-report16 a,
 #show-page-report17 a,
-#show-page-report18 a {
+#show-page-report18 a,
+#show-page-report19 a,
+#show-page-report20 a {
   display: block;
   padding: 10px 20px;
   color: white;
@@ -170,7 +174,9 @@ span {
 #show-page-report15 button,
 #show-page-report16 button,
 #show-page-report17 button,
-#show-page-report18 button {
+#show-page-report18 button,
+#show-page-report19 button,
+#show-page-report20 button {
   display: block;
   padding: 10px 20px;
   background-color: rgba(90, 84, 104, 1);
@@ -197,7 +203,9 @@ span {
 #show-page-report15 button:hover,
 #show-page-report16 button:hover,
 #show-page-report17 button:hover,
-#show-page-report18 button:hover {
+#show-page-report18 button:hover,
+#show-page-report19 button:hover,
+#show-page-report20 button:hover {
   background-color: rgba(26, 21, 32, 1);
   transition: 0.3s;
 }

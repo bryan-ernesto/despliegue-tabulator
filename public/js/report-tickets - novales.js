@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         },
       });
       fetch(
-        "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_It",
+        "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_Novales",
         {
           method: "POST",
           headers: {
@@ -246,7 +246,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                   },
                 });
                 fetch(
-                  "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_It",
+                  "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_Novales",
                   {
                     method: "POST",
                     headers: {
@@ -304,9 +304,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
                         document.getElementById("record-count-text");
                       recordCountText.textContent = `Cantidad de registros: ${data.length}`;
                       recordCountText.style.display = "block"; // Mostrar el elemento
-                      fetchDataBarChart(equipo, selectedProceso, selectedUsuario, fechaInicial, fechaFinal)
-                      fetchDataDoughnutChart1(equipo, selectedProceso, fechaInicial, fechaFinal)
-                      fetchDataTicketStatus(equipo, fechaInicial, fechaFinal)
                     } else {
                       Swal.fire({
                         icon: "warning",
@@ -365,7 +362,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       pagination: "local",
       paginationSize: 25,
       paginationSizeSelector: [10, 25, 50, 100],
-      ajaxURL: "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_It",
+      ajaxURL: "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_Novales",
       ajaxConfig: {
         method: "POST",
         headers: {
@@ -536,289 +533,3 @@ document.addEventListener('mousemove', resetLogoutTimer);
 document.addEventListener('keydown', resetLogoutTimer);
 document.addEventListener('wheel', resetLogoutTimer);
 document.addEventListener('touchmove', resetLogoutTimer);
-
-document.addEventListener('DOMContentLoaded', function () {
-  const equipo = localStorage.getItem("selectedEquipment");
-  const selectedProceso = 0;
-  const selectedUsuario = 0;
-  const fechaInicial = '';
-  const fechaFinal = '';
-  fetchDataBarChart(equipo, selectedProceso, selectedUsuario, fechaInicial, fechaFinal);
-  fetchDataDoughnutChart1(equipo, selectedProceso, fechaInicial, fechaFinal);
-  fetchDataDoughnutChart2(equipo);
-  fetchDataTicketStatus(equipo, fechaInicial, fechaFinal);
-});
-
-async function fetchDataBarChart(equipo, selectedProceso, selectedUsuario, fechaInicial, fechaFinal) {
-  try {
-    const response = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_ConteoPorUsuarios', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        int_id_cat_equipo: equipo,
-        int_id_cat_proceso: selectedProceso,
-        int_id_cat_usuario: selectedUsuario,
-        date_fecha_inicial: fechaInicial,
-        date_fecha_final: fechaFinal,
-      })
-    });
-    const data = await response.json();
-
-    const labels = data.map(ticket => ticket.usuario);
-    const values_total = data.map(ticket => ticket.total);
-    const values_asignado = data.map(ticket => ticket.Asignado);
-    const values_progreso = data.map(ticket => ticket.Enprogreso);
-
-    createBarChart(labels, values_total, values_asignado, values_progreso);
-  } catch (error) {
-    console.error('Error al obtener los datos para la gráfica de barras:', error);
-  }
-}
-
-async function fetchDataDoughnutChart1(equipo, selectedProceso, fechaInicial, fechaFinal) {
-  try {
-    const response = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_Graficas_Tops_Reporteador', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        int_id_cat_equipo: equipo,
-        int_id_cat_proceso: selectedProceso,
-        date_fecha_inicial: fechaInicial,
-        date_fecha_final: fechaFinal,
-      })
-    });
-    const data = await response.json();
-
-    const labels = data.map(ticket => ticket.usuario);
-    const values = data.map(ticket => ticket.total);
-
-    // Obtener el canvas
-    const canvas = document.getElementById('doughnutChart1');
-    const existingChart = Chart.getChart(canvas); // Obtener la instancia existente de Chart en el canvas
-
-    // Destruir la instancia existente de Chart si existe
-    if (existingChart) {
-      existingChart.destroy();
-    }
-
-    // Crear la nueva gráfica
-    createDoughnutChart1(labels, values);
-  } catch (error) {
-    console.error('Error al obtener los datos para la gráfica de dona 1:', error);
-  }
-}
-
-async function fetchDataDoughnutChart2(equipo) {
-  try {
-    const response = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_Graficas_Tops_Solicitantes_Reporteador', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        int_id_cat_equipo: equipo
-      })
-    });
-    const data = await response.json();
-
-    const labels = data.map(ticket => ticket.usuario);
-    const values = data.map(ticket => ticket.total);
-
-    createDoughnutChart2(labels, values);
-  } catch (error) {
-    console.error('Error al obtener los datos para la gráfica de dona 1:', error);
-  }
-}
-
-function createBarChart(labels, values_total, values_asignado, values_progreso) {
-  var ctx = document.getElementById('barChart').getContext('2d');
-  var existingChart = Chart.getChart(ctx); // Obtener la instancia existente de Chart
-
-  // Destruir la gráfica existente si hay una
-  if (existingChart) {
-    existingChart.destroy();
-  }
-
-  // Crear la nueva gráfica
-  var barChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: 'Número de Tickets',
-          data: values_total,
-          backgroundColor: [
-            'rgb(255, 99, 132)'
-          ],
-          borderColor: [
-            'rgba(255, 99, 132)',
-          ],
-          borderWidth: 1
-        },
-        {
-          label: 'Asignado',
-          data: values_asignado,
-          backgroundColor: [
-            'rgb(9, 109, 253)'
-          ],
-          borderColor: [
-            'rgb(9, 109, 253)'
-          ],
-          borderWidth: 1
-        },
-        {
-          label: 'En Progreso',
-          data: values_progreso,
-          backgroundColor: [
-            'rgb(254, 195, 5)'
-          ],
-          borderColor: [
-            'rgb(254, 195, 5)'
-          ],
-          borderWidth: 1
-        },
-      ]
-    },
-    options: {
-      plugins: {
-        title: {
-          display: true,
-          text: 'Tickets de todos los usuarios del equipo'
-        },
-      },
-      // indexAxis: 'y',
-    }
-  });
-}
-
-function createDoughnutChart1(labels, values) {
-  var ctx = document.getElementById('doughnutChart1').getContext('2d');
-  var barChart = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'Número de Tickets',
-        data: values,
-        backgroundColor: [
-          'rgb(255, 99, 132)',
-          'rgb(9, 109, 253)',
-          'rgb(254, 195, 5)',
-          'rgb(75, 160, 71)',
-          'rgb(75, 68, 200)',
-        ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
-        ],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      plugins: {
-        title: {
-          display: true,
-          text: 'Top 5 usuarios con Tickets resueltos'
-        },
-        datalabels: {
-          color: '#000',
-          formatter: (value, ctx) => {
-            let label = ctx.chart.data.labels[ctx.dataIndex];
-            return label + ': ' + value;
-          }
-        }
-      }
-    }
-  });
-}
-
-function createDoughnutChart2(labels, values) {
-  var ctx = document.getElementById('doughnutChart2').getContext('2d');
-  var doughnutChart = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'Número de Tickets',
-        data: values,
-        backgroundColor: [
-          'rgb(255, 99, 132)',
-          'rgb(9, 109, 253)',
-          'rgb(254, 195, 5)',
-          'rgb(75, 160, 71)',
-          'rgb(75, 68, 200)',
-        ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
-        ],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      plugins: {
-        title: {
-          display: true,
-          text: 'Top 5 usuarios solicitantes'
-        }
-      }
-    }
-  });
-}
-
-async function fetchDataTicketStatus(equipo, fechaInicial, fechaFinal) {
-  try {
-    const response = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_Graficas_Conteo_Estado', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        int_id_cat_equipo: equipo,
-        date_fecha_inicial: fechaInicial,
-        date_fecha_final: fechaFinal
-      })
-    });
-    const data = await response.json();
-
-    // Eliminar tarjetas previamente creadas
-    const cardContainer = document.getElementById('card-container');
-    cardContainer.innerHTML = '';
-
-    // Crear tarjetas con los datos obtenidos
-    createTicketStatusCards(data);
-  } catch (error) {
-    console.error('Error al obtener los datos de los tickets:', error);
-  }
-}
-
-function createTicketStatusCards(data) {
-  const cardContainer = document.getElementById('card-container');
-
-  // Recorrer los datos y crear una tarjeta por cada estado
-  data.forEach(ticketStatus => {
-    const card = document.createElement('div');
-    card.classList.add('card');
-
-    const cardContent = `
-          <h2>${ticketStatus.estado}</h2>
-          <p>Total: ${ticketStatus.total}</p>
-      `;
-
-    card.innerHTML = cardContent;
-    cardContainer.appendChild(card);
-  });
-}
