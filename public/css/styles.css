@@ -424,20 +424,31 @@ canvas {
 }
 
 .card {
-  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   border: 1px solid #ccc;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 10px;
+  padding: 20px;
   margin-right: 20px;
   transition: box-shadow 0.3s ease;
-  height: 200px; /* Establecer el alto deseado */
+  height: 200px;
 }
 
 .card:last-child {
-  margin-right: 0; /* Eliminar el margen derecho de la última tarjeta para evitar espacio adicional */
+  margin-right: 0;
 }
 
 .card:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card.green-bg {
+  background-color: rgb(186, 243, 183);
+}
+
+.card.red-bg {
+  background-color: rgb(253, 162, 180);
 }
