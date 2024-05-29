@@ -557,7 +557,7 @@ async function fetchDataBarChart(equipo, selectedProceso, selectedUsuario, fecha
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        int_id_cat_equipo: equipo,
+        int_id_cat_equipo: 38,
         int_id_cat_proceso: selectedProceso,
         int_id_cat_usuario: selectedUsuario,
         date_fecha_inicial: fechaInicial,
@@ -585,7 +585,7 @@ async function fetchDataDoughnutChart1(equipo, selectedProceso, fechaInicial, fe
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        int_id_cat_equipo: equipo,
+        int_id_cat_equipo: 38,
         int_id_cat_proceso: selectedProceso,
         date_fecha_inicial: fechaInicial,
         date_fecha_final: fechaFinal,
@@ -621,7 +621,7 @@ async function fetchDataDoughnutChart2(equipo) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        int_id_cat_equipo: equipo
+        int_id_cat_equipo: 38
       })
     });
     const data = await response.json();
@@ -789,13 +789,14 @@ async function fetchDataTicketStatus(equipo, fechaInicial, fechaFinal, selectedU
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        int_id_cat_equipo: equipo,
+        int_id_cat_equipo: 38,
         date_fecha_inicial: fechaInicial,
         date_fecha_final: fechaFinal,
         int_usuario_responsable: selectedUsuario
       })
     });
     const data1 = await response1.json();
+    console.log(fechaInicial, fechaFinal);
 
     // Realizar la segunda solicitud de fetch para obtener los datos del segundo endpoint
     const response2 = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_Graficas_Estado_Porcentajes_Asignado_Progreso', {
@@ -804,7 +805,7 @@ async function fetchDataTicketStatus(equipo, fechaInicial, fechaFinal, selectedU
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        int_id_cat_equipo: equipo,
+        int_id_cat_equipo: 38,
         date_fecha_inicial: fechaInicial,
         date_fecha_final: fechaFinal,
         int_usuario_responsable: selectedUsuario
