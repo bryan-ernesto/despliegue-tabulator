@@ -315,6 +315,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
           const selectedEquipo = equipoSelect.value;
           const fechaInicial = fechaInicialInput.value;
           const fechaFinal = fechaFinalInput.value;
+          const selectedUsuario = 0;
 
           console.log(selectedEmpresa, selectedDepartamento, selectedEquipo, fechaInicial, fechaFinal)
 
@@ -389,7 +390,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                       fetchDataBarChartSlaResolucion(selectedEquipo, selectedEmpresa, fechaInicial, fechaFinal);
                       fetchDataBarChartSlaAsignacion(selectedEquipo, selectedEmpresa, fechaInicial, fechaFinal);
                       fetchDataDoughnutTopsResponsables(selectedEquipo, selectedEmpresa, fechaInicial, fechaFinal);
-                      fetchDataTicketStatus(selectedEquipo, fechaInicial, fechaFinal)
+                      fetchDataTicketStatus(selectedEquipo, fechaInicial, fechaFinal, selectedUsuario)
                     } else {
                       Swal.fire({
                         icon: "warning",
@@ -628,7 +629,7 @@ document.addEventListener('DOMContentLoaded', function () {
   fetchDataBarChartSlaResolucion(equipoDefecto, empresaDefecto, fechaInicial, fechaFinal);
   fetchDataBarChartSlaAsignacion(equipoDefecto, empresaDefecto, fechaInicial, fechaFinal);
   fetchDataDoughnutTopsResponsables(equipoDefecto, empresaDefecto, fechaInicial, fechaFinal)
-  fetchDataTicketStatus(equipoDefecto, fechaInicial, fechaFinal);
+  fetchDataTicketStatus(equipoDefecto, fechaInicial, fechaFinal, selectedUsuario);
 });
 
 async function fetchDataBarChartSlaAsignacion(equipo, empresa, fechaInicial, fechaFinal) {
@@ -952,9 +953,11 @@ function createGrafica2(labels, values) {
   });
 }
 
-async function fetchDataTicketStatus(equipo, fechaInicial, fechaFinal) {
+async function fetchDataTicketStatus(equipo, fechaInicial, fechaFinal, selectedUsuario) {
+  console.log(equipo, fechaInicial, fechaFinal, selectedUsuario);
   try {
-    const response = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_Graficas_Conteo_Estado', {
+    // Realizar la primera solicitud de fetch para obtener los datos del primer endpoint
+    const response1 = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_Graficas_Estado_Porcentajes', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -962,19 +965,36 @@ async function fetchDataTicketStatus(equipo, fechaInicial, fechaFinal) {
       body: JSON.stringify({
         int_id_cat_equipo: equipo,
         date_fecha_inicial: fechaInicial,
-        date_fecha_final: fechaFinal
+        date_fecha_final: fechaFinal,
+        int_usuario_responsable: selectedUsuario
       })
     });
-    const data = await response.json();
+    const data1 = await response1.json();
 
-    console.log(equipo);
+    // Realizar la segunda solicitud de fetch para obtener los datos del segundo endpoint
+    const response2 = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_Graficas_Estado_Porcentajes_Asignado_Progreso', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        int_id_cat_equipo: equipo,
+        date_fecha_inicial: fechaInicial,
+        date_fecha_final: fechaFinal,
+        int_usuario_responsable: selectedUsuario
+      })
+    });
+    const data2 = await response2.json();
+
+    // Combinar los datos de ambos endpoints
+    const combinedData = [...data1, ...data2];
 
     // Eliminar tarjetas previamente creadas
     const cardContainer = document.getElementById('card-container');
     cardContainer.innerHTML = '';
 
-    // Crear tarjetas con los datos obtenidos
-    createTicketStatusCards(data);
+    // Crear tarjetas con los datos combinados
+    createTicketStatusCards(combinedData);
   } catch (error) {
     console.error('Error al obtener los datos de los tickets:', error);
   }
@@ -988,10 +1008,60 @@ function createTicketStatusCards(data) {
     const card = document.createElement('div');
     card.classList.add('card');
 
-    const cardContent = `
-          <h2>${ticketStatus.estado}</h2>
-          <p>Total: ${ticketStatus.total}</p>
+    let cardContent = `<h2>${ticketStatus.estado}</h2>`;
+
+    // Verificar si el estado proviene del primer endpoint o del segundo
+    if ('total_tickets_ingresados' in ticketStatus) {
+      // Datos del primer endpoint
+      cardContent += `
+        <p>Total Tickets Ingresados: ${ticketStatus.total_tickets_ingresados}</p>
+        <p>Total Tickets Estado: ${ticketStatus.total_tickets_estado}</p>
       `;
+
+      // Determinar el texto para el porcentaje
+      let porcentajeLabel = '';
+      if (ticketStatus.estado === 'ABIERTO') {
+        porcentajeLabel = 'Porcentaje de ineficiencia';
+      } else if (ticketStatus.estado === 'CERRADO') {
+        porcentajeLabel = 'Porcentaje de eficiencia';
+      } else {
+        porcentajeLabel = 'Porcentaje';
+      }
+
+      cardContent += `<p>${porcentajeLabel}: ${ticketStatus.porcentaje}</p>`;
+
+      // Determinar el color de fondo de la tarjeta
+      if (ticketStatus.estado === 'ABIERTO') {
+        if (parseFloat(ticketStatus.porcentaje) < 50) {
+          card.classList.add('green-bg');
+        } else {
+          card.classList.add('red-bg');
+        }
+      } else if (ticketStatus.estado === 'CERRADO') {
+        if (parseFloat(ticketStatus.porcentaje) < 50) {
+          card.classList.add('red-bg');
+        } else {
+          card.classList.add('green-bg');
+        }
+      }
+    } else {
+      // Datos del segundo endpoint
+      cardContent += `
+        <p>Total: ${ticketStatus.total}</p>
+        <p>En Tiempo: ${ticketStatus.en_tiempo}</p>
+        <p>Por Vencer: ${ticketStatus.por_vencer}</p>
+        <p>Vencido: ${ticketStatus.vencido}</p>
+        <p>Porcentaje: ${ticketStatus.porcentaje}</p>
+      `;
+
+      if (ticketStatus.estado === 'ASIGNADO' || ticketStatus.estado === 'EN PROGRESO') {
+        if (parseFloat(ticketStatus.porcentaje) > 50) {
+          card.classList.add('red-bg');
+        } else {
+          card.classList.add('green-bg');
+        }
+      }
+    }
 
     card.innerHTML = cardContent;
     cardContainer.appendChild(card);
