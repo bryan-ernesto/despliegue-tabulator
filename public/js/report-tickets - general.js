@@ -316,6 +316,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
           const fechaInicial = fechaInicialInput.value;
           const fechaFinal = fechaFinalInput.value;
           const selectedUsuario = 0;
+          const selectedProceso = 0;
 
           console.log(selectedEmpresa, selectedDepartamento, selectedEquipo, fechaInicial, fechaFinal)
 
@@ -390,7 +391,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
                       fetchDataBarChartSlaResolucion(selectedEquipo, selectedEmpresa, fechaInicial, fechaFinal);
                       fetchDataBarChartSlaAsignacion(selectedEquipo, selectedEmpresa, fechaInicial, fechaFinal);
                       fetchDataDoughnutTopsResponsables(selectedEquipo, selectedEmpresa, fechaInicial, fechaFinal);
-                      fetchDataTicketStatus(selectedEquipo, fechaInicial, fechaFinal, selectedUsuario)
+                      fetchDataTicketStatus(selectedEquipo, selectedDepartamento, selectedEmpresa, fechaInicial, fechaFinal, selectedUsuario)
+                      fetchDataBarChart(selectedEquipo, selectedDepartamento, selectedEmpresa, selectedProceso, selectedUsuario, fechaInicial, fechaFinal)
                     } else {
                       Swal.fire({
                         icon: "warning",
@@ -622,6 +624,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const equipo = localStorage.getItem("selectedEquipment");
   const equipoDefecto = 0;
   const empresaDefecto = 0;
+  const departamentoDefecto = 0;
   const selectedProceso = 0;
   const selectedUsuario = 0;
   const fechaInicial = '';
@@ -629,7 +632,8 @@ document.addEventListener('DOMContentLoaded', function () {
   fetchDataBarChartSlaResolucion(equipoDefecto, empresaDefecto, fechaInicial, fechaFinal);
   fetchDataBarChartSlaAsignacion(equipoDefecto, empresaDefecto, fechaInicial, fechaFinal);
   fetchDataDoughnutTopsResponsables(equipoDefecto, empresaDefecto, fechaInicial, fechaFinal)
-  fetchDataTicketStatus(equipoDefecto, fechaInicial, fechaFinal, selectedUsuario);
+  fetchDataTicketStatus(equipoDefecto, departamentoDefecto, empresaDefecto, fechaInicial, fechaFinal, selectedUsuario);
+  fetchDataBarChart(equipoDefecto, departamentoDefecto, empresaDefecto, selectedProceso, selectedUsuario, fechaInicial, fechaFinal)
 });
 
 async function fetchDataBarChartSlaAsignacion(equipo, empresa, fechaInicial, fechaFinal) {
@@ -953,17 +957,19 @@ function createGrafica2(labels, values) {
   });
 }
 
-async function fetchDataTicketStatus(equipo, fechaInicial, fechaFinal, selectedUsuario) {
+async function fetchDataTicketStatus(equipo, departamento, empresa, fechaInicial, fechaFinal, selectedUsuario) {
   console.log(equipo, fechaInicial, fechaFinal, selectedUsuario);
   try {
     // Realizar la primera solicitud de fetch para obtener los datos del primer endpoint
-    const response1 = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_Graficas_Estado_Porcentajes', {
+    const response1 = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_Graficas_Estado_Porcentajes_General', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         int_id_cat_equipo: equipo,
+        int_id_cat_departamento: departamento,
+        int_id_cat_empresa: empresa,
         date_fecha_inicial: fechaInicial,
         date_fecha_final: fechaFinal,
         int_usuario_responsable: selectedUsuario
@@ -972,13 +978,15 @@ async function fetchDataTicketStatus(equipo, fechaInicial, fechaFinal, selectedU
     const data1 = await response1.json();
 
     // Realizar la segunda solicitud de fetch para obtener los datos del segundo endpoint
-    const response2 = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_Graficas_Estado_Porcentajes_Asignado_Progreso', {
+    const response2 = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_Graficas_Estado_Porcentajes_Asignado_Progreso_General', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         int_id_cat_equipo: equipo,
+        int_id_cat_departamento: departamento,
+        int_id_cat_empresa: empresa,
         date_fecha_inicial: fechaInicial,
         date_fecha_final: fechaFinal,
         int_usuario_responsable: selectedUsuario
@@ -1065,5 +1073,97 @@ function createTicketStatusCards(data) {
 
     card.innerHTML = cardContent;
     cardContainer.appendChild(card);
+  });
+}
+
+async function fetchDataBarChart(equipo, departamento, empresa, selectedProceso, selectedUsuario, fechaInicial, fechaFinal) {
+  try {
+    const response = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_ConteoPorUsuarios_General', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        int_id_cat_equipo: equipo,
+        int_id_cat_departamento: departamento,
+        int_id_cat_empresa: empresa,
+        int_id_cat_proceso: selectedProceso,
+        int_id_cat_usuario: selectedUsuario,
+        date_fecha_inicial: fechaInicial,
+        date_fecha_final: fechaFinal,
+      })
+    });
+    const data = await response.json();
+
+    const labels = data.map(ticket => ticket.usuario);
+    const values_total = data.map(ticket => ticket.total);
+    const values_asignado = data.map(ticket => ticket.Asignado);
+    const values_progreso = data.map(ticket => ticket.Enprogreso);
+
+    createBarChart(labels, values_total, values_asignado, values_progreso);
+  } catch (error) {
+    console.error('Error al obtener los datos para la gráfica de barras:', error);
+  }
+}
+
+function createBarChart(labels, values_total, values_asignado, values_progreso) {
+  var ctx = document.getElementById('barChart').getContext('2d');
+  var existingChart = Chart.getChart(ctx); // Obtener la instancia existente de Chart
+
+  // Destruir la gráfica existente si hay una
+  if (existingChart) {
+    existingChart.destroy();
+  }
+
+  // Crear la nueva gráfica
+  var barChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Número de Tickets',
+          data: values_total,
+          backgroundColor: [
+            'rgb(255, 99, 132)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132)',
+          ],
+          borderWidth: 1
+        },
+        {
+          label: 'Asignado',
+          data: values_asignado,
+          backgroundColor: [
+            'rgb(9, 109, 253)'
+          ],
+          borderColor: [
+            'rgb(9, 109, 253)'
+          ],
+          borderWidth: 1
+        },
+        {
+          label: 'En Progreso',
+          data: values_progreso,
+          backgroundColor: [
+            'rgb(254, 195, 5)'
+          ],
+          borderColor: [
+            'rgb(254, 195, 5)'
+          ],
+          borderWidth: 1
+        },
+      ]
+    },
+    options: {
+      plugins: {
+        title: {
+          display: true,
+          text: 'Tickets de todos los usuarios del equipo'
+        },
+      },
+      // indexAxis: 'y',
+    }
   });
 }
