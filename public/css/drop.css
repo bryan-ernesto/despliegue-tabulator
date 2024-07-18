@@ -114,7 +114,10 @@ span {
 #show-page-report17,
 #show-page-report18,
 #show-page-report19,
-#show-page-report20 {
+#show-page-report20,
+#show-page-report21,
+#show-page-report22,
+#show-page-report23 {
   margin-top: 60px;
   display: block;
   text-align: center;
@@ -141,7 +144,10 @@ span {
 #show-page-report17 a,
 #show-page-report18 a,
 #show-page-report19 a,
-#show-page-report20 a {
+#show-page-report20 a,
+#show-page-report21 a,
+#show-page-report22 a,
+#show-page-report23 a {
   display: block;
   padding: 10px 20px;
   color: white;
@@ -176,7 +182,10 @@ span {
 #show-page-report17 button,
 #show-page-report18 button,
 #show-page-report19 button,
-#show-page-report20 button {
+#show-page-report20 button,
+#show-page-report21 button,
+#show-page-report22 button,
+#show-page-report23 button {
   display: block;
   padding: 10px 20px;
   background-color: rgba(90, 84, 104, 1);
@@ -205,7 +214,10 @@ span {
 #show-page-report17 button:hover,
 #show-page-report18 button:hover,
 #show-page-report19 button:hover,
-#show-page-report20 button:hover {
+#show-page-report20 button:hover,
+#show-page-report21 button:hover,
+#show-page-report22 button:hover,
+#show-page-report23 button:hover{
   background-color: rgba(26, 21, 32, 1);
   transition: 0.3s;
 }
@@ -317,6 +329,11 @@ span {
 
 .icon-cronograma {
   color: rgb(121, 87, 235);
+  font-size: 45px;
+}
+
+.icon-nova-queja {
+  color: rgb(69, 193, 202);
   font-size: 45px;
 }
 

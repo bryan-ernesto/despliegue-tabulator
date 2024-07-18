@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        str_empresa_nombre: "",
+        str_empresa_nombre: "SERVINOVA",
         int_id_delta: 0,
         str_nombre_delta: "",
         str_tipo: "",
@@ -331,7 +331,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                   },
                 });
                 fetch(
-                  "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets_1",
+                  "http://192.168.0.8:3000/api/reporteador/Get_Reporte_TicketsServinova",
                   {
                     method: "POST",
                     headers: {
@@ -390,7 +390,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
                       fetchDataBarChartSlaResolucion(selectedEquipo, selectedEmpresa, fechaInicial, fechaFinal);
                       fetchDataBarChartSlaAsignacion(selectedEquipo, selectedEmpresa, fechaInicial, fechaFinal);
                       fetchDataDoughnutTopsResponsables(selectedEquipo, selectedEmpresa, fechaInicial, fechaFinal);
-                      fetchDataTicketStatus(selectedEquipo, fechaInicial, fechaFinal, selectedUsuario)
+                      const selectedUsuario = 0;
+                      fetchDataTicketStatus(selectedEquipo, selectedDepartamento, selectedEmpresa, fechaInicial, fechaFinal, selectedUsuario)
                     } else {
                       Swal.fire({
                         icon: "warning",
@@ -442,7 +443,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
       pagination: "local",
       paginationSize: 25,
       paginationSizeSelector: [10, 25, 50, 100],
-      ajaxURL: "http://192.168.0.8:3000/api/reporteador/Get_Reporte_Tickets",
+      ajaxURL: "http://192.168.0.8:3000/api/reporteador/Get_Reporte_TicketsServinova",
+      ajaxConfig: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
       ajaxParams: function (params) {
         return {
           int_id_equipo: equipo,
@@ -620,8 +627,10 @@ document.addEventListener('touchmove', resetLogoutTimer);
 
 document.addEventListener('DOMContentLoaded', function () {
   const equipo = localStorage.getItem("selectedEquipment");
+  const equipoServi = 32;
   const equipoDefecto = 0;
   const empresaDefecto = 0;
+  const departamentoDefecto = 0;
   const selectedProceso = 0;
   const selectedUsuario = 0;
   const fechaInicial = '';
@@ -629,7 +638,7 @@ document.addEventListener('DOMContentLoaded', function () {
   fetchDataBarChartSlaResolucion(equipoDefecto, empresaDefecto, fechaInicial, fechaFinal);
   fetchDataBarChartSlaAsignacion(equipoDefecto, empresaDefecto, fechaInicial, fechaFinal);
   fetchDataDoughnutTopsResponsables(equipoDefecto, empresaDefecto, fechaInicial, fechaFinal)
-  fetchDataTicketStatus(equipoDefecto, fechaInicial, fechaFinal, selectedUsuario);
+  fetchDataTicketStatus(equipoServi, departamentoDefecto, empresaDefecto, fechaInicial, fechaFinal, selectedUsuario);
 });
 
 async function fetchDataBarChartSlaAsignacion(equipo, empresa, fechaInicial, fechaFinal) {
@@ -641,7 +650,7 @@ async function fetchDataBarChartSlaAsignacion(equipo, empresa, fechaInicial, fec
       },
       body: JSON.stringify({
         int_id_cat_equipo: equipo,
-        int_id_cat_empresa: empresa,
+        int_id_cat_empresa: 1,
         date_fecha_inicial: fechaInicial,
         date_fecha_final: fechaFinal,
       })
@@ -677,7 +686,7 @@ async function fetchDataBarChartSlaResolucion(equipo, empresa, fechaInicial, fec
       },
       body: JSON.stringify({
         int_id_cat_equipo: equipo,
-        int_id_cat_empresa: empresa,
+        int_id_cat_empresa: 1,
         date_fecha_inicial: fechaInicial,
         date_fecha_final: fechaFinal,
       })
@@ -714,7 +723,7 @@ async function fetchDataDoughnutTopsResponsables(equipo, empresa, fechaInicial, 
       },
       body: JSON.stringify({
         int_id_cat_equipo: equipo,
-        int_id_cat_empresa: empresa,
+        int_id_cat_empresa: 1,
         date_fecha_inicial: fechaInicial,
         date_fecha_final: fechaFinal,
       })
@@ -953,16 +962,18 @@ function createGrafica2(labels, values) {
   });
 }
 
-async function fetchDataTicketStatus(equipo, fechaInicial, fechaFinal, selectedUsuario) {
+async function fetchDataTicketStatus(equipo, departamento, empresa, fechaInicial, fechaFinal, selectedUsuario) {
   try {
     // Realizar la primera solicitud de fetch para obtener los datos del primer endpoint
-    const response1 = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_Graficas_Estado_Porcentajes', {
+    const response1 = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_Graficas_Estado_Porcentajes_General', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         int_id_cat_equipo: equipo,
+        int_id_cat_departamento: departamento,
+        int_id_cat_empresa: 1,
         date_fecha_inicial: fechaInicial,
         date_fecha_final: fechaFinal,
         int_usuario_responsable: selectedUsuario
@@ -971,13 +982,15 @@ async function fetchDataTicketStatus(equipo, fechaInicial, fechaFinal, selectedU
     const data1 = await response1.json();
 
     // Realizar la segunda solicitud de fetch para obtener los datos del segundo endpoint
-    const response2 = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_Graficas_Estado_Porcentajes_Asignado_Progreso', {
+    const response2 = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_Graficas_Estado_Porcentajes_Asignado_Progreso_General', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         int_id_cat_equipo: equipo,
+        int_id_cat_departamento: departamento,
+        int_id_cat_empresa: 1,
         date_fecha_inicial: fechaInicial,
         date_fecha_final: fechaFinal,
         int_usuario_responsable: selectedUsuario

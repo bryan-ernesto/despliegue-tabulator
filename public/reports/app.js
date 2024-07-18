@@ -65,6 +65,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const showPageButton18 = document.getElementById("show-page-report18");
   const showPageButton19 = document.getElementById("show-page-report19");
   const showPageButton20 = document.getElementById("show-page-report20");
+  const showPageButton21 = document.getElementById("show-page-report21");
+  const showPageButton22 = document.getElementById("show-page-report22");
+  const showPageButton23 = document.getElementById("show-page-report23");
 
   function guardarEstadoBotones() {
     const botones = [
@@ -87,6 +90,9 @@ document.addEventListener("DOMContentLoaded", () => {
       showPageButton18,
       showPageButton19,
       showPageButton20,
+      showPageButton21,
+      showPageButton22,
+      showPageButton23,
     ];
 
     const estadoBotones = botones.map(btn => btn.style.display === "block");
@@ -115,6 +121,9 @@ document.addEventListener("DOMContentLoaded", () => {
       showPageButton18,
       showPageButton19,
       showPageButton20,
+      showPageButton21,
+      showPageButton22,
+      showPageButton23,
     ];
 
     const estadoBotones = JSON.parse(localStorage.getItem("estadoBotones") || "[]");
@@ -147,6 +156,9 @@ document.addEventListener("DOMContentLoaded", () => {
   showPageButton18.style.display = "none";
   showPageButton19.style.display = "none";
   showPageButton20.style.display = "none";
+  showPageButton21.style.display = "none";
+  showPageButton22.style.display = "none";
+  showPageButton23.style.display = "none";
   guardarEstadoBotones()
 
   let empresasData;
@@ -154,10 +166,9 @@ document.addEventListener("DOMContentLoaded", () => {
   if (
     username === "marriola" ||
     username === "eiperez" ||
-    username === "bmorales" ||
-    username === "djhernandez" ||
-    username === "vgonzalez"
-  ) {
+    username === "gschamale" ||
+    username === "djhernandez"
+	) {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
     showPageButton4.style.display = "block";
@@ -172,6 +183,9 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton15.style.display = "block";
     showPageButton17.style.display = "block";
     showPageButton18.style.display = "block";
+    showPageButton21.style.display = "block";
+    showPageButton22.style.display = "block";
+    showPageButton23.style.display = "block";
     guardarEstadoBotones()
   } else if (username === "bgamez") {
     showPageButton1.style.display = "block";
@@ -193,6 +207,9 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton18.style.display = "block";
     showPageButton19.style.display = "block";
     showPageButton20.style.display = "block";
+    showPageButton21.style.display = "block";
+    showPageButton22.style.display = "block";
+    showPageButton23.style.display = "block";
     guardarEstadoBotones()
   } else if (username === "hescobar") {
     showPageButton1.style.display = "block";
@@ -206,13 +223,22 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton14.style.display = "block";
     showPageButton15.style.display = "block";
     showPageButton17.style.display = "block";
+    showPageButton23.style.display = "block";
     guardarEstadoBotones()
   } else if (username === "syrodas") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
     showPageButton4.style.display = "block";
     guardarEstadoBotones()
-  } else if (username === "egalvez" || username === "emorales" || username === "cpcifuentes" || username === "olopez") {
+  } else if (username === "egalvez") {
+    showPageButton1.style.display = "block";
+    showPageButton3.style.display = "block";
+    showPageButton4.style.display = "block";
+    showPageButton15.style.display = "block";
+    showPageButton18.style.display = "block";
+    showPageButton9.style.display = "block";
+    guardarEstadoBotones()
+  } else if (username === "emorales" || username === "cpcifuentes" || username === "olopez") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
     showPageButton4.style.display = "block";
@@ -224,7 +250,8 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton15.style.display = "block";
     showPageButton18.style.display = "block";
     showPageButton9.style.display = "block";
-  } else if (username === "itelon" || username === "jatorres" || username === "svhernandez" || username === "msipaque") {
+    showPageButton21.style.display = "block";
+  } else if (username === "itelon" || username === "jatorres" || username === "svhernandez" || username === "msipaque" || username === "hdeleon" || username === "mmarquez" || username === "kfigueroa") {
     showPageButton15.style.display = "block";
   } else if (username === "aglopez" || username === "memonroy") {
     showPageButton3.style.display = "block";
@@ -255,7 +282,8 @@ document.addEventListener("DOMContentLoaded", () => {
     username === "ajvillatoro" ||
     username === "vvargas" ||
     username === "cnovales" ||
-    username === "mcifuentes"
+    username === "mcifuentes" ||
+    username === "ltocay"
   ) {
     showPageButton9.style.display = "block";
     guardarEstadoBotones()
@@ -266,12 +294,20 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton3.style.display = "block";
     showPageButton15.style.display = "block";
     guardarEstadoBotones()
-  } else if (username === "cesquivel" || username === "mchinchilla" || username === "dllopez" || username === "jmelgar" || username === "kxoy" || username === "mzuniga" || username === "jalopez" || username === "emejia" || username === "bpinto" || username === "mperez" || username === "amaldonado" || username === "jegonzalez" || username === "nlopez") {
+  } else if (username === "cesquivel" || username === "dllopez" || username === "jmelgar" || username === "kxoy" || username === "mzuniga" || username === "jalopez" || username === "emejia" || username === "bpinto" || username === "mperez" || username === "amaldonado" || username === "jegonzalez" || username === "nlopez") {
     showPageButton17.style.display = "block";
     guardarEstadoBotones()
   } else if (username === "acazun") {
     showPageButton17.style.display = "block";
     showPageButton11.style.display = "block";
+    showPageButton22.style.display = "block";
+    guardarEstadoBotones()
+  } else if (username === "mchinchilla") {
+    showPageButton17.style.display = "block";
+    showPageButton22.style.display = "block";
+    guardarEstadoBotones()
+  } else if (username === "despinoza" || username === "mestrada") {
+    showPageButton23.style.display = "block";
     guardarEstadoBotones()
   } 
   else {
@@ -294,6 +330,10 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton17.style.display = "none";
     showPageButton18.style.display = "none";
     showPageButton19.style.display = "none";
+    showPageButton20.style.display = "none";
+    showPageButton21.style.display = "none";
+    showPageButton22.style.display = "none";
+    showPageButton23.style.display = "none";
     guardarEstadoBotones()
   }
 
@@ -360,6 +400,9 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton18.style.display = "none";
     showPageButton19.style.display = "none";
     showPageButton20.style.display = "none";
+    showPageButton21.style.display = "none";
+    showPageButton22.style.display = "none";
+    showPageButton23.style.display = "none";
     localStorage.removeItem("selectedCompany");
     guardarEstadoBotones()
     location.reload();
@@ -405,6 +448,9 @@ document.addEventListener("DOMContentLoaded", () => {
       showPageButton18.style.display = "none";
       showPageButton19.style.display = "none";
       showPageButton20.style.display = "none";
+      showPageButton21.style.display = "none";
+      showPageButton22.style.display = "none";
+      showPageButton23.style.display = "none";
       guardarEstadoBotones()
       showPageButton3.classList.remove('fade-in-up');
     }
@@ -483,6 +529,15 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
+      parseInt(selectedDepartment) === 25 &&
+      parseInt(selectedEquipment) === 33
+    ) {
+      showPageButton5.classList.add('fade-in-up');
+      showPageButton5.style.display = "block";
+      guardarEstadoBotones()
+    } else if (
+      selectedEmpresa &&
+      parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 9 &&
       parseInt(selectedEquipment) === 16
     ) {
@@ -515,6 +570,7 @@ document.addEventListener("DOMContentLoaded", () => {
       showPageButton5.style.display = "none";
       showPageButton1.style.display = "none";
       showPageButton4.style.display = "none";
+      showPageButton22.style.display = "none";
       guardarEstadoBotones()
     }
     if (
@@ -528,6 +584,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       showPageButton6.classList.remove('fade-in-up');
       showPageButton6.style.display = "none";
+      showPageButton22.style.display = "none";
       guardarEstadoBotones()
     }
     if (
@@ -558,6 +615,7 @@ document.addEventListener("DOMContentLoaded", () => {
       showPageButton13.style.display = "block";
       showPageButton6.classList.remove('fade-in-up');
       showPageButton6.style.display = "none";
+      showPageButton22.style.display = "none";
       guardarEstadoBotones()
     }
     else {
@@ -565,6 +623,7 @@ document.addEventListener("DOMContentLoaded", () => {
       showPageButton6.classList.remove('fade-in-up');
       showPageButton9.style.display = "none";
       showPageButton6.style.display = "none";
+      showPageButton22.style.display = "none";
       guardarEstadoBotones()
     }
   }

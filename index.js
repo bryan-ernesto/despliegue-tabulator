@@ -7,6 +7,6 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(3000, '172.16.201.23', () => {
-  console.log('Servidor iniciado en http://172.16.201.23:3000');
+app.listen(3000, '10.10.10.59', () => {
+  console.log('Servidor iniciado en http://10.10.10.59:3000');
 });

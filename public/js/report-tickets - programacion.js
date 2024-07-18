@@ -15,6 +15,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const departamento = localStorage.getItem("selectedDepartment");
   const equipo = localStorage.getItem("selectedEquipment");
 
+  console.log(empresa, departamento, equipo)
+
   const usernameElement = document.getElementById("username");
   usernameElement.textContent = username;
 
@@ -306,7 +308,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                       recordCountText.style.display = "block"; // Mostrar el elemento
                       fetchDataBarChart(equipo, selectedProceso, selectedUsuario, fechaInicial, fechaFinal)
                       fetchDataDoughnutChart1(equipo, selectedProceso, fechaInicial, fechaFinal)
-                      fetchDataTicketStatus(equipo, fechaInicial, fechaFinal, selectedUsuario)
+                      fetchDataTicketStatus(equipo, departamento, empresa, fechaInicial, fechaFinal, selectedUsuario)
                     } else {
                       Swal.fire({
                         icon: "warning",
@@ -539,25 +541,30 @@ document.addEventListener('touchmove', resetLogoutTimer);
 
 document.addEventListener('DOMContentLoaded', function () {
   const equipo = localStorage.getItem("selectedEquipment");
+  const equipoDefecto = 0;
+  const empresaDefecto = 0;
+  const departamentoDefecto = 0;
   const selectedProceso = 0;
   const selectedUsuario = 0;
   const fechaInicial = '';
   const fechaFinal = '';
-  fetchDataBarChart(equipo, selectedProceso, selectedUsuario, fechaInicial, fechaFinal);
+  fetchDataBarChart(equipo, departamentoDefecto, empresaDefecto, selectedProceso, selectedUsuario, fechaInicial, fechaFinal);
   fetchDataDoughnutChart1(equipo, selectedProceso, fechaInicial, fechaFinal);
   fetchDataDoughnutChart2(equipo);
-  fetchDataTicketStatus(equipo, fechaInicial, fechaFinal, selectedUsuario);
+  fetchDataTicketStatus(equipo, departamentoDefecto, empresaDefecto, fechaInicial, fechaFinal, selectedUsuario);
 });
 
-async function fetchDataBarChart(equipo, selectedProceso, selectedUsuario, fechaInicial, fechaFinal) {
+async function fetchDataBarChart(equipo, departamento, empresa, selectedProceso, selectedUsuario, fechaInicial, fechaFinal) {
   try {
-    const response = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_ConteoPorUsuarios', {
+    const response = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_ConteoPorUsuarios_General', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         int_id_cat_equipo: equipo,
+        int_id_cat_departamento: departamento,
+        int_id_cat_empresa: empresa,
         int_id_cat_proceso: selectedProceso,
         int_id_cat_usuario: selectedUsuario,
         date_fecha_inicial: fechaInicial,
@@ -578,6 +585,7 @@ async function fetchDataBarChart(equipo, selectedProceso, selectedUsuario, fecha
 }
 
 async function fetchDataDoughnutChart1(equipo, selectedProceso, fechaInicial, fechaFinal) {
+  console.log(equipo);
   try {
     const response = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_Graficas_Tops_Reporteador', {
       method: 'POST',
@@ -611,7 +619,6 @@ async function fetchDataDoughnutChart1(equipo, selectedProceso, fechaInicial, fe
     console.error('Error al obtener los datos para la gráfica de dona 1:', error);
   }
 }
-
 
 async function fetchDataDoughnutChart2(equipo) {
   try {
@@ -780,16 +787,18 @@ function createDoughnutChart2(labels, values) {
   });
 }
 
-async function fetchDataTicketStatus(equipo, fechaInicial, fechaFinal, selectedUsuario) {
+async function fetchDataTicketStatus(equipo, departamento, empresa, fechaInicial, fechaFinal, selectedUsuario) {
   try {
     // Realizar la primera solicitud de fetch para obtener los datos del primer endpoint
-    const response1 = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_Graficas_Estado_Porcentajes', {
+    const response1 = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_Graficas_Estado_Porcentajes_General', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         int_id_cat_equipo: equipo,
+        int_id_cat_departamento: departamento,
+        int_id_cat_empresa: empresa,
         date_fecha_inicial: fechaInicial,
         date_fecha_final: fechaFinal,
         int_usuario_responsable: selectedUsuario
@@ -798,13 +807,15 @@ async function fetchDataTicketStatus(equipo, fechaInicial, fechaFinal, selectedU
     const data1 = await response1.json();
 
     // Realizar la segunda solicitud de fetch para obtener los datos del segundo endpoint
-    const response2 = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_Graficas_Estado_Porcentajes_Asignado_Progreso', {
+    const response2 = await fetch('http://192.168.0.8:3000/api/nova_ticket/Get_Ticket_Graficas_Estado_Porcentajes_Asignado_Progreso_General', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         int_id_cat_equipo: equipo,
+        int_id_cat_departamento: departamento,
+        int_id_cat_empresa: empresa,
         date_fecha_inicial: fechaInicial,
         date_fecha_final: fechaFinal,
         int_usuario_responsable: selectedUsuario
