@@ -1,34 +1,33 @@
-
 document.addEventListener("DOMContentLoaded", () => {
-  const popup = document.getElementById('info-popup');
-  const popup2 = document.getElementById('info-popup-2');
-  const closeBtn = document.querySelector('.close-btn');
+  const popup = document.getElementById("info-popup");
+  const popup2 = document.getElementById("info-popup-2");
+  const closeBtn = document.querySelector(".close-btn");
 
-  if (!sessionStorage.getItem('popupShown')) {
-    popup.style.display = 'block';
-    popup2.style.display = 'block';
+  if (!sessionStorage.getItem("popupShown")) {
+    popup.style.display = "block";
+    popup2.style.display = "block";
 
     setTimeout(function () {
-      popup.style.opacity = '1';
-      popup2.style.opacity = '1';
+      popup.style.opacity = "1";
+      popup2.style.opacity = "1";
     }, 10);
 
-    sessionStorage.setItem('popupShown', 'true');
+    sessionStorage.setItem("popupShown", "true");
   }
 
   function closePopup() {
-    popup.style.opacity = '0';
-    popup2.style.opacity = '0';
+    popup.style.opacity = "0";
+    popup2.style.opacity = "0";
 
     setTimeout(function () {
-      popup.style.display = 'none';
-      popup2.style.display = 'none';
+      popup.style.display = "none";
+      popup2.style.display = "none";
     }, 400);
   }
 
   setTimeout(closePopup, 5000);
 
-  closeBtn.addEventListener('click', closePopup);
+  closeBtn.addEventListener("click", closePopup);
 
   const username = (localStorage.getItem("username") || "").toLowerCase();
 
@@ -68,6 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const showPageButton21 = document.getElementById("show-page-report21");
   const showPageButton22 = document.getElementById("show-page-report22");
   const showPageButton23 = document.getElementById("show-page-report23");
+  const showPageButton24 = document.getElementById("show-page-report24");
 
   function guardarEstadoBotones() {
     const botones = [
@@ -93,9 +93,10 @@ document.addEventListener("DOMContentLoaded", () => {
       showPageButton21,
       showPageButton22,
       showPageButton23,
+      showPageButton24,
     ];
 
-    const estadoBotones = botones.map(btn => btn.style.display === "block");
+    const estadoBotones = botones.map((btn) => btn.style.display === "block");
 
     localStorage.setItem("estadoBotones", JSON.stringify(estadoBotones));
   }
@@ -124,9 +125,12 @@ document.addEventListener("DOMContentLoaded", () => {
       showPageButton21,
       showPageButton22,
       showPageButton23,
+      showPageButton24,
     ];
 
-    const estadoBotones = JSON.parse(localStorage.getItem("estadoBotones") || "[]");
+    const estadoBotones = JSON.parse(
+      localStorage.getItem("estadoBotones") || "[]"
+    );
 
     if (estadoBotones.length === botones.length) {
       botones.forEach((btn, index) => {
@@ -159,7 +163,8 @@ document.addEventListener("DOMContentLoaded", () => {
   showPageButton21.style.display = "none";
   showPageButton22.style.display = "none";
   showPageButton23.style.display = "none";
-  guardarEstadoBotones()
+  showPageButton24.style.display = "none";
+  guardarEstadoBotones();
 
   let empresasData;
 
@@ -168,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
     username === "eiperez" ||
     username === "gschamale" ||
     username === "djhernandez"
-	) {
+  ) {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
     showPageButton4.style.display = "block";
@@ -186,7 +191,8 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton21.style.display = "block";
     showPageButton22.style.display = "block";
     showPageButton23.style.display = "block";
-    guardarEstadoBotones()
+    showPageButton24.style.display = "block";
+    guardarEstadoBotones();
   } else if (username === "bgamez") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
@@ -210,7 +216,8 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton21.style.display = "block";
     showPageButton22.style.display = "block";
     showPageButton23.style.display = "block";
-    guardarEstadoBotones()
+    showPageButton24.style.display = "block";
+    guardarEstadoBotones();
   } else if (username === "hescobar") {
     showPageButton1.style.display = "block";
     showPageButton4.style.display = "block";
@@ -224,12 +231,12 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton15.style.display = "block";
     showPageButton17.style.display = "block";
     showPageButton23.style.display = "block";
-    guardarEstadoBotones()
+    guardarEstadoBotones();
   } else if (username === "syrodas") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
     showPageButton4.style.display = "block";
-    guardarEstadoBotones()
+    guardarEstadoBotones();
   } else if (username === "egalvez") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
@@ -237,8 +244,8 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton15.style.display = "block";
     showPageButton18.style.display = "block";
     showPageButton9.style.display = "block";
-    guardarEstadoBotones()
-  } else if (username === "emorales" || username === "cpcifuentes" || username === "olopez") {
+    guardarEstadoBotones();
+  } else if (username === "cpcifuentes" || username === "olopez") {
     showPageButton1.style.display = "block";
     showPageButton3.style.display = "block";
     showPageButton4.style.display = "block";
@@ -251,66 +258,96 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton18.style.display = "block";
     showPageButton9.style.display = "block";
     showPageButton21.style.display = "block";
-  } else if (username === "itelon" || username === "jatorres" || username === "svhernandez" || username === "msipaque" || username === "hdeleon" || username === "mmarquez" || username === "kfigueroa") {
+  } else if (
+    username === "itelon" ||
+    username === "jatorres" ||
+    username === "svhernandez" ||
+    username === "msipaque" ||
+    username === "hdeleon" ||
+    username === "mmarquez" ||
+    username === "kfigueroa"
+  ) {
     showPageButton15.style.display = "block";
   } else if (username === "aglopez" || username === "memonroy") {
     showPageButton3.style.display = "block";
-  }
-  else if (
+  } else if (
     username === "msolano" ||
     username === "sorellana" ||
     username === "rixim"
   ) {
     showPageButton7.style.display = "block";
     showPageButton17.style.display = "block";
-    guardarEstadoBotones()
-  } else if (
-    username === 'acastillo'
-  ) {
+    guardarEstadoBotones();
+  } else if (username === "acastillo") {
     showPageButton8.style.display = "block";
     showPageButton6.style.display = "block";
     showPageButton9.style.display = "block";
-    guardarEstadoBotones()
+    guardarEstadoBotones();
   } else if (
     username === "jizquierdo" ||
     username === "sflores" ||
     username === "jyaxon"
   ) {
     showPageButton11.style.display = "block";
-    guardarEstadoBotones()
+    guardarEstadoBotones();
   } else if (
     username === "ajvillatoro" ||
-    username === "vvargas" ||
     username === "cnovales" ||
     username === "mcifuentes" ||
-    username === "ltocay"
+    username === "ltocay" ||
+    username === "jmgonzalez" ||
+    username === "wmonterroso"
   ) {
     showPageButton9.style.display = "block";
-    guardarEstadoBotones()
+    guardarEstadoBotones();
   } else if (username === "jortiz" || username === "avega") {
     showPageButton14.style.display = "block";
-    guardarEstadoBotones()
+    guardarEstadoBotones();
   } else if (username === "dagarcia") {
     showPageButton3.style.display = "block";
     showPageButton15.style.display = "block";
-    guardarEstadoBotones()
-  } else if (username === "cesquivel" || username === "dllopez" || username === "jmelgar" || username === "kxoy" || username === "mzuniga" || username === "jalopez" || username === "emejia" || username === "bpinto" || username === "mperez" || username === "amaldonado" || username === "jegonzalez" || username === "nlopez") {
+    guardarEstadoBotones();
+  } else if (
+    username === "cesquivel" ||
+    username === "dllopez" ||
+    username === "jmelgar" ||
+    username === "kxoy" ||
+    username === "mzuniga" ||
+    username === "jalopez" ||
+    username === "emejia" ||
+    username === "bpinto" ||
+    username === "mperez" ||
+    username === "amaldonado" ||
+    username === "jegonzalez" ||
+    username === "nlopez"
+  ) {
     showPageButton17.style.display = "block";
-    guardarEstadoBotones()
+    guardarEstadoBotones();
   } else if (username === "acazun") {
     showPageButton17.style.display = "block";
     showPageButton11.style.display = "block";
     showPageButton22.style.display = "block";
-    guardarEstadoBotones()
+    guardarEstadoBotones();
   } else if (username === "mchinchilla") {
     showPageButton17.style.display = "block";
     showPageButton22.style.display = "block";
-    guardarEstadoBotones()
-  } else if (username === "despinoza" || username === "mestrada") {
+    guardarEstadoBotones();
+  } else if (username === "lrpalencia") {
+    showPageButton22.style.display = "block";
+    guardarEstadoBotones();
+  } else if (username === "vvargas") {
+    showPageButton22.style.display = "block";
+    showPageButton9.style.display = "block";
+    guardarEstadoBotones();
+  } else if (
+    username === "despinoza" ||
+    username === "mestrada" ||
+    username === "emorales" ||
+    username === "rsanabria"
+  ) {
     showPageButton23.style.display = "block";
-    guardarEstadoBotones()
-  } 
-  else {
+    guardarEstadoBotones();
+  } else {
     showPageButton1.style.display = "none";
     showPageButton3.style.display = "none";
     showPageButton4.style.display = "none";
@@ -334,7 +371,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton21.style.display = "none";
     showPageButton22.style.display = "none";
     showPageButton23.style.display = "none";
-    guardarEstadoBotones()
+    guardarEstadoBotones();
   }
 
   fetch("http://192.168.0.8:3000/api/reporteador/Get_Usuarios_Reporteador", {
@@ -404,7 +441,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showPageButton22.style.display = "none";
     showPageButton23.style.display = "none";
     localStorage.removeItem("selectedCompany");
-    guardarEstadoBotones()
+    guardarEstadoBotones();
     location.reload();
   });
 
@@ -424,15 +461,17 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedEquipment) === 19
     ) {
       showPageButton3.style.display = "block";
-      guardarEstadoBotones()
-      showPageButton3.classList.add('fade-in-up');
-    } else if (selectedEmpresa &&
+      guardarEstadoBotones();
+      showPageButton3.classList.add("fade-in-up");
+    } else if (
+      selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 9 &&
-      parseInt(selectedEquipment) === 18) {
-      showPageButton3.classList.add('fade-in-up');
+      parseInt(selectedEquipment) === 18
+    ) {
+      showPageButton3.classList.add("fade-in-up");
       showPageButton3.style.display = "block";
-      guardarEstadoBotones()
+      guardarEstadoBotones();
     } else {
       showPageButton3.style.display = "none";
       showPageButton7.style.display = "none";
@@ -451,8 +490,8 @@ document.addEventListener("DOMContentLoaded", () => {
       showPageButton21.style.display = "none";
       showPageButton22.style.display = "none";
       showPageButton23.style.display = "none";
-      guardarEstadoBotones()
-      showPageButton3.classList.remove('fade-in-up');
+      guardarEstadoBotones();
+      showPageButton3.classList.remove("fade-in-up");
     }
     if (
       selectedEmpresa &&
@@ -460,90 +499,101 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedDepartment) === 7 &&
       parseInt(selectedEquipment) === 27
     ) {
-      showPageButton5.classList.add('fade-in-up');
+      showPageButton5.classList.add("fade-in-up");
       showPageButton5.style.display = "block";
-      guardarEstadoBotones()
+      guardarEstadoBotones();
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 24 &&
       parseInt(selectedEquipment) === 32
     ) {
-      showPageButton20.classList.add('fade-in-up');
+      showPageButton20.classList.add("fade-in-up");
       showPageButton20.style.display = "block";
-      guardarEstadoBotones()
+      guardarEstadoBotones();
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 2 &&
       parseInt(selectedDepartment) === 28 &&
       parseInt(selectedEquipment) === 39
     ) {
-      showPageButton19.classList.add('fade-in-up');
+      showPageButton19.classList.add("fade-in-up");
+      showPageButton24.classList.add("fade-in-up");
       showPageButton19.style.display = "block";
-      guardarEstadoBotones()
+      showPageButton24.style.display = "block";
+      guardarEstadoBotones();
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 3 &&
       parseInt(selectedDepartment) === 8 &&
       parseInt(selectedEquipment) === 46
     ) {
-      showPageButton5.classList.add('fade-in-up');
+      showPageButton5.classList.add("fade-in-up");
       showPageButton5.style.display = "block";
-      guardarEstadoBotones()
+      guardarEstadoBotones();
+    } else if (
+      selectedEmpresa &&
+      parseInt(selectedCompany) === 2 &&
+      parseInt(selectedDepartment) === 10 &&
+      parseInt(selectedEquipment) === 65
+    ) {
+      showPageButton5.classList.add("fade-in-up");
+      showPageButton5.style.display = "block";
+      guardarEstadoBotones();
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 4 &&
       parseInt(selectedDepartment) === 2 &&
       parseInt(selectedEquipment) === 29
     ) {
-      showPageButton5.classList.add('fade-in-up');
+      showPageButton5.classList.add("fade-in-up");
       showPageButton5.style.display = "block";
-      guardarEstadoBotones()
+      guardarEstadoBotones();
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 1 &&
       parseInt(selectedEquipment) === 2
     ) {
-      showPageButton5.classList.add('fade-in-up');
+      showPageButton5.classList.add("fade-in-up");
       showPageButton5.style.display = "block";
-      guardarEstadoBotones()
+      guardarEstadoBotones();
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 4 &&
       parseInt(selectedEquipment) === 7
     ) {
-      showPageButton16.classList.add('fade-in-up');
+      showPageButton16.classList.add("fade-in-up");
       showPageButton16.style.display = "block";
-      guardarEstadoBotones()
+      guardarEstadoBotones();
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 15 &&
       parseInt(selectedEquipment) === 23
     ) {
-      showPageButton5.classList.add('fade-in-up');
+      showPageButton5.classList.add("fade-in-up");
       showPageButton5.style.display = "block";
-      guardarEstadoBotones()
+      guardarEstadoBotones();
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 25 &&
       parseInt(selectedEquipment) === 33
     ) {
-      showPageButton5.classList.add('fade-in-up');
+      showPageButton5.classList.add("fade-in-up");
       showPageButton5.style.display = "block";
-      guardarEstadoBotones()
+      guardarEstadoBotones();
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 9 &&
       parseInt(selectedEquipment) === 16
     ) {
-      showPageButton13.classList.add('fade-in-up');
+      showPageButton13.classList.add("fade-in-up");
       showPageButton13.style.display = "block";
-      guardarEstadoBotones()
+      guardarEstadoBotones();
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
@@ -551,8 +601,8 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedEquipment) === 38
     ) {
       showPageButton3.style.display = "block";
-      guardarEstadoBotones()
-      showPageButton3.classList.add('fade-in-up');
+      guardarEstadoBotones();
+      showPageButton3.classList.add("fade-in-up");
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
@@ -560,32 +610,31 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedEquipment) === 31
     ) {
       showPageButton8.style.display = "block";
-      guardarEstadoBotones()
-      showPageButton8.classList.add('fade-in-up');
-    }
-    else {
-      showPageButton5.classList.remove('fade-in-up');
-      showPageButton1.classList.remove('fade-in-up');
-      showPageButton4.classList.remove('fade-in-up');
+      guardarEstadoBotones();
+      showPageButton8.classList.add("fade-in-up");
+    } else {
+      showPageButton5.classList.remove("fade-in-up");
+      showPageButton1.classList.remove("fade-in-up");
+      showPageButton4.classList.remove("fade-in-up");
       showPageButton5.style.display = "none";
       showPageButton1.style.display = "none";
       showPageButton4.style.display = "none";
       showPageButton22.style.display = "none";
-      guardarEstadoBotones()
+      guardarEstadoBotones();
     }
     if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 13
     ) {
-      showPageButton6.classList.add('fade-in-up');
+      showPageButton6.classList.add("fade-in-up");
       showPageButton6.style.display = "block";
-      guardarEstadoBotones()
+      guardarEstadoBotones();
     } else {
-      showPageButton6.classList.remove('fade-in-up');
+      showPageButton6.classList.remove("fade-in-up");
       showPageButton6.style.display = "none";
       showPageButton22.style.display = "none";
-      guardarEstadoBotones()
+      guardarEstadoBotones();
     }
     if (
       selectedEmpresa &&
@@ -593,38 +642,37 @@ document.addEventListener("DOMContentLoaded", () => {
       parseInt(selectedDepartment) === 22 &&
       parseInt(selectedEquipment) === 30
     ) {
-      showPageButton9.classList.add('fade-in-up');
+      showPageButton9.classList.add("fade-in-up");
       showPageButton9.style.display = "block";
-      guardarEstadoBotones()
+      guardarEstadoBotones();
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 14 &&
       parseInt(selectedEquipment) === 36
     ) {
-      showPageButton9.classList.add('fade-in-up');
+      showPageButton9.classList.add("fade-in-up");
       showPageButton9.style.display = "block";
-      guardarEstadoBotones()
+      guardarEstadoBotones();
     } else if (
       selectedEmpresa &&
       parseInt(selectedCompany) === 1 &&
       parseInt(selectedDepartment) === 13 &&
       parseInt(selectedEquipment) === 37
     ) {
-      showPageButton13.classList.add('fade-in-up');
+      showPageButton13.classList.add("fade-in-up");
       showPageButton13.style.display = "block";
-      showPageButton6.classList.remove('fade-in-up');
+      showPageButton6.classList.remove("fade-in-up");
       showPageButton6.style.display = "none";
       showPageButton22.style.display = "none";
-      guardarEstadoBotones()
-    }
-    else {
-      showPageButton9.classList.remove('fade-in-up');
-      showPageButton6.classList.remove('fade-in-up');
+      guardarEstadoBotones();
+    } else {
+      showPageButton9.classList.remove("fade-in-up");
+      showPageButton6.classList.remove("fade-in-up");
       showPageButton9.style.display = "none";
       showPageButton6.style.display = "none";
       showPageButton22.style.display = "none";
-      guardarEstadoBotones()
+      guardarEstadoBotones();
     }
   }
 
@@ -817,12 +865,11 @@ document.addEventListener("DOMContentLoaded", () => {
     history.pushState(null, null, location.href);
   });
 
-
   function handleButtonClick(event) {
     event.preventDefault();
     const anchor = event.currentTarget;
     const button = anchor.parentElement;
-    const appId = button.getAttribute('data-app-id');
+    const appId = button.getAttribute("data-app-id");
 
     fetch("http://192.168.0.8:3000/api/reporteador/Get_Usuarios_Reporteador", {
       method: "POST",
@@ -837,36 +884,41 @@ document.addEventListener("DOMContentLoaded", () => {
         int_equipo: 0,
       }),
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         const userId = data[0].id_cat_usuario;
 
-        return fetch("http://192.168.0.8:3000/api/recepciones_documento/Post_Documento_BitacoraLogin", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            int_id_cat_aplicativo: appId,
-            int_id_cat_usuario: userId,
-            int_id_creador: userId
-          }),
-        });
+        return fetch(
+          "http://192.168.0.8:3000/api/recepciones_documento/Post_Documento_BitacoraLogin",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              int_id_cat_aplicativo: appId,
+              int_id_cat_usuario: userId,
+              int_id_creador: userId,
+            }),
+          }
+        );
       })
-      .then(response => response.json())
-      .then(result => {
+      .then((response) => response.json())
+      .then((result) => {
         console.log("Registro exitoso:", result);
         window.location.href = anchor.href;
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error:", error);
         window.location.href = anchor.href;
       });
   }
 
-  const anchorsInsideButtons = document.querySelectorAll('button.report-button a');
-  anchorsInsideButtons.forEach(anchor => {
-    anchor.addEventListener('click', handleButtonClick);
+  const anchorsInsideButtons = document.querySelectorAll(
+    "button.report-button a"
+  );
+  anchorsInsideButtons.forEach((anchor) => {
+    anchor.addEventListener("click", handleButtonClick);
   });
 });
 
@@ -882,17 +934,17 @@ function capitalizarCadena(cadena) {
   }
 }
 
-window.addEventListener('popstate', function (event) {
+window.addEventListener("popstate", function (event) {
   location.reload(true);
 });
 
 function autoLogout() {
   Swal.fire({
-    icon: 'warning',
-    title: 'Tiempo de espera terminado',
-    text: 'Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.',
-    confirmButtonText: 'Aceptar',
-    allowOutsideClick: false
+    icon: "warning",
+    title: "Tiempo de espera terminado",
+    text: "Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.",
+    confirmButtonText: "Aceptar",
+    allowOutsideClick: false,
   }).then((result) => {
     if (result.isConfirmed) {
       console.log("Sesión expirada, cerrando...");
@@ -915,10 +967,9 @@ function resetLogoutTimer() {
   }, 1800000);
 }
 
-
 resetLogoutTimer();
 
-document.addEventListener('mousemove', resetLogoutTimer);
-document.addEventListener('keydown', resetLogoutTimer);
-document.addEventListener('wheel', resetLogoutTimer);
-document.addEventListener('touchmove', resetLogoutTimer);
+document.addEventListener("mousemove", resetLogoutTimer);
+document.addEventListener("keydown", resetLogoutTimer);
+document.addEventListener("wheel", resetLogoutTimer);
+document.addEventListener("touchmove", resetLogoutTimer);
